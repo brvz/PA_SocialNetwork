@@ -430,7 +430,7 @@ public class DigraphImpl<V, E> implements Digraph<V, E> {
                 if (edge.element().equals(edgeElement)) {
                     i++;
                 }
-                if (i >= 2) {
+                if (i >= 1) {
                     return true;
                 }
             }
