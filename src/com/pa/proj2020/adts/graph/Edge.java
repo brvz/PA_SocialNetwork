@@ -33,7 +33,7 @@ package com.pa.proj2020.adts.graph;
  * @param <V> Type of value stored in the vertices that this edge connects.
  * 
  * @see Graph
- * @see Digraph
+
  */
 public interface Edge<E, V> {
     

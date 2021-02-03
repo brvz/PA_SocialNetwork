@@ -1,187 +1,20 @@
 package com.pa.proj2020.adts.graph;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-/**
- * @param <V> Type of element stored at a vertex
- * @param <E> Type of element stored at an edge
- * @see Digraph
- * @see Edge
- * @see Vertex
- */
-public class DigraphImpl<V, E> implements Digraph<V, E> {
+public class GraphAdjacencyList<E,V> implements Graph<V,E> {
 
     private final Map<V, Vertex<V>> graph;
 
-    public DigraphImpl() {
+    public GraphAdjacencyList() {
         graph = new HashMap<>();
     }
 
-    /**
-     * Returns a vertex's <i>incident</i> edges as a collection.
-     * <p>
-     * Incident edges are all edges that have vertex <code>inbound</code> as the
-     * <i>inbound vertex</i>, i.e., the edges "entering" vertex
-     * <code>inbound</code>. If there are no incident edges, e.g., an isolated
-     * vertex, returns an empty collection.
-     *
-     * @param inbound vertex for which to obtain the incident edges
-     * @return collection of edges
-     */
-    @Override
-    public Collection<Edge<E, V>> incidentEdges(Vertex<V> inbound) throws InvalidVertexException {
-        MyVertex myVertex = checkVertex(inbound);
-
-        List<Edge<E, V>> incidentEdges = new ArrayList<>();
-        //incidentEdges.addAll(myVertex.inadj);
-        incidentEdges.addAll(myVertex.outadj);
-        return incidentEdges;
-    }
-
-    /**
-     * Returns a vertex's <i>outbound</i> edges as a collection.
-     * <p>
-     * Incident edges are all edges that have vertex <code>outbound</code> as
-     * the
-     * <i>outbound vertex</i>, i.e., the edges "leaving" vertex
-     * <code>outbound</code>. If there are no outbound edges, e.g., an isolated
-     * vertex, returns an empty collection.
-     *
-     * @param outbound vertex for which to obtain the outbound edges
-     * @return collection of edges
-     */
-    @Override
-    public Collection<Edge<E, V>> outboundEdges(Vertex<V> outbound) throws InvalidVertexException {
-        MyVertex myVertex = checkVertex(outbound);
-
-        List<Edge<E, V>> outboundEdges = new ArrayList<>();
-        outboundEdges.addAll(myVertex.outadj);
-        return outboundEdges;
-    }
-
-    /**
-     * Evaluates whether two vertices are adjacent, i.e., there exists some
-     * directed-edge connecting <code>outbound</code> and <code>inbound</code>.
-     * <p>
-     * The existing edge must be directed as
-     * <code>outbound --&gt; inbound</code>.
-     * <p>
-     * If, for example, there exists only an edge
-     * <code>outbound &lt;-- inbound</code>, they are not considered adjacent.
-     *
-     * @param outbound outbound vertex
-     * @param inbound  inbound vertex
-     * @return true if they are adjacent, false otherwise.
-     * @throws InvalidVertexException if <code>outbound</code> or
-     *                                <code>inbound</code> are invalid vertices for the digraph
-     */
-    @Override
-    public boolean areAdjacent(Vertex<V> outbound, Vertex<V> inbound) throws InvalidVertexException {
-        checkVertex(outbound);
-        checkVertex(inbound);
-        for (Vertex<V> vertex : graph.values()) {
-            for (Edge<E, V> incidentEdge : incidentEdges(vertex)) {
-                MyEdge edge = checkEdge(incidentEdge);
-                if (edge.vertexOutbound.equals(outbound) && edge.vertexInbound.equals(inbound)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Inserts a new edge with a given element between two existing vertices and
-     * return its (the edge's) reference.
-     *
-     * @param outbound    outbound vertex
-     * @param inbound     inbound vertex
-     * @param edgeElement element to store in the new edge
-     * @return the reference for the newly created edge
-     * @throws InvalidVertexException if <code>outbound</code> or
-     *                                <code>inbound</code> are not found in the digraph
-     *                                according to the equality of {@link Object#equals(java.lang.Object) }
-     *                                method.
-     * @throws InvalidEdgeException   if there already exists an edge
-     *                                containing <code>edgeElement</code> according to the equality of
-     *                                {@link Object#equals(java.lang.Object) }
-     *                                method.
-     */
-    @Override
-    public Edge<E, V> insertEdge(Vertex<V> outbound, Vertex<V> inbound, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
-        if (existsEdgeWith(edgeElement)) {
-            throw new InvalidEdgeException("There's already an edge with this element.");
-        }
-
-        MyVertex outVertex = checkVertex(outbound);
-        MyVertex inVertex = checkVertex(inbound);
-
-        MyEdge newEdge = new MyEdge(edgeElement, outVertex, inVertex);
-
-        inVertex.outadj.add(newEdge);
-        outVertex.inadj.add(newEdge);
-
-        return newEdge;
-    }
-
-    /**
-     * Inserts a new edge with a given element between two existing vertices and
-     * return its (the edge's) reference.
-     *
-     * @param outboundElement outbound vertex's stored element
-     * @param inboundElement  inbound vertex's stored element
-     * @param edgeElement     element to store in the new edge
-     * @return the reference for the newly created edge
-     * @throws InvalidVertexException if <code>outboundElement</code> or
-     *                                <code>inboundElement</code> are not found in any vertices of the digraph
-     *                                according to the equality of {@link Object#equals(java.lang.Object) }
-     *                                method.
-     * @throws InvalidEdgeException   if there already exists an edge
-     *                                containing <code>edgeElement</code> according to the equality of
-     *                                {@link Object#equals(java.lang.Object) }
-     *                                method.
-     */
-    @Override
-    public Edge<E, V> insertEdge(V outboundElement, V inboundElement, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
-        MyVertex outVertex = checkV(outboundElement);
-        MyVertex inVertex = checkV(inboundElement);
-
-        if (existsEdgeWith(edgeElement)) {
-            throw new InvalidEdgeException("Already exists edge with element");
-        }
-
-        MyEdge newEdge = new MyEdge(edgeElement, outVertex, inVertex);
-
-        inVertex.outadj.add(newEdge);
-        outVertex.inadj.add(newEdge);
-        /*for (List<Edge<E, V>> list : graph.values()){
-            list.add(newEdge);
-        }*/
-
-        return newEdge;
-    }
-
-    /**
-     * Returns number of vertices in digraph.
-     *
-     * @return an int with the number of vertices in digraph
-     */
     @Override
     public int numVertices() {
-        return graph.keySet().size();
+       return graph.keySet().size();
     }
 
-    /**
-     * Returns number of edges in digraph.
-     *
-     * @return an int with the number of edges in digraph
-     */
     @Override
     public int numEdges() {
         Collection<Edge<E, V>> list = new LinkedList<>();
@@ -192,25 +25,11 @@ public class DigraphImpl<V, E> implements Digraph<V, E> {
         return list.size();
     }
 
-    public void clear(){
-        graph.clear();
-    }
-
-    /**
-     * Returns all vertices in digraph.
-     *
-     * @return a list of all vertices in digraph
-     */
     @Override
     public Collection<Vertex<V>> vertices() {
         return graph.values();
     }
 
-    /**
-     * Returns all edges in digraph.
-     *
-     * @return a list of all edges in digraph
-     */
     @Override
     public Collection<Edge<E, V>> edges() {
         ArrayList<Edge<E, V>> edges = new ArrayList<>();
@@ -218,6 +37,16 @@ public class DigraphImpl<V, E> implements Digraph<V, E> {
             edges.addAll(incidentEdges(vertex));
         }
         return edges;
+    }
+
+    @Override
+    public Collection<Edge<E, V>> incidentEdges(Vertex<V> v) throws InvalidVertexException {
+        MyVertex myVertex = checkVertex(v);
+
+        List<Edge<E, V>> incidentEdges = new ArrayList<>();
+        //incidentEdges.addAll(myVertex.inadj);
+        incidentEdges.addAll(myVertex.edges);
+        return incidentEdges;
     }
 
     /**
@@ -246,6 +75,39 @@ public class DigraphImpl<V, E> implements Digraph<V, E> {
     }
 
     /**
+     * Evaluates whether two vertices are adjacent, i.e., there exists some
+     * directed-edge connecting <code>v</code> and <code>u</code>.
+     * <p>
+     * The existing edge must be directed as
+     * <code>v --&gt; u</code>.
+     * <p>
+     * If, for example, there exists only an edge
+     * <code>v &lt;-- u</code>, they are not considered adjacent.
+     *
+     * @param v outbound vertex
+     * @param u  inbound vertex
+     * @return true if they are adjacent, false otherwise.
+     * @throws InvalidVertexException if <code>v</code> or
+     *                                <code>u</code> are invalid vertices for the graph
+     */
+    @Override
+    public boolean areAdjacent(Vertex<V> u, Vertex<V> v) throws InvalidVertexException {
+        checkVertex(v);
+        checkVertex(u);
+        for (Vertex<V> vertex : graph.values()) {
+            for (Edge<E, V> incidentEdge : incidentEdges(vertex)) {
+                MyEdge edge = checkEdge(incidentEdge);
+                if (edge.vertexOutbound.equals(v) && edge.vertexInbound.equals(u)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
      * Inserts a new vertex with a given element and return its (the vertex's)
      * reference.
      *
@@ -266,6 +128,43 @@ public class DigraphImpl<V, E> implements Digraph<V, E> {
         return newVertex;
     }
 
+    @Override
+    public Edge<E, V> insertEdge(Vertex<V> u, Vertex<V> v, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
+        if (existsEdgeWith(edgeElement)) {
+            throw new InvalidEdgeException("There's already an edge with this element.");
+        }
+
+        MyVertex uVertex = checkVertex(v);
+        MyVertex vVertex = checkVertex(u);
+
+        MyEdge newEdge = new MyEdge(edgeElement, v, u);
+
+        uVertex.edges.add(newEdge);
+        vVertex.edges.add(newEdge);
+
+        return newEdge;
+    }
+
+    @Override
+    public Edge<E, V> insertEdge(V vElement1, V vElement2, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
+        MyVertex vVertex = checkV(vElement1);
+        MyVertex uVertex = checkV(vElement2);
+
+        if (existsEdgeWith(edgeElement)) {
+            throw new InvalidEdgeException("Already exists edge with element");
+        }
+
+        MyEdge newEdge = new MyEdge(edgeElement, vVertex, uVertex);
+
+        uVertex.edges.add(newEdge);
+        vVertex.edges.add(newEdge);
+        /*for (List<Edge<E, V>> list : graph.values()){
+            list.add(newEdge);
+        }*/
+
+        return newEdge;
+    }
+
     /**
      * Removes a vertex in the digraph with a given element and return its (the
      * vertex's) reference.
@@ -284,12 +183,10 @@ public class DigraphImpl<V, E> implements Digraph<V, E> {
         V element = v.element();
 
         //remove incident edges
-        Collection<Edge<E, V>> inOutEdges = incidentEdges(v);
-        inOutEdges.addAll(outboundEdges(v));
-
-        inOutEdges.forEach((edge) -> {
+        Iterable<Edge<E, V>> incidentEdges = incidentEdges(v);
+        for (Edge<E, V> edge : incidentEdges) {
             graph.remove(edge.element());
-        });
+        }
 
         graph.remove(v.element());
 
@@ -369,6 +266,40 @@ public class DigraphImpl<V, E> implements Digraph<V, E> {
         return oldElement;
     }
 
+
+
+    /**
+     * Returns a true if a given vertex's stored element exists in graph.
+     *
+     * @param vElement vertex's stored element
+     * @return true if vertex's stored element exists in graph
+     */
+    private boolean existsVertexWith(V vElement) {
+        return graph.containsKey(vElement);
+    }
+
+    /**
+     * Returns a true if a given edge's stored element exists in graph.
+     *
+     * @param edgeElement edge's stored element
+     * @return true if edge's stored element exists in graph
+     */
+    private boolean existsEdgeWith(E edgeElement) {
+        int i = 0;
+        for (Vertex<V> vertex : graph.values()) {
+            for (Edge<E, V> edge : incidentEdges(vertex)) {
+                if (edge.element().equals(edgeElement)) {
+                    i++;
+                }
+                if (i >= 2) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
     /**
      * Returns String with the information of the digraph in a given element and
      * return its (the vertex's) reference.
@@ -387,7 +318,11 @@ public class DigraphImpl<V, E> implements Digraph<V, E> {
         });
         sb.append("\n--- Edges: \n");
         graph.values().forEach((e) -> {
-            sb.append("\t").append(e.toString()).append("\n");
+            for(Edge<E,V> edges : incidentEdges(e)){
+                MyEdge newEdge = checkEdge(edges);
+                sb.append("\t").append(newEdge.toString()).append("\n");
+            }
+
         });
         sb.append("\n--- MyVertex: \n");
         graph.keySet().forEach((v) -> {
@@ -407,66 +342,18 @@ public class DigraphImpl<V, E> implements Digraph<V, E> {
 
     }
 
-    /**
-     * Returns a true if a given vertex's stored element exists in digraph.
-     *
-     * @param vElement vertex's stored element
-     * @return true if vertex's stored element exists in digraph
-     */
-    private boolean existsVertexWith(V vElement) {
-        return graph.containsKey(vElement);
-    }
-
-    /**
-     * Returns a true if a given edge's stored element exists in digraph.
-     *
-     * @param edgeElement edge's stored element
-     * @return true if edge's stored element exists in digraph
-     */
-    private boolean existsEdgeWith(E edgeElement) {
-        int i = 0;
-        for (Vertex<V> vertex : graph.values()) {
-            for (Edge<E, V> edge : incidentEdges(vertex)) {
-                if (edge.element().equals(edgeElement)) {
-                    i++;
-                }
-                if (i >= 1) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
 
 
     private class MyVertex implements Vertex<V> {
 
         V element;
-        List<Edge<E, V>> inadj;
-        List<Edge<E, V>> outadj;
+        List<Edge<E, V>> edges;
+
 
         public MyVertex(V element) {
             this.element = element;
-            inadj = new LinkedList<>();
-            outadj = new LinkedList<>();
+            edges = new LinkedList<>();
         }
-
-        /*public List<Edge<E, V>> getInadj() {
-            return inadj;
-        }
-
-        public List<Edge<E, V>> getOutadj() {
-            return outadj;
-        }
-
-        public void addINAdjacent(Edge<E,V> e){
-            inadj.add(e);
-        }
-
-        public void addOUTAdjacent(Edge<E,V> e){
-            outadj.add(e);
-        }*/
 
         /**
          * Gets V element stored in MyVertex
@@ -483,6 +370,7 @@ public class DigraphImpl<V, E> implements Digraph<V, E> {
             return "Vertex{" + element + '}';
         }
     }
+
 
     private class MyEdge implements Edge<E, V> {
 
@@ -531,23 +419,6 @@ public class DigraphImpl<V, E> implements Digraph<V, E> {
         }
     }
 
-    /**
-     * Checks if MyEdge contains Vertex<V> v
-     *
-     * @param v
-     * @return true if MyEdge contains V, false if not
-     */
-    public boolean contains(Vertex<V> v) {
-        for (Vertex<V> vertex : graph.values()) {
-            for (Edge<E, V> incidentEdge : incidentEdges(vertex)) {
-                MyEdge newEdge = checkEdge(incidentEdge);
-                if (newEdge.contains(v)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     /**
      * Checks whether a given vertex is valid and belongs to this digraph.
@@ -564,34 +435,6 @@ public class DigraphImpl<V, E> implements Digraph<V, E> {
         vertex = (MyVertex) v;
 
         if (!graph.containsKey(vertex.element)) {
-            throw new InvalidVertexException("Vertex does not belong to this graph.");
-        }
-
-        return vertex;
-    }
-
-    /**
-     * Checks whether a given vertex is valid and belongs to this digraph.
-     *
-     * @param v vertex
-     * @return the reference for the newly created MyVertex
-     * @throws InvalidEdgeException if there doesn't exists a vertex
-     *                              containing <code>v</code> according to the equality of
-     *                              {@link Object#equals(java.lang.Object) }
-     *                              method.
-     */
-    private MyVertex checkV(V v) throws InvalidVertexException {
-        if (v == null) {
-            throw new InvalidVertexException("Null V.");
-        }
-
-        MyVertex vertex = new MyVertex(v);
-        /*try {
-            vertex.element = v;
-        } catch (ClassCastException e) {
-            throw new InvalidVertexException("Not a V.");
-        }*/
-        if (!graph.containsKey(v)) {
             throw new InvalidVertexException("Vertex does not belong to this graph.");
         }
 
@@ -622,4 +465,34 @@ public class DigraphImpl<V, E> implements Digraph<V, E> {
 
         return edge;
     }
+
+
+    /**
+     * Checks whether a given vertex is valid and belongs to this graph.
+     *
+     * @param v vertex
+     * @return the reference for the newly created MyVertex
+     * @throws InvalidEdgeException if there doesn't exists a vertex
+     *                              containing <code>v</code> according to the equality of
+     *                              {@link Object#equals(java.lang.Object) }
+     *                              method.
+     */
+    private MyVertex checkV(V v) throws InvalidVertexException {
+        if (v == null) {
+            throw new InvalidVertexException("Null V.");
+        }
+
+        MyVertex vertex = new MyVertex(v);
+        /*try {
+            vertex.element = v;
+        } catch (ClassCastException e) {
+            throw new InvalidVertexException("Not a V.");
+        }*/
+        if (!graph.containsKey(v)) {
+            throw new InvalidVertexException("Vertex does not belong to this graph.");
+        }
+
+        return vertex;
+    }
+
 }
