@@ -2,7 +2,7 @@ package com.pa.proj2020.adts.graph;
 
 import java.util.*;
 
-public class GraphAdjacencyList<E,V> implements Graph<V,E> {
+public class GraphAdjacencyList<V, E> implements Graph<V,E> {
 
     private final Map<V, Vertex<V>> graph;
 
@@ -392,10 +392,6 @@ public class GraphAdjacencyList<E,V> implements Graph<V,E> {
         @Override
         public E element() {
             return this.element;
-        }
-
-        public boolean contains(Vertex<V> v) {
-            return (vertexOutbound == v || vertexInbound == v);
         }
 
         /**
