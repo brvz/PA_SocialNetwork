@@ -303,19 +303,20 @@ public class SocialNetwork extends Subject {
      * @param user added User
      */
     public void addIncludedUsers(String[] values, User user) {
-        for (int i = 1; i < values.length; i++) {
-            String bla = values[i];
-            int idIncluded = parseInt(bla);
+        for (int i = 2; i < values.length; i++) {
+            String valTemp = values[i];
+            String dateTemp = values[1];
+            int idIncluded = parseInt(valTemp);
 
 
             if (!checkId(idIncluded)) {
                 User userIncluded = new User(idIncluded, User.UserType.INCLUDED);
                 this.addUser(userIncluded);
-                Relationship relationship = new Relationship(user,userIncluded);
+                Relationship relationship = new Relationship(user,userIncluded, dateTemp);
                 relationship.setRelationshipType();
                 this.addRelationship(user, userIncluded, relationship);
             } else {
-                Relationship relationship = new Relationship(user, getIdOfUser(idIncluded));
+                Relationship relationship = new Relationship(user, getIdOfUser(idIncluded), dateTemp);
                 relationship.setRelationshipType();
 
                 this.addRelationship(user, getIdOfUser(idIncluded), relationship);

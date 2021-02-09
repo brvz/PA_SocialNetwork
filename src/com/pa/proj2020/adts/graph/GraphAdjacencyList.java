@@ -130,9 +130,9 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
 
     @Override
     public Edge<E, V> insertEdge(Vertex<V> u, Vertex<V> v, E edgeElement) throws InvalidVertexException, InvalidEdgeException {
-        if (existsEdgeWith(edgeElement)) {
+        /*if (existsEdgeWith(edgeElement)) {
             throw new InvalidEdgeException("There's already an edge with this element.");
-        }
+        }*/
 
         MyVertex uVertex = checkVertex(v);
         MyVertex vVertex = checkVertex(u);
@@ -430,9 +430,9 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
         MyVertex vertex;
         vertex = (MyVertex) v;
 
-        if (!graph.containsKey(vertex.element)) {
+        /*if (!graph.containsKey(vertex.element)) {
             throw new InvalidVertexException("Vertex does not belong to this graph.");
-        }
+        }*/
 
         return vertex;
     }
@@ -484,9 +484,9 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
         } catch (ClassCastException e) {
             throw new InvalidVertexException("Not a V.");
         }*/
-        if (!graph.containsKey(v)) {
+        /*if (!graph.containsKey(v)) {
             throw new InvalidVertexException("Vertex does not belong to this graph.");
-        }
+        }*/
 
         return vertex;
     }

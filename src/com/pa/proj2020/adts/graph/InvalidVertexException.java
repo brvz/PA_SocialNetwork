@@ -25,10 +25,10 @@ package com.pa.proj2020.adts.graph;
 
 /**
  * Error when using an invalid vertex in calls of methods in {@link Graph}
- * and {@link Digraph} implementations.
+ * and {@link Graph} implementations.
  * 
  * @see Graph
- * @see Digraph
+ * @see Graph
  */
 public class InvalidVertexException extends RuntimeException {
 

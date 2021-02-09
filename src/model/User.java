@@ -37,13 +37,13 @@ public class User {
         setNumber(number);
         setType(type);
         interestList = new LinkedList<>();
-
-       //CSVaddUsersInterest(CSVReadInterest("interests.csv"));
-
+        CSVaddUsersInterest(CSVReadInterest());
     }
 
     public User(int number) {
         setNumber(number);
+        interestList = new LinkedList<>();
+        CSVaddUsersInterest(CSVReadInterest());
     }
 
     // Getters and Setters
@@ -110,7 +110,8 @@ public class User {
      * Reads file and returns interest id's for this user
      * @return
      */
-    public void  CSVaddUsersInterest(List<Interest> interestList2) {
+    public void CSVaddUsersInterest(List<Interest> listInterest) {
+
         try (BufferedReader br = new BufferedReader(new FileReader("input_Files/interests.csv"))) {
             String line;
             int count = 0;
@@ -122,9 +123,9 @@ public class User {
 
                     for (int i = 2; i < values.length; i++) {
                         int x = Integer.parseInt(values[i]);
-                        for(Interest in : interestList2){
+                        for(Interest in : listInterest){
                             if( x == in.getIdentify()){
-                                interestList.add(new Interest(in.getIdentify(), in.getHashtag()));
+                                addInterest(in);
                                 break;
                             }
                         }
@@ -136,9 +137,44 @@ public class User {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
+
+    public List<Interest> CSVReadInterest() {
+        CSVReader reader = null;
+        List<Interest> listTemp = new LinkedList<>();
+        int id;
+        String name;
+        try {
+            //parsing a CSV file into CSVReader class constructor
+            reader = new CSVReader(new FileReader("input_Files/interests.csv"));
+            String[] nextLine;
+            //reads one line at a time
+            while ((nextLine = reader.readNext()) != null) {
+                for (String token : nextLine) {
+                    if (!token.isEmpty()) {
+                        token = token.replace("﻿", "");
+                        String[] parts = token.split(";");
+                        String part1 = parts[0];
+                        String part2 = parts[1];
+                        id = Integer.parseInt(part1);
+                        name = part2;
+                        listTemp.add(new Interest(id, name));
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return listTemp;
+    }
 
 
 }

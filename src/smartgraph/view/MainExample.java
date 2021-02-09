@@ -56,13 +56,15 @@ public class MainExample extends Application {
 
         //Graph<String, String> g = build_sample_digraph();
         //Graph<String, String> g = build_flower_graph();
-        SocialNetwork sn = build_sample_socialNetwork();
+        SocialNetwork sn = new SocialNetwork("sn");
         System.out.println(sn);
+
+
         
         SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
         //SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
         //SmartGraphPanel<String, String> graphView = new SmartGraphPanel<>(g, strategy);
-       SmartGraphPanel<User, Relationship> graphView = new SmartGraphPanel<>(sn.getSn(), strategy);
+        SmartGraphPanel<User, Relationship> graphView = new SmartGraphPanel<>(sn.getSn(), strategy);
         /*
         After creating, you can change the styling of some element.
         This can be done at any time afterwards.
@@ -290,7 +292,7 @@ public class MainExample extends Application {
 
         SocialNetwork sn = new SocialNetwork("SN");
 
-        User u1 = new User(1);
+        /*User u1 = new User(1);
         User u2 = new User(2);
         User u3 = new User(3);
         User u4 = new User(4);
@@ -311,7 +313,7 @@ public class MainExample extends Application {
         sn.addRelationship(u2,u3, new Relationship(u2,u3));
         sn.addRelationship(u3,u4, new Relationship(u3,u4));
         sn.addRelationship(u2,u5, new Relationship(u2,u5));
-        sn.addRelationship(u6,u4, new Relationship(u6,u4));
+        sn.addRelationship(u6,u4, new Relationship(u6,u4));*/
 
 
         return sn;

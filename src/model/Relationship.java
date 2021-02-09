@@ -6,6 +6,7 @@ import java.util.List;
 public class Relationship {
 
     private User user1, user2;
+    private String date;
     private Relationship.NameOfRelationship type;
 
     public enum NameOfRelationship {
@@ -25,21 +26,22 @@ public class Relationship {
 
     private List<Interest> interestsInCommon;
 
-    public Relationship(NameOfRelationship nameRel, User u1, User u2) {
-        this.user1 = u1;
-        this.user2 = u2;
+    public Relationship(NameOfRelationship nameRel, User u1, User u2, String date) {
+        setUser1(u1);
+        setUser2(u2);
         setType(nameRel);
+        setDate(date);
         this.interestsInCommon = new ArrayList<>();
         this.setInterestsInCommon();
     }
 
-    public Relationship(User u1, User u2){
-
+    public Relationship(User u1, User u2, String date){
         this.type = null;
-        this.user1 = u1;
-        this.user2 = u2;
+        setUser1(u1);
+        setUser2(u2);
+        setDate(date);
         this.interestsInCommon = new ArrayList<>();
-       this.setInterestsInCommon();
+        this.setInterestsInCommon();
     }
 
     public void setType(Relationship.NameOfRelationship type) {
@@ -54,8 +56,24 @@ public class Relationship {
         return user2;
     }
 
+    public void setUser1(User user1) {
+        this.user1 = user1;
+    }
+
+    public void setUser2(User user2) {
+        this.user2 = user2;
+    }
+
     public NameOfRelationship getType(){
         return this.type;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public void setInterestsInCommon(){
@@ -64,7 +82,7 @@ public class Relationship {
 
         for (int i = 0; i < interestA.size(); i++) {
             for (int j = 0; j < interestB.size(); j++) {
-                if (interestA.get(i).equals(interestB.get(j))) {
+                if (interestA.get(i).getIdentify() == interestB.get(j).getIdentify()) {
                     this.interestsInCommon.add(interestA.get(i));
                 }
             }
