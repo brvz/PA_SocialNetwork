@@ -1,5 +1,10 @@
 package model;
 
+import com.opencsv.CSVReader;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -24,15 +29,16 @@ public class User {
     // variables
     private User.UserType type;
     private int number;
-    private String name;
-    //private List<Interest> interestList;
+
+    private List<Interest> interestList;
 
     // Constructor
-    public User(int number, String name, UserType type) {
+    public User(int number,  UserType type) {
         setNumber(number);
-        setName(name);
         setType(type);
-        //interestList = new LinkedList<>();
+        interestList = new LinkedList<>();
+
+       //CSVaddUsersInterest(CSVReadInterest("interests.csv"));
 
     }
 
@@ -57,13 +63,6 @@ public class User {
         this.type = type;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     // Equals and HashCode
     @Override
@@ -85,11 +84,10 @@ public class User {
         return "User{" +
                 "type=" + type +
                 ", number=" + number +
-                ", name='" + name + '\'' +
                 '}';
     }
 
-    /*public List<Interest> getInterestList() {
+    public List<Interest> getInterestList() {
         return interestList;
     }
 
@@ -104,10 +102,43 @@ public class User {
         if (this.interestList.isEmpty()) this.interestList.add(interest);
     }
 
-    public int getNumberofInterests(){
+    public int getNumberOfInterests(){
         return interestList.size();
     }
-*/
+
+    /**
+     * Reads file and returns interest id's for this user
+     * @return
+     */
+    public void  CSVaddUsersInterest(List<Interest> interestList2) {
+        try (BufferedReader br = new BufferedReader(new FileReader("input_Files/interests.csv"))) {
+            String line;
+            int count = 0;
+            while ((line = br.readLine()) != null) {
+                count++;
+                if (count == this.getNumber()) {
+                    line = line.replace("\uFEFF", "");
+                    String[] values = line.split(";");
+
+                    for (int i = 2; i < values.length; i++) {
+                        int x = Integer.parseInt(values[i]);
+                        for(Interest in : interestList2){
+                            if( x == in.getIdentify()){
+                                interestList.add(new Interest(in.getIdentify(), in.getHashtag()));
+                                break;
+                            }
+                        }
+                    }
+
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 
 }

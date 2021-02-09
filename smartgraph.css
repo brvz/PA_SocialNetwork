@@ -19,11 +19,10 @@ STYLESHEET FOR JAVAFXGRAPH VISUALIZATION
 
 .edge {
     -fx-stroke-width: 2;
-    -fx-stroke: #FF6D66;  
-    -fx-stroke-dash-array: 2 5 2 5; /* remove for clean edges */  
+    -fx-stroke: #FF6D66;
     -fx-fill: transparent; /*important for curved edges */
     -fx-stroke-line-cap: round;
-    -fx-opacity: 0.8;
+    -fx-opacity:1;
 }
 
 .edge-label {
@@ -32,7 +31,7 @@ STYLESHEET FOR JAVAFXGRAPH VISUALIZATION
 
 .arrow {
     -fx-stroke-width: 2;
-    -fx-stroke: #FF6D66;  
+    -fx-stroke: #FF6D66;
     -fx-opacity: 0.8;
 }
 

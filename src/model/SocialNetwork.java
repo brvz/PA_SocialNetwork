@@ -1,24 +1,35 @@
 package model;
 
+import com.opencsv.CSVReader;
 import com.pa.proj2020.adts.graph.Edge;
 import com.pa.proj2020.adts.graph.GraphAdjacencyList;
 import com.pa.proj2020.adts.graph.InvalidVertexException;
 import com.pa.proj2020.adts.graph.Vertex;
-import model.Factory.Relationship;
+import model.Relationship;
+import observer.Subject;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SocialNetwork {
+import static java.lang.Integer.*;
+
+public class SocialNetwork extends Subject {
 
     private GraphAdjacencyList<User, Relationship> sn;
     private String name;
+    private List<Interest> interestList;
 
 
     public SocialNetwork(String name) {
         sn = new GraphAdjacencyList<>();
         setName(name);
+        CSVReadInterest("input_Files/interests.csv");
+
     }
 
     public void setName(String name) {
@@ -79,7 +90,7 @@ public class SocialNetwork {
             }
         }
         if (find == null) {
-            throw new SocialNetworkException("Relação (" + relationship.getRelationName() + ") não existe");
+            throw new SocialNetworkException("Relação (" + relationship + ") não existe");
         }
         return find;
     }
@@ -144,7 +155,7 @@ public class SocialNetwork {
         Vertex<User> p2 = checkUser(u2);
 
         sn.insertEdge(p1, p2, r);
-        System.out.println(r.getRelationName());
+
     }
 
     /**
@@ -158,7 +169,7 @@ public class SocialNetwork {
      * @param u User for which to obtain the incident relationship
      * @return collection of relationship
      */
-    public List<Relationship> incidentEdges(User u) throws SocialNetworkException {
+    public List<Relationship> incidentRelationships(User u) throws SocialNetworkException {
         checkUser(u);
 
         List<Relationship> incidentEdges = new ArrayList<>();
@@ -193,7 +204,45 @@ public class SocialNetwork {
         return list;
     }
 
-    public boolean isEmpty() {
+
+
+    public int getNumberOfUsers() {
+        return sn.numVertices();
+    }
+
+
+    public List<User> getUsers() {
+
+        List<User> list = new ArrayList<>();
+
+        for (Vertex<User> u : sn.vertices()) {
+            list.add(getIdOfUser(u.element().getNumber()));
+        }
+
+        return list;
+    }
+
+
+    public User getIdOfUser(int i) {
+        for (Vertex<User> v : getSn().vertices()) {
+            if (v.element().getNumber() == i) {
+                return v.element();
+            }
+        }
+        return null;
+    }
+
+
+    public User getUser(User user) {
+        for (Vertex<User> v : getSn().vertices()) {
+            if (v.element() == user) {
+                return v.element();
+            }
+        }
+        return null;
+    }
+
+        public boolean isEmpty() {
         return (this.sn == null);
     }
 
@@ -201,4 +250,131 @@ public class SocialNetwork {
     public String toString() {
         return "SocialNetwork{ name=" + name + " }";
     }
+
+
+    public User checkType(int id) {
+        if (checkId(id) && this.getIdOfUser(id).getType() == User.UserType.INCLUDED) {
+            this.getIdOfUser(id).setType(User.UserType.ADDED);
+            return this.getIdOfUser(id);
+        } else if (checkId(id) && this.getIdOfUser(id).getType() == User.UserType.ADDED) {
+            return this.getIdOfUser(id);
+        }
+
+
+        User user = new User(id, User.UserType.ADDED);
+        this.addUser(user);
+        return user;
+    }
+
+
+    public boolean checkId(int id) {
+        return this.getIdOfUser(id) != null;
+    }
+
+
+    public void readCSVRelationshipsByUser(int userId) {
+        User check = getIdOfUser(userId);
+        if(check!=null && check.getType()==User.UserType.ADDED){
+            throw new SocialNetworkException("User already added");
+        }
+        try (BufferedReader br = new BufferedReader(new FileReader("input_Files/relationships.csv"))) {
+            String line;
+            int count = 0;
+            while ((line = br.readLine()) != null && userId > count) {
+                count++;
+                if (count == userId) {
+                    line = line.replace("\uFEFF", "");
+                    String[] values = line.split(";");
+
+                    User user = checkType(userId);
+
+                    addIncludedUsers(values, user);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * Adds users included by added user and log info
+     * @param values included users id's
+     * @param user added User
+     */
+    public void addIncludedUsers(String[] values, User user) {
+        for (int i = 1; i < values.length; i++) {
+            String bla = values[i];
+            int idIncluded = parseInt(bla);
+
+
+            if (!checkId(idIncluded)) {
+                User userIncluded = new User(idIncluded, User.UserType.INCLUDED);
+                this.addUser(userIncluded);
+                Relationship relationship = new Relationship(user,userIncluded);
+                relationship.setRelationshipType();
+                this.addRelationship(user, userIncluded, relationship);
+            } else {
+                Relationship relationship = new Relationship(user, getIdOfUser(idIncluded));
+                relationship.setRelationshipType();
+
+                this.addRelationship(user, getIdOfUser(idIncluded), relationship);
+            }
+        }
+    }
+
+
+    public void CSVReadInterest(String csv) {
+        CSVReader reader = null;
+        interestList = new LinkedList<>();
+        int id;
+        String name;
+        try {
+            //parsing a CSV file into CSVReader class constructor
+            reader = new CSVReader(new FileReader( csv));
+            String[] nextLine;
+            //reads one line at a time
+            while ((nextLine = reader.readNext()) != null) {
+                for (String token : nextLine) {
+                    if (!token.isEmpty()) {
+                        token = token.replace("﻿", "");
+                        String[] parts = token.split(";");
+                        String part1 = parts[0];
+                        String part2 = parts[1];
+                        id = Integer.parseInt(part1);
+                        name = part2;
+                        interestList.add(new Interest(id, name));
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public List<Interest> getInterestList() {
+        return interestList;
+    }
+
+    public void addInterestList(String name) {
+        for (Interest in:
+                getInterestList()) {
+            if (!in.getHashtag().equals(name)){
+                interestList.add(interestList.size(), new Interest(interestList.size()+1, name));
+                break;
+            }
+        }
+    }
+
+
+
+
+
 }

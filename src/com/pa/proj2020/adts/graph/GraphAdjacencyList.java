@@ -139,7 +139,7 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
 
         MyEdge newEdge = new MyEdge(edgeElement, v, u);
 
-        uVertex.edges.add(newEdge);
+       // uVertex.edges.add(newEdge);
         vVertex.edges.add(newEdge);
 
         return newEdge;
@@ -156,7 +156,7 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
 
         MyEdge newEdge = new MyEdge(edgeElement, vVertex, uVertex);
 
-        uVertex.edges.add(newEdge);
+        //uVertex.edges.add(newEdge);
         vVertex.edges.add(newEdge);
         /*for (List<Edge<E, V>> list : graph.values()){
             list.add(newEdge);
