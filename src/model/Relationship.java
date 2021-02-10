@@ -110,11 +110,15 @@ public class Relationship {
 
     @Override
     public String toString() {
-        return "Relationship{" +
-                "Relationship type =" + this.type + ", Between users: " + getUser1().getNumber()
-                +" and " + getUser2().getNumber()+
-                ", " + "Common interests: " + getInterestsInCommon().size() +
-                '}';
+        return "" + getInterestsInCommon().size() ;
+    }
+
+    public String showInterestInComment(){
+        String res = "";
+        for(Interest in : interestsInCommon){
+            res += in.getHashtag() + "\n";
+        }
+        return res;
     }
 
 }

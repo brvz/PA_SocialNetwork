@@ -5,6 +5,8 @@ import com.opencsv.CSVReader;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -31,6 +33,10 @@ public class User {
     private int number;
 
     private List<Interest> interestList;
+    private String creationDate;
+
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    LocalDateTime now = LocalDateTime.now();
 
     // Constructor
     public User(int number,  UserType type) {
@@ -38,12 +44,14 @@ public class User {
         setType(type);
         interestList = new LinkedList<>();
         CSVaddUsersInterest(CSVReadInterest());
+        creationDate = dtf.format(now);
     }
 
     public User(int number) {
         setNumber(number);
         interestList = new LinkedList<>();
         CSVaddUsersInterest(CSVReadInterest());
+        creationDate = dtf.format(now);
     }
 
     // Getters and Setters
@@ -81,10 +89,13 @@ public class User {
     // ToString
     @Override
     public String toString() {
-        return "User{" +
-                "type=" + type +
-                ", number=" + number +
-                '}';
+        String res = ", Id: " + number +
+                ", Date: " + creationDate +
+                ", Interests: ";
+        for(Interest in : interestList){
+            res += in.getHashtag() + ";" ;
+        }
+        return res;
     }
 
     public List<Interest> getInterestList() {

@@ -20,5 +20,6 @@ public class MainTeste extends Application {
     public void start(Stage primaryStage) throws Exception {
         SocialNetwork sn = new SocialNetwork("Social Network");
         new SocialNetworkUI(sn);
+
     }
 }
