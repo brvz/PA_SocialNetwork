@@ -89,14 +89,13 @@ public class Relationship {
         }
     }
 
-    private List<Interest> getInterestsInCommon(){
+    public List<Interest> getInterestsInCommon(){
         return interestsInCommon;
     }
 
-    private boolean existsInterestsInCommon(){
+    public boolean existsInterestsInCommon(){
         return getInterestsInCommon() != null && getInterestsInCommon().size() > 0;
     }
-
 
     public void setRelationshipType(){
         if(existsInterestsInCommon()){

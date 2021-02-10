@@ -246,6 +246,11 @@ public class GraphEdgeList<V, E> implements Graph<V, E> {
         return oldElement;
     }
 
+    @Override
+    public Collection<Edge<E, V>> outboundEdges(Vertex<V> outbound) throws InvalidVertexException {
+        return null;
+    }
+
     private MyVertex vertexOf(V vElement) {
         for (Vertex<V> v : vertices.values()) {
             if (v.element().equals(vElement)) {

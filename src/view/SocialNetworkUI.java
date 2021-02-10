@@ -1,5 +1,7 @@
 package view;
 
+import command.CommandManager;
+import command.CommandUser;
 import javafx.beans.binding.DoubleBinding;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -30,16 +32,18 @@ import java.util.List;
 public class SocialNetworkUI extends BorderPane {
 
     Button addUser;
-    Button addIndirectRels;
+    Button undo;
     SmartGraphPanel<User, Relationship> graphView;
     HBox bottom;
     TextField tf;
     SocialNetwork sn;
+    CommandManager manager;
     private List<SmartGraphVertex> selected;
 
 
     public SocialNetworkUI(SocialNetwork sn) {
         this.sn = sn;
+        manager = new CommandManager();
         selected = new ArrayList<>();
         initialize();
     }
@@ -56,13 +60,13 @@ public class SocialNetworkUI extends BorderPane {
 
        //CheckBox automatic = new CheckBox("Automatic layout");
         addUser = new Button("ADD USER");
-        addIndirectRels = new Button("ADD INDIRECT");
+        undo = new Button("UNDO");
 
         tf = new TextField();
 
         //automatic.selectedProperty().bindBidirectional(graphView.automaticLayoutProperty());
 
-        bottom.getChildren().addAll(tf, addUser, addIndirectRels);
+        bottom.getChildren().addAll(tf, addUser, undo);
 
         setBottom(bottom);
 
@@ -75,13 +79,19 @@ public class SocialNetworkUI extends BorderPane {
         addUser.setOnAction(a -> {
             int id = Integer.parseInt(tf.getText().trim());
             if (id > 0 && id < 51) {
-                sn.readCSVRelationshipsByUser(id);
+                manager.executeCommand(new CommandUser(sn, id));
+                //sn.readCSVRelationshipsByUser(id);
                 updateGraph();
                 graphView.setStyle(null);
                 setColors();
                 tf.clear();
                 updateGraph();
             }
+        });
+
+        undo.setOnAction(a -> {
+            manager.undo();
+            updateGraph();
         });
 
         graphView.setEdgeDoubleClickAction(graphEdge -> {

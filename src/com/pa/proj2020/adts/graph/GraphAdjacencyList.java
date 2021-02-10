@@ -50,6 +50,27 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
     }
 
     /**
+     * Returns a vertex's <i>outbound</i> edges as a collection.
+     * <p>
+     * Incident edges are all edges that have vertex <code>outbound</code> as
+     * the
+     * <i>outbound vertex</i>, i.e., the edges "leaving" vertex
+     * <code>outbound</code>. If there are no outbound edges, e.g., an isolated
+     * vertex, returns an empty collection.
+     *
+     * @param outbound vertex for which to obtain the outbound edges
+     * @return collection of edges
+     */
+    @Override
+    public Collection<Edge<E, V>> outboundEdges(Vertex<V> outbound) throws InvalidVertexException {
+        MyVertex myVertex = checkVertex(outbound);
+
+        List<Edge<E, V>> outboundEdges = new ArrayList<>();
+        outboundEdges.addAll(myVertex.edges);
+        return outboundEdges;
+    }
+
+    /**
      * Returns the opposite vertex to v.
      *
      * @param v vertex
@@ -423,7 +444,7 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
      * @return the reference for the newly created MyVertex
      * @throws InvalidVertexException if <code>v</code> is not found in any vertices of the digraph according to the equality of {@link Object#equals(java.lang.Object)} method.
      */
-    private MyVertex checkVertex(Vertex<V> v) throws InvalidVertexException {
+    public MyVertex checkVertex(Vertex<V> v) throws InvalidVertexException {
         if (v == null) {
             throw new InvalidVertexException("Null vertex.");
         }
@@ -473,7 +494,7 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
      *                              {@link Object#equals(java.lang.Object) }
      *                              method.
      */
-    private MyVertex checkV(V v) throws InvalidVertexException {
+    public MyVertex checkV(V v) throws InvalidVertexException {
         if (v == null) {
             throw new InvalidVertexException("Null V.");
         }

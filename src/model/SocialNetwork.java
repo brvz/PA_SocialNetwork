@@ -8,12 +8,11 @@ import com.pa.proj2020.adts.graph.Vertex;
 import model.Relationship;
 import observer.Subject;
 
+import javax.jws.soap.SOAPBinding;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.Integer.*;
@@ -110,6 +109,7 @@ public class SocialNetwork extends Subject {
         }catch (InvalidVertexException e){
             throw new InvalidVertexException("User already exists: " + u.getNumber());
         }
+        notifyObservers(this);
     }
 
     /**
@@ -155,7 +155,7 @@ public class SocialNetwork extends Subject {
         Vertex<User> p2 = checkUser(u2);
 
         sn.insertEdge(p1, p2, r);
-
+        notifyObservers(this);
     }
 
     /**
@@ -204,7 +204,28 @@ public class SocialNetwork extends Subject {
         return list;
     }
 
+    /**
+     * Returns a page's <i>outbound</i> relationship as a List.
+     * <p>
+     * Incident relationship are all edges that have user <code>outbound</code> as the
+     * <i>outbound page</i>, i.e., the relationships "leaving" users
+     * <code>outbound</code>. If there are no outbound relationships, e.g., an isolated
+     * user, returns an empty collection.
+     *
+     * @param inbound user for which to obtain the outbound relationships
+     * @return collection of edges
+     */
+    public List<Edge<Relationship, User>> outboundEdges(User inbound) throws SocialNetworkException {
+        checkUser(inbound);
 
+        List<Edge<Relationship, User>> outboundEdges = new ArrayList<>();
+        sn.vertices().stream().filter((p) -> (p.element().equals(inbound))).forEachOrdered((p) -> {
+            sn.outboundEdges(p).forEach((h) -> {
+                outboundEdges.add(h);
+            });
+        });
+        return outboundEdges;
+    }
 
     public int getNumberOfUsers() {
         return sn.numVertices();
@@ -242,7 +263,41 @@ public class SocialNetwork extends Subject {
         return null;
     }
 
-        public boolean isEmpty() {
+    public void removeUserById(int number){
+        User toRemove = getIdOfUser(number);
+
+        for(Vertex v : sn.vertices()){
+            if(v.element() == toRemove){
+                List<Edge> edges = (List<Edge>) sn.outboundEdges(v);
+                for(Edge e : edges){
+                    User u = (User)sn.opposite(v,e).element();
+                    if(u.getType()==User.UserType.INCLUDED && countRelations(u.getNumber())<=1){
+                        sn.removeVertex(sn.opposite(v, e));
+                    }
+                    sn.removeEdge(e);
+                }
+                sn.removeVertex(v);
+            }
+        }
+        notifyObservers(this);
+    }
+
+    public int countRelations(int id){
+        int count = 0;
+        User toCount = getIdOfUser(id);
+        Vertex v = sn.checkV(toCount);
+        List<Edge> edges = (List<Edge>) sn.outboundEdges(v);
+        edges.addAll((List<Edge>) sn.incidentEdges(v));
+        for(Edge e : edges){
+            Relationship r = (Relationship) e.element();
+            if(r.getType() == Relationship.NameOfRelationship.SIMPLE || r.getType()== Relationship.NameOfRelationship.SHARED_INTEREST){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public boolean isEmpty() {
         return (this.sn == null);
     }
 
@@ -377,5 +432,118 @@ public class SocialNetwork extends Subject {
 
 
 
+
+    /*public int minimumCostPath(int origId,
+                               int dstId, List<User> users) throws SocialNetworkException {
+
+        Vertex<User> userOrigin = findUserVertex(origId);
+        Vertex<User> userDestin= findUserVertex(dstId);
+
+        if(userOrigin==null) throw new SocialNetworkException("userOrigin does not exist");
+        if(userDestin==null) throw new SocialNetworkException("userDestin does not exist");
+        if(users == null ) throw new SocialNetworkException("users list reference is null");
+
+        //Create auxiliary structures and run the dijkstra algorithm
+        Map<Vertex<User>, Integer> costs = new HashMap<>();
+        Map<Vertex<User>, Vertex<User>> predecessors = new HashMap<>();
+
+        dijkstra(userOrigin, costs, predecessors);
+
+        //extract the path, making sure it starts out empty
+        users.clear();
+
+        //flag to indicate if path was complete
+        boolean complete = true;
+        Vertex<User> actual = userDestin;
+        while( actual != userOrigin) {
+            users.add(0, actual.element());
+            actual = predecessors.get(actual);
+            if( actual == null) {
+                complete = false;
+                break;
+            }
+        }
+        users.add(0, userOrigin.element());
+
+        if(!complete) {
+            users.clear();
+            return -1;
+        }
+
+        return costs.get(userDestin);
+    }
+
+
+    private void dijkstra(Vertex<User> orig,
+                          Map<Vertex<User>, Integer> costs,
+                          Map<Vertex<User>, Vertex<User>> predecessors) {
+
+        costs.clear();
+        predecessors.clear();
+        List<Vertex<User>> unvisited = new ArrayList<>();
+
+        for (Vertex<User> u : sn.vertices()) {
+            unvisited.add(u);
+
+            costs.put(u, Integer.MAX_VALUE);
+            predecessors.put(u, null);
+
+        }
+        costs.put(orig, 0);
+        while(!unvisited.isEmpty()) {
+            Vertex<User> lowerCostVertex = findLowerCostVertex(unvisited, costs);
+            unvisited.remove(lowerCostVertex);
+            List<Edge<Relationship, User>> outboundEdges = new ArrayList<>();
+            for (Edge<Relationship, User> outboundEdge : sn.outboundEdges(lowerCostVertex)) {
+                if(outboundEdge.element().existsInterestsInCommon()){
+                    continue;
+                }
+                outboundEdges.add(outboundEdge);
+
+            }
+            for(Edge<Relationship, User> edge : outboundEdges){
+                Vertex<User> opposite = sn.opposite(lowerCostVertex, edge);
+                if( unvisited.contains(opposite) ) {
+                    int cost = edge.element().getInterestsInCommon().size();
+                    int pathCost = costs.get(lowerCostVertex) + cost;
+                    if( pathCost < costs.get(opposite) ) {
+                        costs.put(opposite, pathCost);
+                        predecessors.put(opposite, lowerCostVertex);
+
+                    }
+                }
+            }
+        }
+
+    }
+
+    public Vertex<User> findUserVertex(int number) throws SocialNetworkException{
+        if(number <= 0 || number > 50) throw new SocialNetworkException("User doesn't exist");
+        Vertex<User> temp = null;
+        for (Vertex<User> u: sn.vertices()) {
+            if(u.element().getNumber() == number){
+                return u;
+            }
+        }
+        return temp;
+    }
+
+    private Vertex<User> findLowerCostVertex(List<Vertex<User>> unvisited,
+                                             Map<Vertex<User>, Integer> costs) {
+
+        int minValue = Integer.MAX_VALUE;
+        Vertex<User> lowerCostVertex = null;
+
+        for (Vertex<User> u : unvisited) {
+            int costValue = costs.get(u);
+            if( costValue <= minValue ) {
+                lowerCostVertex = u;
+                minValue = costValue;
+            }
+        }
+
+        return lowerCostVertex;
+
+    }*/
 
 }

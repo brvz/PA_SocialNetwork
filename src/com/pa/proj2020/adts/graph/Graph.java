@@ -239,4 +239,19 @@ public interface Graph<V, E> {
      *                                      method.
      */
     public E replace(Edge<E, V> e, E newElement) throws InvalidEdgeException;
+
+    /**
+     * Returns a vertex's <i>outbound</i> edges as a collection.
+     *
+     * Incident edges are all edges that have vertex <code>outbound</code> as the
+     * <i>outbound vertex</i>, i.e., the edges "leaving" vertex <code>outbound</code>.
+     * If there are no outbound edges, e.g., an isolated vertex,
+     * returns an empty collection.
+     *
+     * @param outbound     vertex for which to obtain the outbound edges
+     *
+     * @return            collection of edges
+     */
+    public Collection<Edge<E, V>> outboundEdges(Vertex<V> outbound)
+            throws InvalidVertexException;
 }
