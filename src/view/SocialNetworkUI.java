@@ -2,34 +2,29 @@ package view;
 
 import command.CommandManager;
 import command.CommandUser;
-import javafx.beans.binding.DoubleBinding;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.Interest;
 import model.Relationship;
 import model.SocialNetwork;
 import model.User;
+import observer.Observer;
 import smartgraph.view.containers.ContentZoomPane;
-import smartgraph.view.containers.SmartGraphDemoContainer;
 import smartgraph.view.graphview.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SocialNetworkUI extends BorderPane {
+public class SocialNetworkUI extends BorderPane implements Observer {
 
     Button addUser;
     Button undo;
@@ -46,6 +41,7 @@ public class SocialNetworkUI extends BorderPane {
         manager = new CommandManager();
         selected = new ArrayList<>();
         initialize();
+        sn.addObservers(this);
     }
 
     public void initialize() {
@@ -79,9 +75,9 @@ public class SocialNetworkUI extends BorderPane {
         addUser.setOnAction(a -> {
             int id = Integer.parseInt(tf.getText().trim());
             if (id > 0 && id < 51) {
+                setColors();
                 manager.executeCommand(new CommandUser(sn, id));
                 //sn.readCSVRelationshipsByUser(id);
-                updateGraph();
                 graphView.setStyle(null);
                 setColors();
                 tf.clear();
@@ -92,15 +88,16 @@ public class SocialNetworkUI extends BorderPane {
         undo.setOnAction(a -> {
             manager.undo();
             updateGraph();
+
         });
 
         graphView.setEdgeDoubleClickAction(graphEdge -> {
             List<Interest> listIn = new ArrayList<>();
             Relationship r = (Relationship) graphEdge.getUnderlyingEdge().element();
             //r.showInterestInComment();
-            System.out.println(r.showInterestInComment());
+            System.out.println(r.showInterestInCommon());
 
-            Label lbl = new Label(r.showInterestInComment());
+            Label lbl = new Label(r.showInterestInCommon());
             Pane root = new Pane(lbl);
             root.setMinSize(500,0);
             root.autosize();
@@ -133,6 +130,7 @@ public class SocialNetworkUI extends BorderPane {
         stage.setScene(scene);
         stage.show();
         graphView.init();
+
     }
 
     public void setSelected(SmartGraphVertex graphVertex){
@@ -203,4 +201,8 @@ public class SocialNetworkUI extends BorderPane {
         }
     }
 
+    @Override
+    public void update(Object obj) {
+        System.out.println(manager);
+    }
 }

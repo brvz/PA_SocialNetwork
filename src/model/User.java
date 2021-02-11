@@ -71,6 +71,10 @@ public class User {
         this.type = type;
     }
 
+    public String getDate(){
+        return creationDate;
+    }
+
 
     // Equals and HashCode
     @Override
@@ -89,7 +93,7 @@ public class User {
     // ToString
     @Override
     public String toString() {
-        String res = ", Id: " + number +
+        String res = "Id: " + number +
                 ", Date: " + creationDate +
                 ", Interests: ";
         for(Interest in : interestList){

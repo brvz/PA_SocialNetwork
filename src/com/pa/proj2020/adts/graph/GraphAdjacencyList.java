@@ -66,7 +66,12 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
         MyVertex myVertex = checkVertex(outbound);
 
         List<Edge<E, V>> outboundEdges = new ArrayList<>();
-        outboundEdges.addAll(myVertex.edges);
+        for (Edge<E, V> edge : myVertex.edges) {
+
+            if (((MyEdge) edge).getInbound() == outbound) {
+                outboundEdges.add(edge);
+            }
+        }
         return outboundEdges;
     }
 
@@ -89,7 +94,7 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
     public Vertex<V> opposite(Vertex<V> v, Edge<E, V> e) throws InvalidVertexException, InvalidEdgeException {
         MyEdge edge = checkEdge(e);
         if (edge.vertexInbound.equals(v)) {
-            return edge.vertexOutbound;
+            return edge.getOutbound();
         } else {
             return edge.vertexInbound;
         }
@@ -427,6 +432,14 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
             vertices[1] = vertexInbound;
 
             return vertices;
+        }
+
+        public Vertex<V> getOutbound() {
+            return vertexOutbound;
+        }
+
+        public Vertex<V> getInbound() {
+            return vertexInbound;
         }
 
         @Override

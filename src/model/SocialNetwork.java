@@ -1,14 +1,13 @@
 package model;
 
+import Logger.Logger;
 import com.opencsv.CSVReader;
 import com.pa.proj2020.adts.graph.Edge;
 import com.pa.proj2020.adts.graph.GraphAdjacencyList;
 import com.pa.proj2020.adts.graph.InvalidVertexException;
 import com.pa.proj2020.adts.graph.Vertex;
-import model.Relationship;
 import observer.Subject;
 
-import javax.jws.soap.SOAPBinding;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -22,6 +21,7 @@ public class SocialNetwork extends Subject {
     private GraphAdjacencyList<User, Relationship> sn;
     private String name;
     private List<Interest> interestList;
+    private final static Logger log = new Logger();
 
 
     public SocialNetwork(String name) {
@@ -110,6 +110,7 @@ public class SocialNetwork extends Subject {
             throw new InvalidVertexException("User already exists: " + u.getNumber());
         }
         notifyObservers(this);
+        logAddUser(u);
     }
 
     /**
@@ -156,6 +157,7 @@ public class SocialNetwork extends Subject {
 
         sn.insertEdge(p1, p2, r);
         notifyObservers(this);
+        logAddRelationship(u1, r);
     }
 
     /**
@@ -266,12 +268,12 @@ public class SocialNetwork extends Subject {
     public void removeUserById(int number){
         User toRemove = getIdOfUser(number);
 
-        for(Vertex v : sn.vertices()){
-            if(v.element() == toRemove){
-                List<Edge> edges = (List<Edge>) sn.outboundEdges(v);
-                for(Edge e : edges){
+        for(Vertex<User> v: sn.vertices()){
+            if(v.element().getNumber() == toRemove.getNumber()){
+                //Collection<Edge<Relationship, User>> edges = sn.outboundEdges(v);
+                for(Edge e : sn.outboundEdges(v)){
                     User u = (User)sn.opposite(v,e).element();
-                    if(u.getType()==User.UserType.INCLUDED && countRelations(u.getNumber())<=1){
+                    if(u.getType()==User.UserType.INCLUDED){
                         sn.removeVertex(sn.opposite(v, e));
                     }
                     sn.removeEdge(e);
@@ -430,6 +432,26 @@ public class SocialNetwork extends Subject {
     }
 
 
+public void logAddUser(User user){
+    log.writeToFile( "| < " +  user.getNumber() + " > | "
+             + user.getDate() + " | "
+            + "< " + countRelations(user.getNumber()) + " > | "
+            + "< "+ user.getNumberOfInterests() + " > \n");
+}
+
+public void logAddRelationship(User user, Relationship rel){
+        log.writeToFile("| < " +  user.getNumber() + " > | < "
+                + rel.getUser2().getNumber() + " > | "
+                + "< " + rel.showInterestInCommon1() + " >  \n");
+}
+
+    public void logUndo(){
+        log.writeToFile("undo");
+    }
+
+    public void logRedo(){
+        log.writeToFile("redo");
+    }
 
 
 

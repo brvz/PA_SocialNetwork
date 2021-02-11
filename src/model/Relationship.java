@@ -112,12 +112,21 @@ public class Relationship {
         return "" + getInterestsInCommon().size() ;
     }
 
-    public String showInterestInComment(){
+    public String showInterestInCommon(){
         String res = "";
         for(Interest in : interestsInCommon){
             res += in.getHashtag() + "\n";
         }
         return res;
     }
+
+    public String showInterestInCommon1(){
+        String res = "";
+        for(Interest in : interestsInCommon){
+            res += in.getHashtag() + " ";
+        }
+        return res;
+    }
+
 
 }
