@@ -267,19 +267,25 @@ public class SocialNetwork extends Subject {
 
     public void removeUserById(int number){
         User toRemove = getIdOfUser(number);
+        Collection<Vertex<User>> toRemoveUser = new ArrayList<>();
 
         for(Vertex<User> v: sn.vertices()){
             if(v.element().getNumber() == toRemove.getNumber()){
-                //Collection<Edge<Relationship, User>> edges = sn.outboundEdges(v);
-                for(Edge e : sn.outboundEdges(v)){
+                Collection<Edge<Relationship, User>> edges = sn.outboundEdges(v);
+                for(Edge e : edges){
                     User u = (User)sn.opposite(v,e).element();
                     if(u.getType()==User.UserType.INCLUDED){
-                        sn.removeVertex(sn.opposite(v, e));
+                        toRemoveUser.add(sn.opposite(v, e));
+                        //sn.removeVertex(sn.opposite(v, e));
                     }
                     sn.removeEdge(e);
                 }
-                sn.removeVertex(v);
+                toRemoveUser.add(v);
+                //sn.removeVertex(v);
             }
+        }
+        for (Vertex<User> userVertex : toRemoveUser) {
+            sn.removeVertex(userVertex);
         }
         notifyObservers(this);
     }

@@ -17,7 +17,7 @@ public class CommandManager {
     }
 
     public void undo(){
-        if(!commandsDone.isEmpty()){
+        if(!commandsDone.isEmpty()) {
             commandsDone.pop().unExecute();
         }
     }

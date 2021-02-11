@@ -6,6 +6,7 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
 
     private final Map<V, Vertex<V>> graph;
 
+
     public GraphAdjacencyList() {
         graph = new HashMap<>();
     }
@@ -44,9 +45,13 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
         MyVertex myVertex = checkVertex(v);
 
         List<Edge<E, V>> incidentEdges = new ArrayList<>();
-        //incidentEdges.addAll(myVertex.inadj);
         incidentEdges.addAll(myVertex.edges);
+        //incidentEdges.addAll(getEdgesOfVertex(myVertex));
         return incidentEdges;
+    }
+
+    public List<Edge<E,V>> getEdgesOfVertex(MyVertex vertex) {
+        return null;
     }
 
     /**
@@ -68,7 +73,7 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
         List<Edge<E, V>> outboundEdges = new ArrayList<>();
         for (Edge<E, V> edge : myVertex.edges) {
 
-            if (((MyEdge) edge).getInbound() == outbound) {
+            if (((MyEdge) edge).getInbound().equals(outbound)) {
                 outboundEdges.add(edge);
             }
         }
@@ -374,7 +379,7 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
 
         V element;
         List<Edge<E, V>> edges;
-
+        //List<V> adjencies;
 
         public MyVertex(V element) {
             this.element = element;
@@ -389,6 +394,14 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
         @Override
         public V element() {
             return this.element;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            MyVertex myVertex = (MyVertex) o;
+            return Objects.equals(element, myVertex.element);
         }
 
         @Override

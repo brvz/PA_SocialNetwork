@@ -85,9 +85,19 @@ public class User {
         return getNumber() == user.getNumber();
     }
 
+   /* @Override
+    public int hashCode() {
+        return Objects.hash(""+getNumber());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }*/
+
     @Override
     public int hashCode() {
-        return Objects.hash(getType(), getNumber());
+        return super.hashCode();
     }
 
     // ToString

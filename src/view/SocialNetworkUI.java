@@ -77,6 +77,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
             if (id > 0 && id < 51) {
                 setColors();
                 manager.executeCommand(new CommandUser(sn, id));
+                updateGraph();
                 //sn.readCSVRelationshipsByUser(id);
                 graphView.setStyle(null);
                 setColors();
