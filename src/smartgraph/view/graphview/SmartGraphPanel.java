@@ -54,6 +54,7 @@ import javafx.scene.Scene;
 import com.pa.proj2020.adts.graph.Graph;
 import com.pa.proj2020.adts.graph.Vertex;
 import com.pa.proj2020.adts.graph.Edge;
+import model.User;
 
 import java.net.URI;
 import java.util.concurrent.Callable;
@@ -61,7 +62,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 /**
- * JavaFX {@link Pane} that is capable of plotting a {@link Graph} or {@link Digraph}.
+ * JavaFX {@link Pane} that is capable of plotting a {@link Graph} .
  * <br>
  * Be sure to call {@link #init() } after the Stage is displayed.
  * <br>
@@ -391,7 +392,6 @@ public class SmartGraphPanel<V, E> extends Pane {
         for (Vertex<V> vertex : listOfVertices()) {
             SmartGraphVertexNode<V> vertexAnchor = new SmartGraphVertexNode(vertex, 0, 0,
                     graphProperties.getVertexRadius(), graphProperties.getVertexAllowUserMove());
-
             vertexNodes.put(vertex, vertexAnchor);
         }
 
@@ -558,8 +558,11 @@ public class SmartGraphPanel<V, E> extends Pane {
                     }
                 }
 
+                double xRandom = Math.random();
+                double yRandom = Math.random();
+
                 SmartGraphVertexNode newVertex = new SmartGraphVertexNode<>(vertex,
-                        x, y, graphProperties.getVertexRadius(), graphProperties.getVertexAllowUserMove());
+                        x + xRandom, y + yRandom, graphProperties.getVertexRadius(), graphProperties.getVertexAllowUserMove());
 
                 //track new nodes
                 newVertices.add(newVertex);

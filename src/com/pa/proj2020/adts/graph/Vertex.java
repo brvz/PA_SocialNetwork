@@ -30,7 +30,6 @@ package com.pa.proj2020.adts.graph;
  * @param <V> Type of value stored in the vertex.
  * 
  * @see Graph
- * @see Digraph
  */
 public interface Vertex<V> {
     

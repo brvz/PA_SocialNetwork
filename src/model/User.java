@@ -103,11 +103,16 @@ public class User {
     // ToString
     @Override
     public String toString() {
+        String res = "" + number ;
+        return res;
+    }
+
+    public String showUserToString(){
         String res = "Id: " + number +
-                ", Date: " + creationDate +
-                ", Interests: ";
+                "\nDate: " + creationDate +
+                "\nInterests:";
         for(Interest in : interestList){
-            res += in.getHashtag() + ";" ;
+            res += "\n\t" + in.getHashtag() + ";" ;
         }
         return res;
     }

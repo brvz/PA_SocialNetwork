@@ -223,7 +223,6 @@ public class SmartGraphVertexNode<T> extends Circle implements SmartGraphVertex<
      * Updates the future position according to the current internal force
      * vector.
      *
-     * @see SmartGraphPanel#updateForces()
      */
     public void updateDelta() {
         updatedPosition.x = updatedPosition.x /* + speed*/ + forceVector.x;
@@ -235,7 +234,6 @@ public class SmartGraphVertexNode<T> extends Circle implements SmartGraphVertex<
      * <p>
      * Moves are constrained within the parent pane dimensions.
      *
-     * @see SmartGraphPanel#applyForces()
      */
     public void moveFromForces() {
 
@@ -319,8 +317,8 @@ public class SmartGraphVertexNode<T> extends Circle implements SmartGraphVertex<
     @Override
     public void attachLabel(SmartLabel label) {
         this.attachedLabel = label;
-        label.xProperty().bind(centerXProperty().subtract(label.getLayoutBounds().getWidth() / 2.0));
-        label.yProperty().bind(centerYProperty().add(getRadius() + label.getLayoutBounds().getHeight()));
+        label.xProperty().bind(centerXProperty().subtract(6));
+        label.yProperty().bind(centerYProperty().subtract(-5));
     }
 
     @Override

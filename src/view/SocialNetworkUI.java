@@ -30,6 +30,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
 
     Button addUser;
     Button undo;
+    Button clear;
     SmartGraphPanel<User, Relationship> graphView;
     HBox bottom;
     TextField tf;
@@ -59,12 +60,13 @@ public class SocialNetworkUI extends BorderPane implements Observer {
        //CheckBox automatic = new CheckBox("Automatic layout");
         addUser = new Button("ADD USER");
         undo = new Button("UNDO");
+        clear = new Button("CLEAR");
 
         tf = new TextField();
 
         //automatic.selectedProperty().bindBidirectional(graphView.automaticLayoutProperty());
 
-        bottom.getChildren().addAll(tf, addUser, undo);
+        bottom.getChildren().addAll(tf, addUser, undo, clear);
 
         setBottom(bottom);
 
@@ -110,14 +112,14 @@ public class SocialNetworkUI extends BorderPane implements Observer {
 
                 if(arr.size() > 1){
 
-                        setColors();
-                        manager.executeCommand(new CommandUserBatch(sn, arr));
-                        updateGraph();
-                        //sn.readCSVRelationshipsByUser(id);
-                        graphView.setStyle(null);
-                        setColors();
-                        tf.clear();
-                        updateGraph();
+                    setColors();
+                    manager.executeCommand(new CommandUserBatch(sn, arr));
+                    updateGraph();
+                    //sn.readCSVRelationshipsByUser(id);
+                    graphView.setStyle(null);
+                    setColors();
+                    tf.clear();
+                    updateGraph();
 
 
                 }else if(arr.size() == 1){
@@ -166,7 +168,34 @@ public class SocialNetworkUI extends BorderPane implements Observer {
             updateGraph();
         });
         graphView.setVertexDoubleClickAction(graphVertex -> {
+            List<Interest> listIn = new ArrayList<>();
+            User r = (User) graphVertex.getUnderlyingVertex().element();
+            //r.showInterestInComment();
+            System.out.println(r.showUserToString());
+
+            Label lbl = new Label(r.showUserToString());
+            Pane root = new Pane(lbl);
+            root.setMinSize(500,0);
+            root.autosize();
+
+            Parent content = root;
+
+            // create scene containing the content
+            Scene scene = new Scene(content);
+
+            Stage window = new Stage();
+            window.setScene(scene);
+            window.setTitle("Info user selected: ");
+
+            // make window visible
+            window.show();
+            updateGraph();
+            //select vertex
             setSelected(graphVertex);
+        });
+        clear.setOnAction(a ->{
+            clearSelected();
+            updateGraph();
         });
     }
 
@@ -184,11 +213,16 @@ public class SocialNetworkUI extends BorderPane implements Observer {
     }
 
     public void setSelected(SmartGraphVertex graphVertex){
-        if(selected.size()<2){
+        if(selected.size()<1){
             selected.add(graphVertex);
-            graphVertex.setStyle("-fx-stroke: pink; -fx-stroke-width: 2;");
+            graphVertex.setStyle("-fx-stroke: black; -fx-fill: grey;");
         }
-        else{
+        if(selected.size()<2 && selected.size()>0){
+            clearSelected();
+            selected.add(graphVertex);
+            graphVertex.setStyle("-fx-stroke: black; -fx-fill: grey;");
+        }
+        /*else{
             User u = (User) selected.get(0).getUnderlyingVertex().element();
             if(u.getType()== User.UserType.INCLUDED)
                 selected.get(0).setStyleClass("VertexIncluded");
@@ -196,14 +230,10 @@ public class SocialNetworkUI extends BorderPane implements Observer {
                 selected.get(0).setStyleClass("VertexAdded");
             selected.set(0, selected.get(1));
             selected.set(1, graphVertex);
-            graphVertex.setStyle("-fx-stroke: pink; -fx-stroke-width: 2;");
-        }
+            graphVertex.setStyle("-fx-stroke: black; -fx-fill: grey;");
+        }*/
 
         graphView.update();
-    }
-
-    public int getSelectedSize(){
-        return selected.size();
     }
 
     public void updateGraph(){
@@ -211,13 +241,18 @@ public class SocialNetworkUI extends BorderPane implements Observer {
     }
 
     public void clearSelected(){
+        User u = (User) selected.get(0).getUnderlyingVertex().element();
+        if(u.getType() == User.UserType.INCLUDED)
+            selected.get(0).setStyleClass("VertexIncluded");
+        else if(u.getType()== User.UserType.ADDED)
+            selected.get(0).setStyleClass("VertexAdded");
         selected.clear();
     }
 
-    public void setNodeBlack(Node node){
+    /*public void setNodeBlack(Node node){
         node.setStyle("-fx-stroke: black; -fx-fill: grey;");
         graphView.update();
-    }
+    }*/
 
     public List<Node> getGraphNodes(){
         return graphView.getChildren();
@@ -228,10 +263,13 @@ public class SocialNetworkUI extends BorderPane implements Observer {
             if(node instanceof SmartGraphVertexNode) {
                 SmartGraphVertex n = (SmartGraphVertex) node;
                 User u = (User) n.getUnderlyingVertex().element();
-                if(u.getType()== User.UserType.INCLUDED)
+                if(u.getType()== User.UserType.INCLUDED) {
                     ((SmartGraphVertexNode<?>) node).setStyleClass("VertexIncluded");
-                else if(u.getType()== User.UserType.ADDED)
+                    updateGraph();
+                }
+                else if(u.getType()== User.UserType.ADDED){
                     ((SmartGraphVertexNode<?>) node).setStyleClass("VertexAdded");
+                }
             }
         }
 
@@ -242,10 +280,11 @@ public class SocialNetworkUI extends BorderPane implements Observer {
                 Relationship r = (Relationship) n.getUnderlyingEdge().element();
                 if (r.getType() == Relationship.NameOfRelationship.SIMPLE) {
                     ((SmartGraphEdge<?, ?>) node).setStyleClass("edgeSimple");
+                    updateGraph();
                 }
                 else if (r.getType() == Relationship.NameOfRelationship.SHARED_INTEREST) {
                     ((SmartGraphEdge<?, ?>) node).setStyleClass("edgeShared");
-
+                    updateGraph();
                 }
             }
         }
