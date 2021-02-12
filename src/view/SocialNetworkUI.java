@@ -2,12 +2,14 @@ package view;
 
 import command.CommandManager;
 import command.CommandUser;
+import command.CommandUserBatch;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.InputMethodTextRun;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -73,17 +75,64 @@ public class SocialNetworkUI extends BorderPane implements Observer {
 
     public void setTriggers(){
         addUser.setOnAction(a -> {
-            int id = Integer.parseInt(tf.getText().trim());
-            if (id > 0 && id < 51) {
-                setColors();
-                manager.executeCommand(new CommandUser(sn, id));
-                updateGraph();
-                //sn.readCSVRelationshipsByUser(id);
-                graphView.setStyle(null);
-                setColors();
-                tf.clear();
-                updateGraph();
+            String id = tf.getText();
+            int temp = 0;
+            List<Integer> arr = new ArrayList<>();
+            if(id.length() == 1) {
+                arr.add(Integer.parseInt(String.valueOf(id.charAt(0))));
             }
+            for(int i = 0; i < id.length(); i++){
+              for(int j = i+1; j < id.length()  ; j++){
+                  if (!String.valueOf(id.charAt(i)).equals(";")) {
+                  int e = Integer.parseInt(String.valueOf(id.charAt(i)));
+                  if(String.valueOf(id.charAt(j)).equals(";") ){
+                      if(e !=temp){
+                          arr.add(e);
+                          break;
+                      }
+                  } else{
+                          if(e != temp){
+                              temp = Integer.parseInt(String.valueOf(id.charAt(j)));
+                              arr.add(Integer.parseInt(String.valueOf(id.charAt(i)).concat(String.valueOf(id.charAt(j)))));
+                              break;
+                          }
+
+                          }
+                  if(String.valueOf(id.charAt(i)).equals(e)){
+                      arr.add(e);
+                  }
+                    }
+
+                  }
+              }
+
+
+
+                if(arr.size() > 1){
+
+                        setColors();
+                        manager.executeCommand(new CommandUserBatch(sn, arr));
+                        updateGraph();
+                        //sn.readCSVRelationshipsByUser(id);
+                        graphView.setStyle(null);
+                        setColors();
+                        tf.clear();
+                        updateGraph();
+
+
+                }else if(arr.size() == 1){
+                    if (arr.get(0) > 0 && arr.get(0) < 51) {
+                        setColors();
+                        manager.executeCommand(new CommandUser(sn, arr.get(0)));
+                        updateGraph();
+                        //sn.readCSVRelationshipsByUser(id);
+                        graphView.setStyle(null);
+                        setColors();
+                        tf.clear();
+                        updateGraph();
+                    }
+                }
+
         });
 
         undo.setOnAction(a -> {

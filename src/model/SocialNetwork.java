@@ -113,6 +113,8 @@ public class SocialNetwork extends Subject {
         logAddUser(u);
     }
 
+
+
     /**
      * Add a new user to model
      *
@@ -359,6 +361,38 @@ public class SocialNetwork extends Subject {
         }
     }
 
+    /* Refactoring - deprecated.
+
+    public void readCSVBatch(List<Integer> userId) {
+        List<User> batchUsers = new ArrayList<>();
+        for (int batchUser : userId) {
+            User check = getIdOfUser(batchUser);
+            batchUsers.add(check);
+
+
+            if (check != null && check.getType() == User.UserType.ADDED) {
+                throw new SocialNetworkException("User already added");
+            }
+            try (BufferedReader br = new BufferedReader(new FileReader("input_Files/relationships.csv"))) {
+                String line;
+                int count = 0;
+                while ((line = br.readLine()) != null && batchUser > count) {
+                    count++;
+                    if (count == batchUser) {
+                        line = line.replace("\uFEFF", "");
+                        String[] values = line.split(";");
+
+                        User user = checkType(batchUser);
+
+                        addIncludedUsers(values, user);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }*/
 
     /**
      * Adds users included by added user and log info
@@ -458,6 +492,9 @@ public void logAddRelationship(User user, Relationship rel){
     public void logRedo(){
         log.writeToFile("redo");
     }
+
+
+
 
 
 
