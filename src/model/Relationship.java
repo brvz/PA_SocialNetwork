@@ -120,7 +120,7 @@ public class Relationship {
         return res;
     }
 
-    public String showInterestInCommon1(){
+    public String showInterestInCommonLog(){
         String res = "";
         for(Interest in : interestsInCommon){
             res += in.getHashtag() + " ";

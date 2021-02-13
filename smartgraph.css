@@ -42,6 +42,14 @@ STYLESHEET FOR JAVAFXGRAPH VISUALIZATION
     -fx-opacity:1;
 }
 
+.edgeFilteredHide{
+    -fx-stroke-width: 5;
+    -fx-stroke: red;
+    -fx-fill: transparent; /*important for curved edges */
+    -fx-stroke-line-cap: round;
+    -fx-opacity:0;
+}
+
 .edge-label {
     -fx-font: normal 20pt "sans-serif";
 }

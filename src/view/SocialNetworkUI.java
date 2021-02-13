@@ -1,10 +1,7 @@
 package view;
 
 import com.pa.proj2020.adts.graph.GraphAdjacencyList;
-import command.CommandManager;
-import command.CommandRedo;
-import command.CommandUser;
-import command.CommandUserBatch;
+import command.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -24,6 +21,7 @@ import observer.Observer;
 import smartgraph.view.containers.ContentZoomPane;
 import smartgraph.view.graphview.*;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +33,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
     Button redo;
     public ObservableList<String> listInterestToFilter;
     public ComboBox interestFilter;
-    DatePicker d = new DatePicker();
+    public DatePicker d = new DatePicker();
     public SmartGraphPanel<User, Relationship> graphView;
     HBox bottom;
     TextField tf;
@@ -153,28 +151,60 @@ public class SocialNetworkUI extends BorderPane implements Observer {
 
 
         interestFilter.setOnAction(a -> {
-        for(Node node: graphView.getChildren()) {
+            manager.executeFilterInterest(new CommandFilterInterest(this));
+            updateGraph();
+            /*for(Node node: graphView.getChildren()) {
 
-            if (node instanceof SmartGraphVertexNode) {
+                if (node instanceof SmartGraphVertexNode) {
 
-                SmartGraphVertex n = (SmartGraphVertex) node;
-                User u = (User) n.getUnderlyingVertex().element();
-                if(u.getInterestList().size() > 0) {
-                    for (Interest in : u.getInterestList()) {
-                        if (!in.getHashtag().equals(interestFilter.getSelectionModel().getSelectedItem())) {
-                           //((SmartGraphVertexNode<?>) node).setStyleClass("VertexFiltered");
-                            ((SmartGraphVertexNode<?>) node).setStyleClass("VertexXD");
+                    SmartGraphVertex n = (SmartGraphVertex) node;
+                    User u = (User) n.getUnderlyingVertex().element();
+                    if(u.getInterestList().size() > 0) {
+                        for (Interest in : u.getInterestList()) {
+                            if (!in.getHashtag().equals(interestFilter.getSelectionModel().getSelectedItem())) {
+                               //((SmartGraphVertexNode<?>) node).setStyleClass("VertexFiltered");
+                                ((SmartGraphVertexNode<?>) node).setStyleClass("VertexXD");
+                            }
                         }
-
+                    }else{
+                        ((SmartGraphVertexNode<?>) node).setStyleClass("VertexXD");
                     }
-                }else{
-                    ((SmartGraphVertexNode<?>) node).setStyleClass("VertexXD");
                 }
             }
-        }
-        updateGraph();
-});
+            updateGraph();*/
+        });
 
+        d.setOnAction(a ->{
+            manager.executeFilterDate(new CommandFilterDate(this));
+            updateGraph();
+            /*for(Node node: graphView.getChildren()) {
+
+                if (node instanceof SmartGraphVertexNode) {
+
+                    SmartGraphVertex n = (SmartGraphVertex) node;
+                    User u = (User) n.getUnderlyingVertex().element();
+                    String date = d.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                    if (!u.getDate().equals(date)) {
+                        //((SmartGraphVertexNode<?>) node).setStyleClass("VertexFiltered");
+                        ((SmartGraphVertexNode<?>) node).setStyleClass("VertexFilteredHide");
+                    }
+                }
+            }
+
+            for(Node node: graphView.getChildren()) {
+                if(node instanceof SmartGraphEdge) {
+
+                    SmartGraphEdge n = (SmartGraphEdge) node;
+                    Relationship r = (Relationship) n.getUnderlyingEdge().element();
+                    String date = d.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                    if (!r.getDate().equals(date)) {
+                        //((SmartGraphVertexNode<?>) node).setStyleClass("VertexFiltered");
+                        ((SmartGraphEdge<?, ?>) node).setStyleClass("edgeFilteredHide");
+                    }
+                }
+            }
+            updateGraph();*/
+        });
 
 
 
@@ -182,7 +212,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
             List<Interest> listIn = new ArrayList<>();
             Relationship r = (Relationship) graphEdge.getUnderlyingEdge().element();
             //r.showInterestInComment();
-            System.out.println(r.showInterestInCommon());
+            //System.out.println(r.showInterestInCommon());
 
             Label lbl = new Label(r.showInterestInCommon());
             Pane root = new Pane(lbl);

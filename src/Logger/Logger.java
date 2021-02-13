@@ -1,6 +1,10 @@
 package Logger;
 
 
+import com.pa.proj2020.adts.graph.Graph;
+import smartgraph.view.graphview.SmartGraphProperties;
+import smartgraph.view.graphview.SmartPlacementStrategy;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -10,8 +14,17 @@ public class Logger  {
     private static final String LogFile = "log.txt";
     private PrintStream printStream;
 
-    public Logger(){
+    /*
+    CONFIGURATION PROPERTIES
+     */
+    private final LoggerProperties loggerProperties;
+
+    public Logger(LoggerProperties properties){
         connect();
+        this.loggerProperties = properties != null ? properties : new LoggerProperties();
+    }
+    public Logger(){
+        this(null);
     }
 
     private boolean connect(){

@@ -50,10 +50,6 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
         return incidentEdges;
     }
 
-    public List<Edge<E,V>> getEdgesOfVertex(MyVertex vertex) {
-        return null;
-    }
-
     /**
      * Returns a vertex's <i>outbound</i> edges as a collection.
      * <p>
@@ -101,7 +97,7 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
         if (edge.vertexInbound.equals(v)) {
             return edge.getOutbound();
         } else {
-            return edge.vertexInbound;
+            return edge.getInbound();
         }
     }
 
@@ -322,7 +318,7 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
                 if (edge.element().equals(edgeElement)) {
                     i++;
                 }
-                if (i >= 2) {
+                if (i >= 1) {
                     return true;
                 }
             }

@@ -26,22 +26,26 @@ public class CommandFilterInterest  extends CommandSocialNetwork{
                 SmartGraphVertex n = (SmartGraphVertex) node;
                 User u = (User) n.getUnderlyingVertex().element();
                 if(u.getInterestList().size() > 0){
+                    boolean temp = false;
                     for (Interest in : u.getInterestList()) {
-                        if (!in.getHashtag().equals(ui.interestFilter.getSelectionModel().getSelectedItem())) {
-                           // ui.getSocialNetwork().removeUser(((User) n.getUnderlyingVertex().element()));
-                            //((SmartGraphVertexNode<?>) node).setStyleClass("VertexFilteredHide");
-                            //((SmartGraphVertexNode<?>) node).setStyleClass("VertexFiltered");
-                            ui.updateGraph();
+                        if (in.getHashtag().equals(ui.interestFilter.getSelectionModel().getSelectedItem())) {
+                            temp = false;
+                            break;
+                        }else{
+                            temp = true;
                         }
+                    }
+                    if(temp == true){
+                        sn.removeUser(u);
                     }
                 }else{
                     //ui.getSocialNetwork().removeUser(u);
-                    ((SmartGraphVertexNode<?>) node).setStyleClass("VertexFilteredHide");
+                    sn.removeUser(u);
+                    //((SmartGraphVertexNode<?>) node).setStyleClass("VertexFilteredHide");
                 }
 
             }
         }
-        ui.updateGraph();
     }
 
     @Override

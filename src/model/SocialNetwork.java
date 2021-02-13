@@ -7,6 +7,7 @@ import com.pa.proj2020.adts.graph.GraphAdjacencyList;
 import com.pa.proj2020.adts.graph.InvalidVertexException;
 import com.pa.proj2020.adts.graph.Vertex;
 import observer.Subject;
+import Logger.LoggerProperties;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -25,6 +26,11 @@ public class SocialNetwork extends Subject {
     private List<User> lastUsers;
     private final static Logger log = new Logger();
 
+    /*
+    CONFIGURATION PROPERTIES
+     */
+    private LoggerProperties loggerProperties;
+
 
     public SocialNetwork(String name) {
         sn = new GraphAdjacencyList<>();
@@ -32,7 +38,7 @@ public class SocialNetwork extends Subject {
         lastUserAdded = null;
         lastUsers = new ArrayList<>();
         CSVReadInterest("input_Files/interests.csv");
-
+        this.loggerProperties = new LoggerProperties();
     }
 
     public void setName(String name) {
@@ -99,6 +105,30 @@ public class SocialNetwork extends Subject {
     }
 
     /**
+     * Gets the relationship(edges) between 2 users
+     *
+     * @param user1        User
+     * @param user2        User
+     * @return list of edges between <code>user1</code> and <code>user2</code>
+     * @throws SocialNetworkException
+     */
+    public List<Relationship> getRelationshipBetween(User user1, User user2) throws SocialNetworkException {
+
+        checkUser(user1);
+        checkUser(user2);
+
+        List<Relationship> list = new ArrayList<>();
+
+        sn.edges().stream().filter((edge) -> (edge.vertices()[0].element().equals(user1) && edge.vertices()[1].element().equals(user2)
+                || edge.vertices()[1].element().equals(user1) && edge.vertices()[0].element().equals(user2))).forEachOrdered((edge) -> {
+            list.add(edge.element());
+        });
+
+        return list;
+
+    }
+
+    /**
      * Add a new user to model
      *
      * @param u User
@@ -114,7 +144,6 @@ public class SocialNetwork extends Subject {
             throw new InvalidVertexException("User already exists: " + u.getNumber());
         }
         notifyObservers(this);
-        logAddUser(u);
     }
 
 
@@ -163,7 +192,6 @@ public class SocialNetwork extends Subject {
 
         sn.insertEdge(p1, p2, r);
         notifyObservers(this);
-        logAddRelationship(u1, r);
     }
 
     /**
@@ -271,6 +299,24 @@ public class SocialNetwork extends Subject {
         return null;
     }
 
+    public Vertex<User> getUserVertex(User user) {
+        for (Vertex<User> v : getSn().vertices()) {
+            if (v.element() == user) {
+                return v;
+            }
+        }
+        return null;
+    }
+
+    public Edge<Relationship, User> getRelationshipEdge(Relationship rel) {
+        for (Edge<Relationship, User> e : getSn().edges()) {
+            if (e.element() == rel) {
+                return e;
+            }
+        }
+        return null;
+    }
+
     public void removeUserById(int number){
         User toRemove = getIdOfUser(number);
         Collection<Vertex<User>> toRemoveUser = new ArrayList<>();
@@ -322,8 +368,23 @@ public class SocialNetwork extends Subject {
 
 
     public User checkType(int id) {
+
         if (checkId(id) && this.getIdOfUser(id).getType() == User.UserType.INCLUDED) {
             this.getIdOfUser(id).setType(User.UserType.ADDED);
+            try (BufferedReader br = new BufferedReader(new FileReader("input_Files/relationships.csv"))) {
+                String line;
+                int count = 0;
+                while ((line = br.readLine()) != null && id > count) {
+                    count++;
+                    if (count == id) {
+                        line = line.replace("\uFEFF", "");
+                        String[] values = line.split(";");
+                        this.getIdOfUser(id).setDate(values[1]);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return this.getIdOfUser(id);
         } else if (checkId(id) && this.getIdOfUser(id).getType() == User.UserType.ADDED) {
             return this.getIdOfUser(id);
@@ -363,10 +424,22 @@ public class SocialNetwork extends Subject {
                         this.addUser(user);
                         lastUserAdded = user;
                         addIncludedUsers(values, user);
+                        logAddUser(user);
                     }else{
                         User user = checkType(userId);
                         lastUserAdded = user;
                         addIncludedUsers(values, user);
+
+                        for (Edge<Relationship, User> e : sn.incidentEdges(getUserVertex(user))) {
+                            Vertex<User> userTemp =  sn.opposite(getUserVertex(user), getRelationshipEdge(e.element()));
+                            e.element().setDate(values[1]);
+                            for (Relationship relationship : getRelationshipBetween(userTemp.element(), user)) {
+                                if(!relationship.getDate().equals(user.getDate())) {
+                                    relationship.setDate(values[1]);
+                                }
+                            }
+                        }
+                        logAddUser(user);
                     }
 
                 }
@@ -408,9 +481,27 @@ public class SocialNetwork extends Subject {
                         line = line.replace("\uFEFF", "");
                         String[] values = line.split(";");
 
-                        User user = checkType(batchUser);
-                        lastUsers.add(user);
-                        addIncludedUsers(values, user);
+                        if(checkType(batchUser) == null){
+                            User user = new User(batchUser, User.UserType.ADDED,values[1]);
+                            this.addUser(user);
+                            lastUserAdded = user;
+                            addIncludedUsers(values, user);
+                            logAddUser(user);
+                        }else{
+                            User user = checkType(batchUser);
+                            lastUserAdded = user;
+                            addIncludedUsers(values, user);
+                            for (Edge<Relationship, User> e : sn.incidentEdges(getUserVertex(user))) {
+                                Vertex<User> userTemp =  sn.opposite(getUserVertex(user), getRelationshipEdge(e.element()));
+                                e.element().setDate(values[1]);
+                                for (Relationship relationship : getRelationshipBetween(userTemp.element(), user)) {
+                                    if(!relationship.getDate().equals(user.getDate())) {
+                                        relationship.setDate(values[1]);
+                                    }
+                                }
+                            }
+                            logAddUser(user);
+                        }
                     }
                 }
             } catch (IOException e) {
@@ -445,6 +536,7 @@ public class SocialNetwork extends Subject {
                 Relationship relationship = new Relationship(user,userIncluded, dateTemp);
                 relationship.setRelationshipType();
                 this.addRelationship(user, userIncluded, relationship);
+                logAddRelationship(relationship);
             } else {
                 Relationship relationship = new Relationship(user, getIdOfUser(idIncluded), dateTemp);
                 relationship.setRelationshipType();
@@ -509,25 +601,42 @@ public class SocialNetwork extends Subject {
     }
 
 
-public void logAddUser(User user){
-    log.writeToFile( "| < " +  user.getNumber() + " > | "
-             + user.getDate() + " | "
-            + "< " + countRelations(user.getNumber()) + " > | "
-            + "< "+ user.getNumberOfInterests() + " > \n");
-}
+    public void logAddUser(User user){
+        if(loggerProperties.getUserAdded()){
+            if(user.getType().equals(User.UserType.ADDED)){
+                log.writeToFile( "| < " +  user.getNumber() + " > | "
+                        + user.getDate() + " | "
+                        + "< " + countRelations(user.getNumber()) + " > | "
+                        + "< "+ user.getNumberOfInterests() + " > \n");
+            }
+        }
+    }
 
-public void logAddRelationship(User user, Relationship rel){
-        log.writeToFile("| < " +  user.getNumber() + " > | < "
-                + rel.getUser2().getNumber() + " > | "
-                + "< " + rel.showInterestInCommon1() + " >  \n");
-}
+    public void logAddRelationship(Relationship rel){
+        if(loggerProperties.getRelationAdded()){
+            if(loggerProperties.getUserIncluded() == true){
+                if(rel.getUser2().getType().equals(User.UserType.INCLUDED)){
+                    log.writeToFile("| < " + rel.getUser1().getNumber() + " > | < "
+                            + rel.getUser2().getNumber() + " > | "
+                            + "< " + rel.showInterestInCommonLog() + " >  \n");
+                }
+            } else{
+                log.writeToFile("| < " + rel.getUser1().getNumber()  + " > | <  > | "
+                        + "< " + rel.showInterestInCommonLog() + " >  \n");
+            }
+        }
+    }
 
     public void logUndo(){
-        log.writeToFile("undo");
+        if(loggerProperties.getUndo()) {
+            log.writeToFile("undo");
+        }
     }
 
     public void logRedo(){
-        log.writeToFile("redo");
+        if(loggerProperties.getRedo()) {
+            log.writeToFile("redo");
+        }
     }
 
 

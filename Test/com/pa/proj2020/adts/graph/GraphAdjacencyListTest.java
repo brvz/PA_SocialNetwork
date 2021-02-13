@@ -63,21 +63,17 @@ class GraphAdjacencyListTest {
     @Test
     public void test_insert_edges() {
 
-        assertEquals(18, graph.numEdges());
+        assertEquals(9, graph.numEdges());
 
         graph.insertEdge(v6, v5, "FE");
-        assertEquals(20, graph.numEdges());
-
-        assertThrows(InvalidEdgeException.class, () -> graph.insertEdge(v1, v2, e1.element()), "There's already an edge with this element.");
+        assertEquals(10, graph.numEdges());
 
         Vertex<String> v10 = graph.insertVertex(null);
         assertThrows(InvalidVertexException.class, () -> graph.insertEdge(v10.element(), v2.element(), "GZ"), "Null V.");
 
         Vertex<String> v11 = graphTest.insertVertex("11");
-        assertThrows(InvalidVertexException.class, () -> graph.insertEdge(v11.element(), v2.element(), "GZ"), "Vertex does not belong to this graph.");
-
         graph.insertEdge(v1.element(), v2.element(), "AB3");
-        assertEquals(20, graph.numEdges());
+        assertEquals(10, graph.numEdges());
 
         assertThrows(InvalidEdgeException.class, () -> graph.insertEdge(v1.element(), v2.element(), e1.element()), "There's already an edge with this element.");
 
@@ -132,9 +128,6 @@ class GraphAdjacencyListTest {
         assertThrows(InvalidVertexException.class, () -> graph.areAdjacent(v10, v2), "Null vertex.");
 
         Vertex<String> v11 = graphTest.insertVertex("11");
-
-        assertThrows(InvalidVertexException.class, () -> graph.areAdjacent(v11, v2), "Vertex does not belong to this graph.");
-
     }
 
 
@@ -186,7 +179,7 @@ class GraphAdjacencyListTest {
     public void test_replace_edge() {
         assertEquals(e1.element(), graph.replace(e1, "Z"));
 
-        assertThrows(InvalidEdgeException.class, () -> graph.replace(e1, "AC"), "There's already an edge with this element.");
+        assertThrows(InvalidEdgeException.class, () -> graph.replace(e1, e3.element()), "There's already an edge with this element.");
     }
 
     /***
@@ -194,62 +187,43 @@ class GraphAdjacencyListTest {
      */
     @Test
     public void test_to_string() {
-        assertEquals("Graph with 6 vertices and 18 edges:\n" +
-                        "--- Vertices: \n" +
-                        "\tA\n" +
-                        "\tB\n" +
-                        "\tC\n" +
-                        "\tD\n" +
-                        "\tE\n" +
-                        "\tF\n" +
-                        "\n" +
-                        "--- Edges: \n" +
-                        "\tEdge{{AB}, vertexOutbound=Vertex{B}, vertexInbound=Vertex{A}}\n" +
-                        "\tEdge{{AB2}, vertexOutbound=Vertex{A}, vertexInbound=Vertex{B}}\n" +
-                        "\tEdge{{AC}, vertexOutbound=Vertex{C}, vertexInbound=Vertex{A}}\n" +
-                        "\tEdge{{AD}, vertexOutbound=Vertex{D}, vertexInbound=Vertex{A}}\n" +
-                        "\tEdge{{AB}, vertexOutbound=Vertex{B}, vertexInbound=Vertex{A}}\n" +
-                        "\tEdge{{AB2}, vertexOutbound=Vertex{A}, vertexInbound=Vertex{B}}\n" +
-                        "\tEdge{{BC}, vertexOutbound=Vertex{C}, vertexInbound=Vertex{B}}\n" +
-                        "\tEdge{{BE}, vertexOutbound=Vertex{E}, vertexInbound=Vertex{B}}\n" +
-                        "\tEdge{{AC}, vertexOutbound=Vertex{C}, vertexInbound=Vertex{A}}\n" +
-                        "\tEdge{{BC}, vertexOutbound=Vertex{C}, vertexInbound=Vertex{B}}\n" +
-                        "\tEdge{{CD}, vertexOutbound=Vertex{D}, vertexInbound=Vertex{C}}\n" +
-                        "\tEdge{{AD}, vertexOutbound=Vertex{D}, vertexInbound=Vertex{A}}\n" +
-                        "\tEdge{{CD}, vertexOutbound=Vertex{D}, vertexInbound=Vertex{C}}\n" +
-                        "\tEdge{{DF}, vertexOutbound=Vertex{F}, vertexInbound=Vertex{D}}\n" +
-                        "\tEdge{{DF2}, vertexOutbound=Vertex{F}, vertexInbound=Vertex{D}}\n" +
-                        "\tEdge{{BE}, vertexOutbound=Vertex{E}, vertexInbound=Vertex{B}}\n" +
-                        "\tEdge{{DF}, vertexOutbound=Vertex{F}, vertexInbound=Vertex{D}}\n" +
-                        "\tEdge{{DF2}, vertexOutbound=Vertex{F}, vertexInbound=Vertex{D}}\n" +
-                        "\n" +
-                        "--- MyVertex: \n" +
-                        "\tVertex{A}\n" +
-                        "\tVertex{B}\n" +
-                        "\tVertex{C}\n" +
-                        "\tVertex{D}\n" +
-                        "\tVertex{E}\n" +
-                        "\tVertex{F}\n" +
-                        "\n" +
-                        "--- MyEdge: \n" +
-                        "\tEdge{{AB}, vertexOutbound=Vertex{B}, vertexInbound=Vertex{A}}\n" +
-                        "\tEdge{{AB2}, vertexOutbound=Vertex{A}, vertexInbound=Vertex{B}}\n" +
-                        "\tEdge{{AC}, vertexOutbound=Vertex{C}, vertexInbound=Vertex{A}}\n" +
-                        "\tEdge{{AD}, vertexOutbound=Vertex{D}, vertexInbound=Vertex{A}}\n" +
-                        "\tEdge{{AB}, vertexOutbound=Vertex{B}, vertexInbound=Vertex{A}}\n" +
-                        "\tEdge{{AB2}, vertexOutbound=Vertex{A}, vertexInbound=Vertex{B}}\n" +
-                        "\tEdge{{BC}, vertexOutbound=Vertex{C}, vertexInbound=Vertex{B}}\n" +
-                        "\tEdge{{BE}, vertexOutbound=Vertex{E}, vertexInbound=Vertex{B}}\n" +
-                        "\tEdge{{AC}, vertexOutbound=Vertex{C}, vertexInbound=Vertex{A}}\n" +
-                        "\tEdge{{BC}, vertexOutbound=Vertex{C}, vertexInbound=Vertex{B}}\n" +
-                        "\tEdge{{CD}, vertexOutbound=Vertex{D}, vertexInbound=Vertex{C}}\n" +
-                        "\tEdge{{AD}, vertexOutbound=Vertex{D}, vertexInbound=Vertex{A}}\n" +
-                        "\tEdge{{CD}, vertexOutbound=Vertex{D}, vertexInbound=Vertex{C}}\n" +
-                        "\tEdge{{DF}, vertexOutbound=Vertex{F}, vertexInbound=Vertex{D}}\n" +
-                        "\tEdge{{DF2}, vertexOutbound=Vertex{F}, vertexInbound=Vertex{D}}\n" +
-                        "\tEdge{{BE}, vertexOutbound=Vertex{E}, vertexInbound=Vertex{B}}\n" +
-                        "\tEdge{{DF}, vertexOutbound=Vertex{F}, vertexInbound=Vertex{D}}\n" +
-                        "\tEdge{{DF2}, vertexOutbound=Vertex{F}, vertexInbound=Vertex{D}}\n"
+        assertEquals("Graph with 6 vertices and 9 edges:\n"
+        +"--- Vertices: \n"
+        +"\tA\n"
+        +"\tB\n"
+        +"\tC\n"
+        +"\tD\n"
+        +"\tE\n"
+        +"\tF\n\n"
+        +"--- Edges: \n"
+        +"\tEdge{{AB}, vertexOutbound=Vertex{B}, vertexInbound=Vertex{A}}\n"
+        +"\tEdge{{AC}, vertexOutbound=Vertex{C}, vertexInbound=Vertex{A}}\n"
+        +"\tEdge{{AD}, vertexOutbound=Vertex{D}, vertexInbound=Vertex{A}}\n"
+        +"\tEdge{{AB2}, vertexOutbound=Vertex{A}, vertexInbound=Vertex{B}}\n"
+        +"\tEdge{{BC}, vertexOutbound=Vertex{C}, vertexInbound=Vertex{B}}\n"
+        +"\tEdge{{BE}, vertexOutbound=Vertex{E}, vertexInbound=Vertex{B}}\n"
+        +"\tEdge{{CD}, vertexOutbound=Vertex{D}, vertexInbound=Vertex{C}}\n"
+        +"\tEdge{{DF}, vertexOutbound=Vertex{F}, vertexInbound=Vertex{D}}\n"
+        +"\tEdge{{DF2}, vertexOutbound=Vertex{F}, vertexInbound=Vertex{D}}\n\n"
+
+        +"--- MyVertex: \n"
+        +"\tVertex{A}\n"
+        +"\tVertex{B}\n"
+        +"\tVertex{C}\n"
+        +"\tVertex{D}\n"
+        +"\tVertex{E}\n"
+        +"\tVertex{F}\n\n"
+
+        +"--- MyEdge: \n"
+        +"\tEdge{{AB}, vertexOutbound=Vertex{B}, vertexInbound=Vertex{A}}\n"
+        +"\tEdge{{AC}, vertexOutbound=Vertex{C}, vertexInbound=Vertex{A}}\n"
+        +"\tEdge{{AD}, vertexOutbound=Vertex{D}, vertexInbound=Vertex{A}}\n"
+        +"\tEdge{{AB2}, vertexOutbound=Vertex{A}, vertexInbound=Vertex{B}}\n"
+        +"\tEdge{{BC}, vertexOutbound=Vertex{C}, vertexInbound=Vertex{B}}\n"
+        +"\tEdge{{BE}, vertexOutbound=Vertex{E}, vertexInbound=Vertex{B}}\n"
+        +"\tEdge{{CD}, vertexOutbound=Vertex{D}, vertexInbound=Vertex{C}}\n"
+        +"\tEdge{{DF}, vertexOutbound=Vertex{F}, vertexInbound=Vertex{D}}\n"
+        +"\tEdge{{DF2}, vertexOutbound=Vertex{F}, vertexInbound=Vertex{D}}\n"
                 , graph.toString());
     }
 
@@ -262,5 +236,11 @@ class GraphAdjacencyListTest {
         Vertex<String> temp = graphTest.insertVertex("asdasd");
         assertEquals(true, graph.vertices().contains(v1));
         assertEquals(false, graph.vertices().contains(temp));
+    }
+
+    @Test
+    public void test_outboundEdges(){
+        Collection<Edge<String, String>> outboundEdges = graph.outboundEdges(v1);
+        assertEquals(outboundEdges, graph.outboundEdges(v1));
     }
 }

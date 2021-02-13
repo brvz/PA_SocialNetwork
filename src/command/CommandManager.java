@@ -23,7 +23,6 @@ public class CommandManager {
         if(!commandsDone.isEmpty()) {
             history.push(commandsDone.peek());
             commandsDone.pop().unExecute();
-
         }
     }
 
@@ -47,8 +46,15 @@ public class CommandManager {
     public void executeFilterInterest(Command cmd){
         if(!commandsDone.isEmpty()){
             cmd.execute();
+            history.push(commandsDone.peek());
         }
+    }
 
+    public void executeFilterDate(Command cmd){
+        if(!commandsDone.isEmpty()){
+            cmd.execute();
+            history.push(commandsDone.peek());
+        }
     }
 
 
