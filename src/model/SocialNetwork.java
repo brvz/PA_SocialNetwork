@@ -21,12 +21,16 @@ public class SocialNetwork extends Subject {
     private GraphAdjacencyList<User, Relationship> sn;
     private String name;
     private List<Interest> interestList;
+    private User lastUserAdded;
+    private List<User> lastUsers;
     private final static Logger log = new Logger();
 
 
     public SocialNetwork(String name) {
         sn = new GraphAdjacencyList<>();
         setName(name);
+        lastUserAdded = null;
+        lastUsers = new ArrayList<>();
         CSVReadInterest("input_Files/interests.csv");
 
     }
@@ -323,12 +327,14 @@ public class SocialNetwork extends Subject {
             return this.getIdOfUser(id);
         } else if (checkId(id) && this.getIdOfUser(id).getType() == User.UserType.ADDED) {
             return this.getIdOfUser(id);
+        }else{
+            return null;
         }
 
-
-        User user = new User(id, User.UserType.ADDED);
+    /*
+        User user = new User(id, User.UserType.ADDED,);
         this.addUser(user);
-        return user;
+        return user;*/
     }
 
 
@@ -351,9 +357,18 @@ public class SocialNetwork extends Subject {
                     line = line.replace("\uFEFF", "");
                     String[] values = line.split(";");
 
-                    User user = checkType(userId);
 
-                    addIncludedUsers(values, user);
+                    if(checkType(userId) == null){
+                        User user = new User(userId, User.UserType.ADDED,values[1]);
+                        this.addUser(user);
+                        lastUserAdded = user;
+                        addIncludedUsers(values, user);
+                    }else{
+                        User user = checkType(userId);
+                        lastUserAdded = user;
+                        addIncludedUsers(values, user);
+                    }
+
                 }
             }
         } catch (IOException e) {
@@ -361,15 +376,26 @@ public class SocialNetwork extends Subject {
         }
     }
 
-    /* Refactoring - deprecated.
+    public User getLastUserAdded(){
+        return lastUserAdded;
+    }
+
+
+
+    public void clearLastUser(){
+       lastUserAdded = null;
+    }
+
+    public void clearLastUsers(){
+        lastUsers.clear();
+    }
+
+
 
     public void readCSVBatch(List<Integer> userId) {
-        List<User> batchUsers = new ArrayList<>();
+
         for (int batchUser : userId) {
             User check = getIdOfUser(batchUser);
-            batchUsers.add(check);
-
-
             if (check != null && check.getType() == User.UserType.ADDED) {
                 throw new SocialNetworkException("User already added");
             }
@@ -383,7 +409,7 @@ public class SocialNetwork extends Subject {
                         String[] values = line.split(";");
 
                         User user = checkType(batchUser);
-
+                        lastUsers.add(user);
                         addIncludedUsers(values, user);
                     }
                 }
@@ -392,7 +418,14 @@ public class SocialNetwork extends Subject {
             }
         }
 
-    }*/
+
+
+
+    }
+
+    public List<User> getLastUsers(){
+        return lastUsers;
+    }
 
     /**
      * Adds users included by added user and log info
@@ -407,7 +440,7 @@ public class SocialNetwork extends Subject {
 
 
             if (!checkId(idIncluded)) {
-                User userIncluded = new User(idIncluded, User.UserType.INCLUDED);
+                User userIncluded = new User(idIncluded, User.UserType.INCLUDED, dateTemp);
                 this.addUser(userIncluded);
                 Relationship relationship = new Relationship(user,userIncluded, dateTemp);
                 relationship.setRelationshipType();
@@ -461,9 +494,13 @@ public class SocialNetwork extends Subject {
         return interestList;
     }
 
+    public List<String> getNameOfAllInterests(){
+        return interestList.stream().map(Interest::getHashtag).collect(Collectors.toList());
+
+    }
+
     public void addInterestList(String name) {
-        for (Interest in:
-                getInterestList()) {
+        for (Interest in: getInterestList())            {
             if (!in.getHashtag().equals(name)){
                 interestList.add(interestList.size(), new Interest(interestList.size()+1, name));
                 break;

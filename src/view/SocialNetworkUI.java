@@ -1,15 +1,16 @@
 package view;
 
+import com.pa.proj2020.adts.graph.GraphAdjacencyList;
 import command.CommandManager;
+import command.CommandRedo;
 import command.CommandUser;
 import command.CommandUserBatch;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.input.InputMethodTextRun;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -31,7 +32,11 @@ public class SocialNetworkUI extends BorderPane implements Observer {
     Button addUser;
     Button undo;
     Button clear;
-    SmartGraphPanel<User, Relationship> graphView;
+    Button redo;
+    public ObservableList<String> listInterestToFilter;
+    public ComboBox interestFilter;
+    DatePicker d = new DatePicker();
+    public SmartGraphPanel<User, Relationship> graphView;
     HBox bottom;
     TextField tf;
     SocialNetwork sn;
@@ -60,13 +65,16 @@ public class SocialNetworkUI extends BorderPane implements Observer {
        //CheckBox automatic = new CheckBox("Automatic layout");
         addUser = new Button("ADD USER");
         undo = new Button("UNDO");
+        redo = new Button("REDO");
         clear = new Button("CLEAR");
+        listInterestToFilter = FXCollections.observableList(sn.getNameOfAllInterests());
+        interestFilter = new ComboBox(listInterestToFilter);
 
         tf = new TextField();
 
         //automatic.selectedProperty().bindBidirectional(graphView.automaticLayoutProperty());
 
-        bottom.getChildren().addAll(tf, addUser, undo, clear);
+        bottom.getChildren().addAll(tf, addUser, undo, clear, redo, interestFilter,  d);
 
         setBottom(bottom);
 
@@ -107,9 +115,6 @@ public class SocialNetworkUI extends BorderPane implements Observer {
 
                   }
               }
-
-
-
                 if(arr.size() > 1){
 
                     setColors();
@@ -134,7 +139,6 @@ public class SocialNetworkUI extends BorderPane implements Observer {
                         updateGraph();
                     }
                 }
-
         });
 
         undo.setOnAction(a -> {
@@ -142,6 +146,37 @@ public class SocialNetworkUI extends BorderPane implements Observer {
             updateGraph();
 
         });
+        redo.setOnAction(a -> {
+            manager.executeRedo(new CommandRedo(sn));
+            updateGraph();
+        });
+
+
+        interestFilter.setOnAction(a -> {
+        for(Node node: graphView.getChildren()) {
+
+            if (node instanceof SmartGraphVertexNode) {
+
+                SmartGraphVertex n = (SmartGraphVertex) node;
+                User u = (User) n.getUnderlyingVertex().element();
+                if(u.getInterestList().size() > 0) {
+                    for (Interest in : u.getInterestList()) {
+                        if (!in.getHashtag().equals(interestFilter.getSelectionModel().getSelectedItem())) {
+                           //((SmartGraphVertexNode<?>) node).setStyleClass("VertexFiltered");
+                            ((SmartGraphVertexNode<?>) node).setStyleClass("VertexXD");
+                        }
+
+                    }
+                }else{
+                    ((SmartGraphVertexNode<?>) node).setStyleClass("VertexXD");
+                }
+            }
+        }
+        updateGraph();
+});
+
+
+
 
         graphView.setEdgeDoubleClickAction(graphEdge -> {
             List<Interest> listIn = new ArrayList<>();
@@ -293,5 +328,9 @@ public class SocialNetworkUI extends BorderPane implements Observer {
     @Override
     public void update(Object obj) {
         System.out.println(manager);
+    }
+
+    public SocialNetwork getSocialNetwork(){
+        return sn;
     }
 }

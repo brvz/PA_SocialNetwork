@@ -35,23 +35,21 @@ public class User {
     private List<Interest> interestList;
     private String creationDate;
 
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-    LocalDateTime now = LocalDateTime.now();
 
     // Constructor
-    public User(int number,  UserType type) {
+    public User(int number,  UserType type, String date) {
         setNumber(number);
         setType(type);
         interestList = new LinkedList<>();
         CSVaddUsersInterest(CSVReadInterest());
-        creationDate = dtf.format(now);
+        setDate(date);
     }
 
-    public User(int number) {
+    public User(int number, String date) {
         setNumber(number);
         interestList = new LinkedList<>();
         CSVaddUsersInterest(CSVReadInterest());
-        creationDate = dtf.format(now);
+        setDate(date);
     }
 
     // Getters and Setters
@@ -73,6 +71,10 @@ public class User {
 
     public String getDate(){
         return creationDate;
+    }
+
+    public void setDate(String date){
+      this.creationDate = date;
     }
 
 

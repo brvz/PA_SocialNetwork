@@ -9,7 +9,7 @@ public class Main2 {
 
     public static void main(String[] args) {
 
-        SocialNetwork sn = new SocialNetwork("lol");
+        /*SocialNetwork sn = new SocialNetwork("lol");
 
         User u1 = new User(1);
         User u2 = new User(2);
@@ -35,5 +35,5 @@ public class Main2 {
         sn.addRelationship(u6, u4, new Relationship(u6, u4,""));
 
         System.out.println(sn.getSn());
-    }
+    */}
 }
