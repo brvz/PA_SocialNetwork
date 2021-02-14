@@ -20,6 +20,9 @@ import model.User;
 import observer.Observer;
 import smartgraph.view.containers.ContentZoomPane;
 import smartgraph.view.graphview.*;
+import view.template.TextAddedUsers;
+import view.template.TextMostRelationships;
+import view.template.TextTemplate;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -31,6 +34,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
     Button undo;
     Button clear;
     Button redo;
+    Button statistics;
     public ObservableList<String> listInterestToFilter;
     public ComboBox interestFilter;
     public DatePicker d = new DatePicker();
@@ -65,6 +69,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         undo = new Button("UNDO");
         redo = new Button("REDO");
         clear = new Button("CLEAR");
+        statistics = new Button("ESTATISTICAS");
         listInterestToFilter = FXCollections.observableList(sn.getNameOfAllInterests());
         interestFilter = new ComboBox(listInterestToFilter);
 
@@ -72,7 +77,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
 
         //automatic.selectedProperty().bindBidirectional(graphView.automaticLayoutProperty());
 
-        bottom.getChildren().addAll(tf, addUser, undo, clear, redo, interestFilter,  d);
+        bottom.getChildren().addAll(tf, addUser, undo, clear, redo, interestFilter,  d, statistics);
 
         setBottom(bottom);
 
@@ -205,55 +210,27 @@ public class SocialNetworkUI extends BorderPane implements Observer {
             }
             updateGraph();*/
         });
+        statistics.setOnAction(a -> {
+            TextTemplate textAddedUsers = new TextAddedUsers(sn);
+            TextTemplate textMostRelationships = new TextMostRelationships(sn);
+            textAddedUsers.setPage();
+            textMostRelationships.setPage();
+
+            updateGraph();
+        });
 
 
 
         graphView.setEdgeDoubleClickAction(graphEdge -> {
-            List<Interest> listIn = new ArrayList<>();
             Relationship r = (Relationship) graphEdge.getUnderlyingEdge().element();
-            //r.showInterestInComment();
-            //System.out.println(r.showInterestInCommon());
-
-            Label lbl = new Label(r.showInterestInCommon());
-            Pane root = new Pane(lbl);
-            root.setMinSize(500,0);
-            root.autosize();
-
-            Parent content = root;
-
-            // create scene containing the content
-            Scene scene = new Scene(content);
-
-            Stage window = new Stage();
-            window.setScene(scene);
-            window.setTitle("Interests in Common between " + r.getUser1().getNumber() + " & " + r.getUser2().getNumber());
-
-            // make window visible
-            window.show();
+            PaneTemplate pT = new PaneTemplate();
+            pT.initialize("" + r.showInterestInCommon(),"Interests in Common between " + r.getUser1().getNumber() + " & " + r.getUser2().getNumber());
             updateGraph();
         });
         graphView.setVertexDoubleClickAction(graphVertex -> {
-            List<Interest> listIn = new ArrayList<>();
             User r = (User) graphVertex.getUnderlyingVertex().element();
-            //r.showInterestInComment();
-            System.out.println(r.showUserToString());
-
-            Label lbl = new Label(r.showUserToString());
-            Pane root = new Pane(lbl);
-            root.setMinSize(500,0);
-            root.autosize();
-
-            Parent content = root;
-
-            // create scene containing the content
-            Scene scene = new Scene(content);
-
-            Stage window = new Stage();
-            window.setScene(scene);
-            window.setTitle("Info user selected: ");
-
-            // make window visible
-            window.show();
+            PaneTemplate pT = new PaneTemplate();
+            pT.initialize(" " + r.showUserToString(), " Info user selected: ");
             updateGraph();
             //select vertex
             setSelected(graphVertex);
