@@ -8,7 +8,10 @@ import smartgraph.view.graphview.SmartGraphVertex;
 import smartgraph.view.graphview.SmartGraphVertexNode;
 import view.SocialNetworkUI;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class CommandFilterDate extends CommandSocialNetwork{
 
@@ -28,11 +31,19 @@ public class CommandFilterDate extends CommandSocialNetwork{
                 SmartGraphVertex n = (SmartGraphVertex) node;
                 User u = (User) n.getUnderlyingVertex().element();
                 String date = ui.d.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                if (!u.getDate().equals(date)) {
-                    //((SmartGraphVertexNode<?>) node).setStyleClass("VertexFiltered");
-                    sn.removeUser(u);
-                    //((SmartGraphVertexNode<?>) node).setStyleClass("VertexFilteredHide");
+                try {
+                    Date dateFilter = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+                    Date dateUser = new SimpleDateFormat("yyyy-MM-dd").parse(u.getDate());
+                    if (dateUser.after(dateFilter)) {
+                        //((SmartGraphVertexNode<?>) node).setStyleClass("VertexFiltered");
+                        sn.removeUser(u);
+                        //((SmartGraphVertexNode<?>) node).setStyleClass("VertexFilteredHide");
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
+
+
             }
         }
     }

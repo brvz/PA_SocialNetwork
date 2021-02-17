@@ -2,12 +2,10 @@ package model;
 
 import Logger.Logger;
 import com.opencsv.CSVReader;
-import com.pa.proj2020.adts.graph.Edge;
-import com.pa.proj2020.adts.graph.GraphAdjacencyList;
-import com.pa.proj2020.adts.graph.InvalidVertexException;
-import com.pa.proj2020.adts.graph.Vertex;
+import com.pa.proj2020.adts.graph.*;
 import observer.Subject;
 import Logger.LoggerProperties;
+import smartgraph.view.graphview.SmartGraphVertex;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -25,6 +23,7 @@ public class SocialNetwork extends Subject {
     private User lastUserAdded;
     private List<User> lastUsers;
     private final static Logger log = new Logger();
+    public boolean redo = false;
 
     /*
     CONFIGURATION PROPERTIES
@@ -209,11 +208,13 @@ public class SocialNetwork extends Subject {
         checkUser(u);
 
         List<Relationship> incidentEdges = new ArrayList<>();
-        sn.vertices().stream().filter((p) -> (p.element().equals(u))).forEachOrdered((p) -> {
-            sn.incidentEdges(p).forEach((h) -> {
-                incidentEdges.add(h.element());
-            });
-        });
+        for (Vertex<User> p : sn.vertices()) {
+            if ((p.element().equals(u))) {
+                for (Edge<Relationship, User> h : sn.incidentEdges(p)) {
+                    incidentEdges.add(h.element());
+                }
+            }
+        }
         return incidentEdges;
     }
 
@@ -484,12 +485,14 @@ public class SocialNetwork extends Subject {
                         if(checkType(batchUser) == null){
                             User user = new User(batchUser, User.UserType.ADDED,values[1]);
                             this.addUser(user);
-                            lastUserAdded = user;
+                            //lastUserAdded = null;
+                            getLastUsers().add(user);
                             addIncludedUsers(values, user);
                             logAddUser(user);
                         }else{
                             User user = checkType(batchUser);
-                            lastUserAdded = user;
+                            //lastUserAdded = null;
+                            getLastUsers().add(user);
                             addIncludedUsers(values, user);
                             for (Edge<Relationship, User> e : sn.incidentEdges(getUserVertex(user))) {
                                 Vertex<User> userTemp =  sn.opposite(getUserVertex(user), getRelationshipEdge(e.element()));
@@ -510,8 +513,7 @@ public class SocialNetwork extends Subject {
         }
 
 
-
-
+        lastUserAdded = null;
     }
 
     public List<User> getLastUsers(){
@@ -538,10 +540,13 @@ public class SocialNetwork extends Subject {
                 this.addRelationship(user, userIncluded, relationship);
                 logAddRelationship(relationship);
             } else {
-                Relationship relationship = new Relationship(user, getIdOfUser(idIncluded), dateTemp);
-                relationship.setRelationshipType();
+               //if(isRedo()){
+                    Relationship relationship = new Relationship(user, getIdOfUser(idIncluded), dateTemp);
+                    relationship.setRelationshipType();
 
-                this.addRelationship(user, getIdOfUser(idIncluded), relationship);
+                    this.addRelationship(user, getIdOfUser(idIncluded), relationship);
+                   setRedo(false);
+                //}
             }
         }
     }
@@ -640,8 +645,154 @@ public class SocialNetwork extends Subject {
     }
 
 
+    /**
+     * Returns a list with the five users that have the most relationships
+     *
+     * @return  top6 - five users with the most direct relationships
+     */
+    public List<User> getTop6(){
+        List<User> all = new ArrayList<>(getUsers());
+        List<User> top6 = new ArrayList<>();
+        for(int i=0;i<6;i++){
+            User u = getUsersMostInterests(all);
+            top6.add(u);
+            all.remove(u);
+        }
+        return top6;
+    }
+
+    /**
+     * Returns a list with the five users that have the most relationships
+     *
+     * @return  top10 - five users with the most direct relationships
+     */
+    public List<User> getTop10With(){
+        List<User> all = new ArrayList<>(getUsers());
+        List<User> top10 = new ArrayList<>();
+        for(int i=0;i< users().size();i++){
+            User u = getUserMaxRelsWithSharedInterests(all);
+            if(u!= null){
+                top10.add(u);
+            }
+            all.remove(u);
+        }
+        return top10;
+    }
 
 
+    /**
+     * Returns a list with the five users that have the most relationships
+     *
+     * @return  top10 - five users with the most direct relationships
+     */
+    public List<User> getTop10Without(){
+        List<User> all = new ArrayList<>(getUsers());
+        List<User> top10 = new ArrayList<>();
+        for(int i=0;i< users().size();i++){
+            User u = getUserMaxRelsWithoutSharedInterests(all);
+            if(u!= null){
+                top10.add(u);
+            }
+            all.remove(u);
+        }
+        return top10;
+    }
+
+
+
+
+    /**
+     * Returns the user with the most direct relationships
+     *
+     * @param users - list of users
+     * @return finalUser - user with the most direct relationships
+     */
+    public User getUserMaxRelsWithSharedInterests(List<User> users){
+        int max = 0;
+        User finalUser = null;
+        for(User u : users){
+            int cur = 0;
+            for (Relationship r :  incidentRelationships(u)) {
+                if(r.getType().equals(Relationship.NameOfRelationship.SHARED_INTEREST)){
+                    cur++;
+
+                }
+            }
+            if(cur>max){
+                finalUser = u;
+                max = cur;
+            }
+        }
+        return finalUser;
+    }
+
+
+    /**
+     * Returns the user with the most direct relationships
+     *
+     * @param users - list of users
+     * @return finalUser - user with the most direct relationships
+     */
+    public User getUserMaxRelsWithoutSharedInterests(List<User> users){
+        int max = 0;
+        User finalUser = null;
+        for(User u : users){
+            int cur = 0;
+            for (Relationship r :  incidentRelationships(u)) {
+                if(r.getType().equals(Relationship.NameOfRelationship.SIMPLE)){
+                    cur++;
+
+                }
+            }
+            if(cur>max){
+                finalUser = u;
+                max = cur;
+            }
+        }
+        return finalUser;
+    }
+
+    public User getUsersMostInterests(List<User> users){
+        int max = 0;
+        User finalUser = null;
+        for(User u : users){
+                int cur = u.getNumberOfInterests();
+                if(cur>max){
+                    finalUser = u;
+                    max = cur;
+                }
+            }
+
+        return finalUser;
+    }
+
+
+
+    public boolean areAdjacentUserType(User u, User v) throws InvalidVertexException {
+        checkUser(v);
+        checkUser(u);
+        for (User vertex : users()) {
+            for (Relationship incidentRelationship : incidentRelationships(vertex)) {
+                Relationship r =  checkRelationship(incidentRelationship).element();
+                if (r.getUser1().equals(v) && r.getUser2().equals(u)) {
+                    return true;
+                }
+                if(r.getUser1().equals(u) && r.getUser2().equals(v)){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isRedo() {
+        return redo;
+    }
+
+    public void setRedo(boolean redo) {
+        this.redo = redo;
+    }
 
 
     /*public int minimumCostPath(int origId,

@@ -1,5 +1,6 @@
 package smartgraph.view;
 
+import com.pa.proj2020.adts.graph.Vertex;
 import javafx.application.Application;
 import model.Relationship;
 import model.SocialNetwork;
@@ -9,14 +10,14 @@ public class Main2 {
 
     public static void main(String[] args) {
 
-        /*SocialNetwork sn = new SocialNetwork("lol");
+        SocialNetwork sn = new SocialNetwork("lol");
 
-        User u1 = new User(1);
-        User u2 = new User(2);
-        User u3 = new User(3);
-        User u4 = new User(4);
-        User u5 = new User(5);
-        User u6 = new User(6);
+        User u1 = new User(1,"");
+        User u2 = new User(2,"");
+        User u3 = new User(3,"");
+        User u4 = new User(4,"");
+        User u5 = new User(5,"");
+        User u6 = new User(6,"");
 
         sn.addUser(u1);
         sn.addUser(u2);
@@ -35,5 +36,6 @@ public class Main2 {
         sn.addRelationship(u6, u4, new Relationship(u6, u4,""));
 
         System.out.println(sn.getSn());
-    */}
+        //sn.BFS(u3);
+    }
 }

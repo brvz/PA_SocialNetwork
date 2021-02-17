@@ -5,10 +5,12 @@ import java.util.*;
 public class GraphAdjacencyList<V, E> implements Graph<V,E> {
 
     private final Map<V, Vertex<V>> graph;
+   // private final List<Edge<E,V>> edges;
 
 
     public GraphAdjacencyList() {
         graph = new HashMap<>();
+     //   edges = new ArrayList<>();
     }
 
     @Override
@@ -18,12 +20,13 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
 
     @Override
     public int numEdges() {
-        Collection<Edge<E, V>> list = new LinkedList<>();
-        for (Vertex<V> vertex : graph.values()) {
-            for (Edge<E, V> edge : incidentEdges(vertex))
-                list.add(edge);
-        }
-        return list.size();
+//        Collection<Edge<E, V>> list = new LinkedList<>();
+//        for (Vertex<V> vertex : graph.values()) {
+//            for (Edge<E, V> edge : incidentEdges(vertex))
+//                list.add(edge);
+//        }
+//        return list.size();
+        return edges().size();
     }
 
     @Override
@@ -33,6 +36,15 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
 
     @Override
     public Collection<Edge<E, V>> edges() {
+       /* ArrayList<Edge<E, V>> edges = new ArrayList<>();
+        for (Vertex<V> vertex : graph.values()) {
+            for (Edge<E, V> incidentEdge : incidentEdges(vertex)) {
+               if(!edges.contains(incidentEdge)) {
+                    edges.add(incidentEdge);
+                }
+            }
+        }
+        return edges;*/
         ArrayList<Edge<E, V>> edges = new ArrayList<>();
         for (Vertex<V> vertex : graph.values()) {
             edges.addAll(incidentEdges(vertex));
@@ -134,6 +146,7 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
     }
 
 
+
     /**
      * Inserts a new vertex with a given element and return its (the vertex's)
      * reference.
@@ -189,6 +202,7 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
             list.add(newEdge);
         }*/
 
+        //return insertEdge(vVertex, uVertex, edgeElement);
         return newEdge;
     }
 

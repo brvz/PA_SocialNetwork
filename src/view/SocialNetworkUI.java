@@ -20,13 +20,13 @@ import model.User;
 import observer.Observer;
 import smartgraph.view.containers.ContentZoomPane;
 import smartgraph.view.graphview.*;
-import view.template.TextAddedUsers;
-import view.template.TextMostRelationships;
-import view.template.TextTemplate;
+import view.template.*;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 public class SocialNetworkUI extends BorderPane implements Observer {
 
@@ -35,8 +35,11 @@ public class SocialNetworkUI extends BorderPane implements Observer {
     Button clear;
     Button redo;
     Button statistics;
+    Button chartBtn;
+    Button lowestPath;
     public ObservableList<String> listInterestToFilter;
     public ComboBox interestFilter;
+    public ComboBox interestBFS;
     public DatePicker d = new DatePicker();
     public SmartGraphPanel<User, Relationship> graphView;
     HBox bottom;
@@ -69,15 +72,17 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         undo = new Button("UNDO");
         redo = new Button("REDO");
         clear = new Button("CLEAR");
-        statistics = new Button("ESTATISTICAS");
+        statistics = new Button("STATISTICS");
+        chartBtn = new Button("CHARTS");
+        lowestPath = new Button("LOWEST PATH");
         listInterestToFilter = FXCollections.observableList(sn.getNameOfAllInterests());
+        interestBFS = new ComboBox(listInterestToFilter);
         interestFilter = new ComboBox(listInterestToFilter);
-
         tf = new TextField();
 
         //automatic.selectedProperty().bindBidirectional(graphView.automaticLayoutProperty());
 
-        bottom.getChildren().addAll(tf, addUser, undo, clear, redo, interestFilter,  d, statistics);
+        bottom.getChildren().addAll(tf, addUser, undo, clear, redo, interestFilter,  d, statistics, chartBtn, lowestPath,interestBFS);
 
         setBottom(bottom);
 
@@ -146,11 +151,14 @@ public class SocialNetworkUI extends BorderPane implements Observer {
 
         undo.setOnAction(a -> {
             manager.undo();
+            sn.logUndo();
+            sn.setRedo(true);
             updateGraph();
 
         });
         redo.setOnAction(a -> {
             manager.executeRedo(new CommandRedo(sn));
+            sn.logRedo();
             updateGraph();
         });
 
@@ -218,17 +226,43 @@ public class SocialNetworkUI extends BorderPane implements Observer {
 
             updateGraph();
         });
+        chartBtn.setOnAction(a -> {
+            ChartsTemplate top6 = new Top6Chart(sn);
+            ChartsTemplate top10With = new Top10ChartWithSharedInterests(sn);
+            ChartsTemplate top10Without = new Top10ChartWithoutSharedInterests(sn);
+            top6.setStage("Número de relações","Utilizadores");
+            top10With.setStage("Número de relações","Utilizadores");
+            top10Without.setStage("Número de relações","Utilizadores");
+            updateGraph();
+        });
+        lowestPath.setOnAction(a ->{
+            setColors();
+            updateGraph();
+            SmartGraphVertex v = getSelected().get(0);
+            for (Interest in : sn.getInterestList()) {
+                if (in.getHashtag().equals(interestBFS.getSelectionModel().getSelectedItem())) {
+                    for (SmartGraphVertex s : BFS(getSelected().get(0), in)){
+                        s.setStyleClass("VertexBFS");
+                    }
+                }
+            }
+            v.setStyleClass("VertexSelected");
+
+            updateGraph();
+        });
+
+
 
 
 
         graphView.setEdgeDoubleClickAction(graphEdge -> {
-            Relationship r = (Relationship) graphEdge.getUnderlyingEdge().element();
+            Relationship r = graphEdge.getUnderlyingEdge().element();
             PaneTemplate pT = new PaneTemplate();
             pT.initialize("" + r.showInterestInCommon(),"Interests in Common between " + r.getUser1().getNumber() + " & " + r.getUser2().getNumber());
             updateGraph();
         });
         graphView.setVertexDoubleClickAction(graphVertex -> {
-            User r = (User) graphVertex.getUnderlyingVertex().element();
+            User r = graphVertex.getUnderlyingVertex().element();
             PaneTemplate pT = new PaneTemplate();
             pT.initialize(" " + r.showUserToString(), " Info user selected: ");
             updateGraph();
@@ -242,12 +276,12 @@ public class SocialNetworkUI extends BorderPane implements Observer {
     }
 
     public void showScene(){
-        Scene scene = new Scene(this, 1024, 768);
+        Scene scene = new Scene(this, 1700, 800);
 
         Stage stage = new Stage(StageStyle.DECORATED);
         stage.setTitle("SmartGraph Visualization");
-        stage.setMinHeight(500);
-        stage.setMinWidth(800);
+        stage.setMinHeight(800);
+        stage.setMinWidth(1700);
         stage.setScene(scene);
         stage.show();
         graphView.init();
@@ -257,12 +291,12 @@ public class SocialNetworkUI extends BorderPane implements Observer {
     public void setSelected(SmartGraphVertex graphVertex){
         if(selected.size()<1){
             selected.add(graphVertex);
-            graphVertex.setStyle("-fx-stroke: black; -fx-fill: grey;");
+            graphVertex.setStyleClass("VertexSelected");
         }
         if(selected.size()<2 && selected.size()>0){
             clearSelected();
             selected.add(graphVertex);
-            graphVertex.setStyle("-fx-stroke: black; -fx-fill: grey;");
+            graphVertex.setStyleClass("VertexSelected");
         }
         /*else{
             User u = (User) selected.get(0).getUnderlyingVertex().element();
@@ -276,6 +310,10 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         }*/
 
         graphView.update();
+    }
+
+    public List<SmartGraphVertex> getSelected(){
+        return selected;
     }
 
     public void updateGraph(){
@@ -330,6 +368,43 @@ public class SocialNetworkUI extends BorderPane implements Observer {
                 }
             }
         }
+    }
+
+
+    public List<SmartGraphVertex> BFS(SmartGraphVertex user_root, Interest interest) {
+        Queue<SmartGraphVertex> queue = new LinkedList<>();
+        List<SmartGraphVertex> visited = new ArrayList<>();
+
+        visited.add(user_root);
+        queue.offer(user_root);
+
+        while(!queue.isEmpty()) {
+            SmartGraphVertex v = queue.poll();
+            /* Processar vertice */
+            System.out.println(v);
+            for(Node w :graphView.getChildren()) {
+                if(w instanceof SmartGraphVertex){
+                    SmartGraphVertex n = (SmartGraphVertex) w;
+                    User u = (User) n.getUnderlyingVertex().element();
+                    if(sn.areAdjacentUserType((User) v.getUnderlyingVertex().element(),u)) {
+                        if(!visited.contains(w)) {
+                            Boolean check = false;
+                            for (Interest in : u.getInterestList()) {
+                                if(in.getIdentify() == interest.getIdentify()){
+                                    check = true;
+                                    break;
+                                }
+                            }
+                            if(check){
+                                visited.add((SmartGraphVertex) w);
+                                queue.offer((SmartGraphVertex) w);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return visited;
     }
 
     @Override
