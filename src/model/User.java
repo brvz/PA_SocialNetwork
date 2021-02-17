@@ -149,21 +149,24 @@ public class User {
             int count = 0;
             while ((line = br.readLine()) != null) {
                 count++;
-                if (count == this.getNumber()) {
+                //if (count == this.getNumber()) {
                     line = line.replace("\uFEFF", "");
                     String[] values = line.split(";");
-
+                    int interestId = Integer.parseInt(values[0]);
                     for (int i = 2; i < values.length; i++) {
                         int x = Integer.parseInt(values[i]);
-                        for(Interest in : listInterest){
-                            if( x == in.getIdentify()){
-                                addInterest(in);
-                                break;
+                        if(x == this.number){
+                            for(Interest in : listInterest){
+                                if( interestId == in.getIdentify()){
+                                    addInterest(in);
+                                    break;
+                                }
                             }
                         }
+
                     }
 
-                }
+                //}
             }
 
         } catch (IOException e) {

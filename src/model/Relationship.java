@@ -76,7 +76,7 @@ public class Relationship {
         this.date = date;
     }
 
-    public void setInterestsInCommon(){
+        public void setInterestsInCommon(){
         List<Interest> interestA =  user1.getInterestList();
         List<Interest> interestB =  user2.getInterestList();
 

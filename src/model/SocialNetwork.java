@@ -328,8 +328,18 @@ public class SocialNetwork extends Subject {
                 for(Edge e : edges){
                     User u = (User)sn.opposite(v,e).element();
                     if(u.getType()==User.UserType.INCLUDED){
-                        toRemoveUser.add(sn.opposite(v, e));
-                        //sn.removeVertex(sn.opposite(v, e));
+                        int count = 0;
+                        for(Relationship r : relationships()){
+                            if(r.getUser1().getNumber() == u.getNumber()){
+                                count++;
+                            }
+                            if(r.getUser2().getNumber() == u.getNumber()){
+                                count++;
+                            }
+                        }
+                        if(count == 1){
+                            toRemoveUser.add(checkUser(u));
+                        }
                     }
                     sn.removeEdge(e);
                 }
@@ -531,24 +541,38 @@ public class SocialNetwork extends Subject {
             String dateTemp = values[1];
             int idIncluded = parseInt(valTemp);
 
-
-            if (!checkId(idIncluded)) {
-                User userIncluded = new User(idIncluded, User.UserType.INCLUDED, dateTemp);
-                this.addUser(userIncluded);
-                Relationship relationship = new Relationship(user,userIncluded, dateTemp);
+           /* if(isRedo()){
+                Relationship relationship = new Relationship(user, getIdOfUser(idIncluded), dateTemp);
                 relationship.setRelationshipType();
-                this.addRelationship(user, userIncluded, relationship);
-                logAddRelationship(relationship);
-            } else {
-               //if(isRedo()){
-                    Relationship relationship = new Relationship(user, getIdOfUser(idIncluded), dateTemp);
+                this.addRelationship(user, getIdOfUser(idIncluded), relationship);
+                //setRedo(false);
+            }else{*/
+                if (!checkId(idIncluded)) {
+                    User userIncluded = new User(idIncluded, User.UserType.INCLUDED, dateTemp);
+                    this.addUser(userIncluded);
+                    Relationship relationship = new Relationship(user,userIncluded, dateTemp);
                     relationship.setRelationshipType();
-
-                    this.addRelationship(user, getIdOfUser(idIncluded), relationship);
-                   setRedo(false);
-                //}
+                    this.addRelationship(user, userIncluded, relationship);
+                    logAddRelationship(relationship);
+                } else {
+                    Relationship relationship = new Relationship(user, getIdOfUser(idIncluded), dateTemp);
+                    Boolean check = false;
+                    for (Edge<Relationship, User> r : sn.edges()) {
+                        if(sn.opposite(checkUser(user), r).element().getNumber() == idIncluded){
+                            check = true;
+                            break;
+                        }
+                    }
+                    if(!check){
+                        relationship.setRelationshipType();
+                        this.addRelationship(user, getIdOfUser(idIncluded), relationship);
+                        //setRedo(false);
+                    }
             }
-        }
+            }
+
+
+        setRedo(false);
     }
 
 

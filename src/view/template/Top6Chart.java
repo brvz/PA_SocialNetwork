@@ -35,35 +35,41 @@ public class Top6Chart extends ChartsTemplate {
 
     public int interest(User u){
         int count = 0;
-            if(u.getType().equals(User.UserType.ADDED)){
-                for (Relationship r : sn.incidentRelationships(u)) {
-                    if(u.getNumber() == r.getUser1().getNumber()) {
-                        count++;
-                    }
-                    else if(u.getNumber() == r.getUser2().getNumber()) {
-                        count++;
-                    }
+        if(u.getType().equals(User.UserType.ADDED)){
+            for (Relationship r : sn.incidentRelationships(u)) {
+                if(u.getNumber() == r.getUser1().getNumber()) {
+                    count++;
+                }
+                else if(u.getNumber() == r.getUser2().getNumber()) {
+                    count++;
                 }
             }
-
-            if(u.getType().equals(User.UserType.INCLUDED)){
-                for(User user : sn.users()){
-                    for (Relationship r : sn.incidentRelationships(user)) {
-                        Vertex<User> userVertex = sn.checkUser(user);
-                        Edge<Relationship, User> relationshipUserEdge = sn.checkRelationship(r);
-                        if(u.getNumber() == sn.getSn().opposite(userVertex,relationshipUserEdge).element().getNumber()){
+            for(User users : sn.users()){
+                for(Relationship rel : sn.incidentRelationships(users)) {
+                    if(u.getNumber() != users.getNumber()){
+                        if(u.getNumber() == rel.getUser1().getNumber()) {
                             count++;
-                            break;
+                        }
+                        else if(u.getNumber() == rel.getUser2().getNumber()) {
+                            count++;
                         }
                     }
                 }
-
-
             }
-            return count;
+        }
+
+        if(u.getType().equals(User.UserType.INCLUDED)){
+            for(User user : sn.users()){
+                for (Relationship r : sn.incidentRelationships(user)) {
+                    Vertex<User> userVertex = sn.checkUser(user);
+                    Edge<Relationship, User> relationshipUserEdge = sn.checkRelationship(r);
+                    if(u.getNumber() == sn.getSn().opposite(userVertex,relationshipUserEdge).element().getNumber()){
+                        count++;
+                        break;
+                    }
+                }
+            }
+        }
+        return count;
     }
-
-
-
-
 }

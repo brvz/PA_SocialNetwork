@@ -51,6 +51,18 @@ public class Top10ChartWithoutSharedInterests extends ChartsTemplate {
                     count++;
                 }
             }
+            for(User users : sn.users()){
+                for(Relationship rel : sn.incidentRelationships(users)) {
+                    if(u.getNumber() != users.getNumber()){
+                        if(u.getNumber() == rel.getUser1().getNumber()) {
+                            count++;
+                        }
+                        else if(u.getNumber() == rel.getUser2().getNumber()) {
+                            count++;
+                        }
+                    }
+                }
+            }
         }
 
         if(u.getType().equals(User.UserType.INCLUDED)){
