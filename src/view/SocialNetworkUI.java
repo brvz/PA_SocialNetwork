@@ -23,10 +23,7 @@ import smartgraph.view.graphview.*;
 import view.template.*;
 
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class SocialNetworkUI extends BorderPane implements Observer {
 
@@ -67,7 +64,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         //create bottom pane with controls
         bottom = new HBox(10);
 
-       //CheckBox automatic = new CheckBox("Automatic layout");
+        //CheckBox automatic = new CheckBox("Automatic layout");
         addUser = new Button("ADD USER");
         undo = new Button("UNDO");
         redo = new Button("REDO");
@@ -82,7 +79,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
 
         //automatic.selectedProperty().bindBidirectional(graphView.automaticLayoutProperty());
 
-        bottom.getChildren().addAll(tf, addUser, undo, clear, redo, interestFilter,  d, statistics, chartBtn, lowestPath,interestBFS);
+        bottom.getChildren().addAll(tf, addUser, undo, clear, redo, interestFilter, d, statistics, chartBtn, lowestPath, interestBFS);
 
         setBottom(bottom);
 
@@ -91,62 +88,62 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         updateGraph();
     }
 
-    public void setTriggers(){
+    public void setTriggers() {
         addUser.setOnAction(a -> {
             String id = tf.getText();
             int temp = 0;
             List<Integer> arr = new ArrayList<>();
-            if(id.length() == 1) {
+            if (id.length() == 1) {
                 arr.add(Integer.parseInt(String.valueOf(id.charAt(0))));
             }
-            for(int i = 0; i < id.length(); i++){
-              for(int j = i+1; j < id.length()  ; j++){
-                  if (!String.valueOf(id.charAt(i)).equals(";")) {
-                  int e = Integer.parseInt(String.valueOf(id.charAt(i)));
-                  if(String.valueOf(id.charAt(j)).equals(";") ){
-                      if(e !=temp){
-                          arr.add(e);
-                          break;
-                      }
-                  } else{
-                          if(e != temp){
-                              temp = Integer.parseInt(String.valueOf(id.charAt(j)));
-                              arr.add(Integer.parseInt(String.valueOf(id.charAt(i)).concat(String.valueOf(id.charAt(j)))));
-                              break;
-                          }
+            for (int i = 0; i < id.length(); i++) {
+                for (int j = i + 1; j < id.length(); j++) {
+                    if (!String.valueOf(id.charAt(i)).equals(";")) {
+                        int e = Integer.parseInt(String.valueOf(id.charAt(i)));
+                        if (String.valueOf(id.charAt(j)).equals(";")) {
+                            if (e != temp) {
+                                arr.add(e);
+                                break;
+                            }
+                        } else {
+                            if (e != temp) {
+                                temp = Integer.parseInt(String.valueOf(id.charAt(j)));
+                                arr.add(Integer.parseInt(String.valueOf(id.charAt(i)).concat(String.valueOf(id.charAt(j)))));
+                                break;
+                            }
 
-                          }
-                  if(String.valueOf(id.charAt(i)).equals(e)){
-                      arr.add(e);
-                  }
+                        }
+                        if (String.valueOf(id.charAt(i)).equals(e)) {
+                            arr.add(e);
+                        }
                     }
 
-                  }
-              }
-                if(arr.size() > 1){
+                }
+            }
+            if (arr.size() > 1) {
 
+                setColors();
+                manager.executeCommand(new CommandUserBatch(sn, arr));
+                updateGraph();
+                //sn.readCSVRelationshipsByUser(id);
+                graphView.setStyle(null);
+                setColors();
+                tf.clear();
+                updateGraph();
+
+
+            } else if (arr.size() == 1) {
+                if (arr.get(0) > 0 && arr.get(0) < 51) {
                     setColors();
-                    manager.executeCommand(new CommandUserBatch(sn, arr));
+                    manager.executeCommand(new CommandUser(sn, arr.get(0)));
                     updateGraph();
                     //sn.readCSVRelationshipsByUser(id);
                     graphView.setStyle(null);
                     setColors();
                     tf.clear();
                     updateGraph();
-
-
-                }else if(arr.size() == 1){
-                    if (arr.get(0) > 0 && arr.get(0) < 51) {
-                        setColors();
-                        manager.executeCommand(new CommandUser(sn, arr.get(0)));
-                        updateGraph();
-                        //sn.readCSVRelationshipsByUser(id);
-                        graphView.setStyle(null);
-                        setColors();
-                        tf.clear();
-                        updateGraph();
-                    }
                 }
+            }
         });
 
         undo.setOnAction(a -> {
@@ -187,7 +184,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
             updateGraph();*/
         });
 
-        d.setOnAction(a ->{
+        d.setOnAction(a -> {
             manager.executeFilterDate(new CommandFilterDate(this));
             updateGraph();
             /*for(Node node: graphView.getChildren()) {
@@ -230,52 +227,101 @@ public class SocialNetworkUI extends BorderPane implements Observer {
             ChartsTemplate top6 = new Top6Chart(sn);
             ChartsTemplate top10With = new Top10ChartWithSharedInterests(sn);
             ChartsTemplate top10Without = new Top10ChartWithoutSharedInterests(sn);
-            top6.setStage("Número de relações","Utilizadores");
-            top10With.setStage("Número de relações","Utilizadores");
-            top10Without.setStage("Número de relações","Utilizadores");
+            top6.setStage("Número de relações", "Utilizadores");
+            top10With.setStage("Número de relações", "Utilizadores");
+            top10Without.setStage("Número de relações", "Utilizadores");
             updateGraph();
         });
-        lowestPath.setOnAction(a ->{
-            setColors();
-            updateGraph();
-            SmartGraphVertex v = getSelected().get(0);
-            for (Interest in : sn.getInterestList()) {
-                if (in.getHashtag().equals(interestBFS.getSelectionModel().getSelectedItem())) {
-                    for (SmartGraphVertex s : BFS(getSelected().get(0), in)){
-                        s.setStyleClass("VertexBFS");
+        lowestPath.setOnAction(a -> {
+                    setColors();
+                    updateGraph();
+                    SmartGraphVertex v = getSelected().get(0);
+                    User u = (User) v.getUnderlyingVertex().element();
+                    List<SmartGraphVertex> bfs = BFS(getSelected().get(0));
+                    List<User> listUsers = new ArrayList<>();
+                    for (Interest in : sn.getInterestList()) {
+                        if (in.getHashtag().equals(interestBFS.getSelectionModel().getSelectedItem())) {
+                            for (SmartGraphVertex s : bfs) {
+                                if (u.getInterestList().size() > 0) {
+                                    User u1 = (User) s.getUnderlyingVertex().element();
+                                    boolean temp = false;
+                                    for (Interest in1 : u1.getInterestList()) {
+                                        if (in1.getHashtag().equals(interestBFS.getSelectionModel().getSelectedItem())) {
+                                            temp = false;
+                                            break;
+                                        } else {
+                                            temp = true;
+                                        }
+                                    }
+                                    if (!temp) {
+                                        s.setStyleClass("VertexBFS");
+                                        if(u1.getNumber() != u.getNumber()){
+                                            listUsers.add(u1);
+                                        }
+                                        for (Node node : graphView.getChildren()) {
+                                            if (node instanceof SmartGraphEdge) {
+                                                List<User> path = sn.Dijkstra(sn.getSn(), u, u1);
+                                                for (int i = 0; i <= path.size(); i++) {
+                                                    for (int j = i + 1; j < path.size(); j++) {
+                                                        for (Relationship relationship : sn.getRelationshipBetween(path.get(i), path.get(j))) {
+                                                            if(path.get(j).equals(sn.getSn().opposite(sn.checkUser(path.get(i)),sn.checkRelationship(relationship)).element())) {
+                                                                if(relationship.equals(node)){
+                                                                    ((SmartGraphEdge<?, ?>) node).setStyleClass("edgeBFS");
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        updateGraph();
+                                    }
+                                }
+
+                            }
+                        }
                     }
-                }
-            }
-            v.setStyleClass("VertexSelected");
+                    v.setStyleClass("VertexSelected");
 
-            updateGraph();
-        });
+                    for (User u2 : listUsers) {
 
-
-
+                    }
+                updateGraph();
+    });
 
 
-        graphView.setEdgeDoubleClickAction(graphEdge -> {
-            Relationship r = graphEdge.getUnderlyingEdge().element();
-            PaneTemplate pT = new PaneTemplate();
-            pT.initialize("" + r.showInterestInCommon(),"Interests in Common between " + r.getUser1().getNumber() + " & " + r.getUser2().getNumber());
-            updateGraph();
-        });
-        graphView.setVertexDoubleClickAction(graphVertex -> {
-            User r = graphVertex.getUnderlyingVertex().element();
-            PaneTemplate pT = new PaneTemplate();
-            pT.initialize(" " + r.showUserToString(), " Info user selected: ");
-            updateGraph();
-            //select vertex
-            setSelected(graphVertex);
-        });
-        clear.setOnAction(a ->{
-            clearSelected();
-            updateGraph();
-        });
-    }
 
-    public void showScene(){
+
+
+        graphView.setEdgeDoubleClickAction(graphEdge ->
+
+    {
+        Relationship r = graphEdge.getUnderlyingEdge().element();
+        PaneTemplate pT = new PaneTemplate();
+        pT.initialize("" + r.showInterestInCommon(), "Interests in Common between " + r.getUser1().getNumber() + " & " + r.getUser2().getNumber());
+        updateGraph();
+    });
+        graphView.setVertexDoubleClickAction(graphVertex ->
+
+    {
+        User r = graphVertex.getUnderlyingVertex().element();
+        PaneTemplate pT = new PaneTemplate();
+        pT.initialize(" " + r.showUserToString(), " Info user selected: ");
+        updateGraph();
+        //select vertex
+        setSelected(graphVertex);
+    });
+        clear.setOnAction(a ->
+
+    {
+        clearSelected();
+        updateGraph();
+    });
+}
+
+    public void showScene() {
         Scene scene = new Scene(this, 1700, 800);
 
         Stage stage = new Stage(StageStyle.DECORATED);
@@ -288,12 +334,12 @@ public class SocialNetworkUI extends BorderPane implements Observer {
 
     }
 
-    public void setSelected(SmartGraphVertex graphVertex){
-        if(selected.size()<1){
+    public void setSelected(SmartGraphVertex graphVertex) {
+        if (selected.size() < 1) {
             selected.add(graphVertex);
             graphVertex.setStyleClass("VertexSelected");
         }
-        if(selected.size()<2 && selected.size()>0){
+        if (selected.size() < 2 && selected.size() > 0) {
             clearSelected();
             selected.add(graphVertex);
             graphVertex.setStyleClass("VertexSelected");
@@ -312,19 +358,19 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         graphView.update();
     }
 
-    public List<SmartGraphVertex> getSelected(){
+    public List<SmartGraphVertex> getSelected() {
         return selected;
     }
 
-    public void updateGraph(){
+    public void updateGraph() {
         graphView.update();
     }
 
-    public void clearSelected(){
+    public void clearSelected() {
         User u = (User) selected.get(0).getUnderlyingVertex().element();
-        if(u.getType() == User.UserType.INCLUDED)
+        if (u.getType() == User.UserType.INCLUDED)
             selected.get(0).setStyleClass("VertexIncluded");
-        else if(u.getType()== User.UserType.ADDED)
+        else if (u.getType() == User.UserType.ADDED)
             selected.get(0).setStyleClass("VertexAdded");
         selected.clear();
     }
@@ -334,35 +380,33 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         graphView.update();
     }*/
 
-    public List<Node> getGraphNodes(){
+    public List<Node> getGraphNodes() {
         return graphView.getChildren();
     }
 
-    public void setColors(){
-        for(Node node: graphView.getChildren()) {
-            if(node instanceof SmartGraphVertexNode) {
+    public void setColors() {
+        for (Node node : graphView.getChildren()) {
+            if (node instanceof SmartGraphVertexNode) {
                 SmartGraphVertex n = (SmartGraphVertex) node;
                 User u = (User) n.getUnderlyingVertex().element();
-                if(u.getType()== User.UserType.INCLUDED) {
+                if (u.getType() == User.UserType.INCLUDED) {
                     ((SmartGraphVertexNode<?>) node).setStyleClass("VertexIncluded");
                     updateGraph();
-                }
-                else if(u.getType()== User.UserType.ADDED){
+                } else if (u.getType() == User.UserType.ADDED) {
                     ((SmartGraphVertexNode<?>) node).setStyleClass("VertexAdded");
                 }
             }
         }
 
-        for(Node node: graphView.getChildren()) {
-            if(node instanceof SmartGraphEdge) {
+        for (Node node : graphView.getChildren()) {
+            if (node instanceof SmartGraphEdge) {
 
                 SmartGraphEdge n = (SmartGraphEdge) node;
                 Relationship r = (Relationship) n.getUnderlyingEdge().element();
                 if (r.getType() == Relationship.NameOfRelationship.SIMPLE) {
                     ((SmartGraphEdge<?, ?>) node).setStyleClass("edgeSimple");
                     updateGraph();
-                }
-                else if (r.getType() == Relationship.NameOfRelationship.SHARED_INTEREST) {
+                } else if (r.getType() == Relationship.NameOfRelationship.SHARED_INTEREST) {
                     ((SmartGraphEdge<?, ?>) node).setStyleClass("edgeShared");
                     updateGraph();
                 }
@@ -371,34 +415,34 @@ public class SocialNetworkUI extends BorderPane implements Observer {
     }
 
 
-    public List<SmartGraphVertex> BFS(SmartGraphVertex user_root, Interest interest) {
+    public List<SmartGraphVertex> BFS(SmartGraphVertex user_root) {
         Queue<SmartGraphVertex> queue = new LinkedList<>();
         List<SmartGraphVertex> visited = new ArrayList<>();
 
         visited.add(user_root);
         queue.offer(user_root);
 
-        while(!queue.isEmpty()) {
+        while (!queue.isEmpty()) {
             SmartGraphVertex v = queue.poll();
             /* Processar vertice */
             System.out.println(v);
-            for(Node w :graphView.getChildren()) {
-                if(w instanceof SmartGraphVertex){
+            for (Node w : graphView.getChildren()) {
+                if (w instanceof SmartGraphVertex) {
                     SmartGraphVertex n = (SmartGraphVertex) w;
                     User u = (User) n.getUnderlyingVertex().element();
-                    if(sn.areAdjacentUserType((User) v.getUnderlyingVertex().element(),u)) {
-                        if(!visited.contains(w)) {
-                            Boolean check = false;
+                    if (sn.areAdjacentUserType((User) v.getUnderlyingVertex().element(), u)) {
+                        if (!visited.contains(w)) {
+                           /* Boolean check = false;
                             for (Interest in : u.getInterestList()) {
                                 if(in.getIdentify() == interest.getIdentify()){
                                     check = true;
                                     break;
                                 }
                             }
-                            if(check){
-                                visited.add((SmartGraphVertex) w);
-                                queue.offer((SmartGraphVertex) w);
-                            }
+                            if(check){*/
+                            visited.add((SmartGraphVertex) w);
+                            queue.offer((SmartGraphVertex) w);
+                            // }
                         }
                     }
                 }
@@ -407,12 +451,13 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         return visited;
     }
 
+
     @Override
     public void update(Object obj) {
         System.out.println(manager);
     }
 
-    public SocialNetwork getSocialNetwork(){
+    public SocialNetwork getSocialNetwork() {
         return sn;
     }
 }

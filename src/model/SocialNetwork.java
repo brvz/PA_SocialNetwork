@@ -106,8 +106,8 @@ public class SocialNetwork extends Subject {
     /**
      * Gets the relationship(edges) between 2 users
      *
-     * @param user1        User
-     * @param user2        User
+     * @param user1 User
+     * @param user2 User
      * @return list of edges between <code>user1</code> and <code>user2</code>
      * @throws SocialNetworkException
      */
@@ -134,17 +134,16 @@ public class SocialNetwork extends Subject {
      * @throws SocialNetworkException if <code>user</code> equals null.
      * @throws InvalidVertexException if <code>user</code> already exists.
      */
-    public void addUser (User u) throws SocialNetworkException, InvalidVertexException{
-        if(u == null) throw new SocialNetworkException("User does not exists");
+    public void addUser(User u) throws SocialNetworkException, InvalidVertexException {
+        if (u == null) throw new SocialNetworkException("User does not exists");
 
-        try{
+        try {
             sn.insertVertex(u);
-        }catch (InvalidVertexException e){
+        } catch (InvalidVertexException e) {
             throw new InvalidVertexException("User already exists: " + u.getNumber());
         }
         notifyObservers(this);
     }
-
 
 
     /**
@@ -160,8 +159,8 @@ public class SocialNetwork extends Subject {
         }
         try {
             Vertex<User> userVertex = null;
-            for (Vertex<User> user :sn.vertices()){
-                if (user.element().getNumber() == u.getNumber()){
+            for (Vertex<User> user : sn.vertices()) {
+                if (user.element().getNumber() == u.getNumber()) {
                     userVertex = user;
                 }
             }
@@ -175,9 +174,9 @@ public class SocialNetwork extends Subject {
     /**
      * Add a new relationship to model
      *
-     * @param u1        User
-     * @param u2        User
-     * @param r Relationship
+     * @param u1 User
+     * @param u2 User
+     * @param r  Relationship
      * @throws SocialNetworkException if <code>relationship</code> equals null.
      * @throws SocialNetworkException if <code>relationship</code> already exists.
      */
@@ -318,26 +317,26 @@ public class SocialNetwork extends Subject {
         return null;
     }
 
-    public void removeUserById(int number){
+    public void removeUserById(int number) {
         User toRemove = getIdOfUser(number);
         Collection<Vertex<User>> toRemoveUser = new ArrayList<>();
 
-        for(Vertex<User> v: sn.vertices()){
-            if(v.element().getNumber() == toRemove.getNumber()){
+        for (Vertex<User> v : sn.vertices()) {
+            if (v.element().getNumber() == toRemove.getNumber()) {
                 Collection<Edge<Relationship, User>> edges = sn.outboundEdges(v);
-                for(Edge e : edges){
-                    User u = (User)sn.opposite(v,e).element();
-                    if(u.getType()==User.UserType.INCLUDED){
+                for (Edge e : edges) {
+                    User u = (User) sn.opposite(v, e).element();
+                    if (u.getType() == User.UserType.INCLUDED) {
                         int count = 0;
-                        for(Relationship r : relationships()){
-                            if(r.getUser1().getNumber() == u.getNumber()){
+                        for (Relationship r : relationships()) {
+                            if (r.getUser1().getNumber() == u.getNumber()) {
                                 count++;
                             }
-                            if(r.getUser2().getNumber() == u.getNumber()){
+                            if (r.getUser2().getNumber() == u.getNumber()) {
                                 count++;
                             }
                         }
-                        if(count == 1){
+                        if (count == 1) {
                             toRemoveUser.add(checkUser(u));
                         }
                     }
@@ -353,15 +352,15 @@ public class SocialNetwork extends Subject {
         notifyObservers(this);
     }
 
-    public int countRelations(int id){
+    public int countRelations(int id) {
         int count = 0;
         User toCount = getIdOfUser(id);
         Vertex v = sn.checkV(toCount);
         List<Edge> edges = (List<Edge>) sn.outboundEdges(v);
         edges.addAll((List<Edge>) sn.incidentEdges(v));
-        for(Edge e : edges){
+        for (Edge e : edges) {
             Relationship r = (Relationship) e.element();
-            if(r.getType() == Relationship.NameOfRelationship.SIMPLE || r.getType()== Relationship.NameOfRelationship.SHARED_INTEREST){
+            if (r.getType() == Relationship.NameOfRelationship.SIMPLE || r.getType() == Relationship.NameOfRelationship.SHARED_INTEREST) {
                 count++;
             }
         }
@@ -399,7 +398,7 @@ public class SocialNetwork extends Subject {
             return this.getIdOfUser(id);
         } else if (checkId(id) && this.getIdOfUser(id).getType() == User.UserType.ADDED) {
             return this.getIdOfUser(id);
-        }else{
+        } else {
             return null;
         }
 
@@ -417,7 +416,7 @@ public class SocialNetwork extends Subject {
 
     public void readCSVRelationshipsByUser(int userId) {
         User check = getIdOfUser(userId);
-        if(check!=null && check.getType()==User.UserType.ADDED){
+        if (check != null && check.getType() == User.UserType.ADDED) {
             throw new SocialNetworkException("User already added");
         }
         try (BufferedReader br = new BufferedReader(new FileReader("input_Files/relationships.csv"))) {
@@ -430,22 +429,22 @@ public class SocialNetwork extends Subject {
                     String[] values = line.split(";");
 
 
-                    if(checkType(userId) == null){
-                        User user = new User(userId, User.UserType.ADDED,values[1]);
+                    if (checkType(userId) == null) {
+                        User user = new User(userId, User.UserType.ADDED, values[1]);
                         this.addUser(user);
                         lastUserAdded = user;
                         addIncludedUsers(values, user);
                         logAddUser(user);
-                    }else{
+                    } else {
                         User user = checkType(userId);
                         lastUserAdded = user;
                         addIncludedUsers(values, user);
 
                         for (Edge<Relationship, User> e : sn.incidentEdges(getUserVertex(user))) {
-                            Vertex<User> userTemp =  sn.opposite(getUserVertex(user), getRelationshipEdge(e.element()));
+                            Vertex<User> userTemp = sn.opposite(getUserVertex(user), getRelationshipEdge(e.element()));
                             e.element().setDate(values[1]);
                             for (Relationship relationship : getRelationshipBetween(userTemp.element(), user)) {
-                                if(!relationship.getDate().equals(user.getDate())) {
+                                if (!relationship.getDate().equals(user.getDate())) {
                                     relationship.setDate(values[1]);
                                 }
                             }
@@ -460,20 +459,18 @@ public class SocialNetwork extends Subject {
         }
     }
 
-    public User getLastUserAdded(){
+    public User getLastUserAdded() {
         return lastUserAdded;
     }
 
 
-
-    public void clearLastUser(){
-       lastUserAdded = null;
+    public void clearLastUser() {
+        lastUserAdded = null;
     }
 
-    public void clearLastUsers(){
+    public void clearLastUsers() {
         lastUsers.clear();
     }
-
 
 
     public void readCSVBatch(List<Integer> userId) {
@@ -492,23 +489,23 @@ public class SocialNetwork extends Subject {
                         line = line.replace("\uFEFF", "");
                         String[] values = line.split(";");
 
-                        if(checkType(batchUser) == null){
-                            User user = new User(batchUser, User.UserType.ADDED,values[1]);
+                        if (checkType(batchUser) == null) {
+                            User user = new User(batchUser, User.UserType.ADDED, values[1]);
                             this.addUser(user);
                             //lastUserAdded = null;
                             getLastUsers().add(user);
                             addIncludedUsers(values, user);
                             logAddUser(user);
-                        }else{
+                        } else {
                             User user = checkType(batchUser);
                             //lastUserAdded = null;
                             getLastUsers().add(user);
                             addIncludedUsers(values, user);
                             for (Edge<Relationship, User> e : sn.incidentEdges(getUserVertex(user))) {
-                                Vertex<User> userTemp =  sn.opposite(getUserVertex(user), getRelationshipEdge(e.element()));
+                                Vertex<User> userTemp = sn.opposite(getUserVertex(user), getRelationshipEdge(e.element()));
                                 e.element().setDate(values[1]);
                                 for (Relationship relationship : getRelationshipBetween(userTemp.element(), user)) {
-                                    if(!relationship.getDate().equals(user.getDate())) {
+                                    if (!relationship.getDate().equals(user.getDate())) {
                                         relationship.setDate(values[1]);
                                     }
                                 }
@@ -526,52 +523,55 @@ public class SocialNetwork extends Subject {
         lastUserAdded = null;
     }
 
-    public List<User> getLastUsers(){
+    public List<User> getLastUsers() {
         return lastUsers;
     }
 
     /**
      * Adds users included by added user and log info
+     *
      * @param values included users id's
-     * @param user added User
+     * @param user   added User
      */
     public void addIncludedUsers(String[] values, User user) {
+        List<Relationship> redoRelationships = new ArrayList<>();
         for (int i = 2; i < values.length; i++) {
             String valTemp = values[i];
             String dateTemp = values[1];
             int idIncluded = parseInt(valTemp);
+            Relationship relationship = null;
 
-           /* if(isRedo()){
-                Relationship relationship = new Relationship(user, getIdOfUser(idIncluded), dateTemp);
+            if (!checkId(idIncluded)) {
+                User userIncluded = new User(idIncluded, User.UserType.INCLUDED, dateTemp);
+                this.addUser(userIncluded);
+                relationship = new Relationship(user, userIncluded, dateTemp);
                 relationship.setRelationshipType();
-                this.addRelationship(user, getIdOfUser(idIncluded), relationship);
-                //setRedo(false);
-            }else{*/
-                if (!checkId(idIncluded)) {
-                    User userIncluded = new User(idIncluded, User.UserType.INCLUDED, dateTemp);
-                    this.addUser(userIncluded);
-                    Relationship relationship = new Relationship(user,userIncluded, dateTemp);
-                    relationship.setRelationshipType();
-                    this.addRelationship(user, userIncluded, relationship);
-                    logAddRelationship(relationship);
-                } else {
-                    Relationship relationship = new Relationship(user, getIdOfUser(idIncluded), dateTemp);
-                    Boolean check = false;
-                    for (Edge<Relationship, User> r : sn.edges()) {
-                        if(sn.opposite(checkUser(user), r).element().getNumber() == idIncluded){
-                            check = true;
-                            break;
-                        }
+                this.addRelationship(user, userIncluded, relationship);
+                logAddRelationship(relationship);
+            } else {
+                relationship = new Relationship(user, getIdOfUser(idIncluded), dateTemp);
+                Boolean check = false;
+                for (Edge<Relationship, User> r : sn.edges()) {
+                    if (sn.opposite(checkUser(user), r).element().getNumber() == idIncluded) {
+                        check = true;
+                        break;
                     }
-                    if(!check){
+                }
+                if (!check) {
+                    relationship.setRelationshipType();
+                    this.addRelationship(user, getIdOfUser(idIncluded), relationship);
+                    //setRedo(false);
+                }else if (isRedo()) {
+                    //Relationship relationship = new Relationship(user, getIdOfUser(idIncluded), dateTemp);
+                    if (!redoRelationships.contains(relationship)) {
                         relationship.setRelationshipType();
                         this.addRelationship(user, getIdOfUser(idIncluded), relationship);
                         //setRedo(false);
                     }
+                }
             }
-            }
-
-
+            redoRelationships.add(relationship);
+        }
         setRedo(false);
     }
 
@@ -583,7 +583,7 @@ public class SocialNetwork extends Subject {
         String name;
         try {
             //parsing a CSV file into CSVReader class constructor
-            reader = new CSVReader(new FileReader( csv));
+            reader = new CSVReader(new FileReader(csv));
             String[] nextLine;
             //reads one line at a time
             while ((nextLine = reader.readNext()) != null) {
@@ -615,55 +615,55 @@ public class SocialNetwork extends Subject {
         return interestList;
     }
 
-    public List<String> getNameOfAllInterests(){
+    public List<String> getNameOfAllInterests() {
         return interestList.stream().map(Interest::getHashtag).collect(Collectors.toList());
 
     }
 
     public void addInterestList(String name) {
-        for (Interest in: getInterestList())            {
-            if (!in.getHashtag().equals(name)){
-                interestList.add(interestList.size(), new Interest(interestList.size()+1, name));
+        for (Interest in : getInterestList()) {
+            if (!in.getHashtag().equals(name)) {
+                interestList.add(interestList.size(), new Interest(interestList.size() + 1, name));
                 break;
             }
         }
     }
 
 
-    public void logAddUser(User user){
-        if(loggerProperties.getUserAdded()){
-            if(user.getType().equals(User.UserType.ADDED)){
-                log.writeToFile( "| < " +  user.getNumber() + " > | "
+    public void logAddUser(User user) {
+        if (loggerProperties.getUserAdded()) {
+            if (user.getType().equals(User.UserType.ADDED)) {
+                log.writeToFile("| < " + user.getNumber() + " > | "
                         + user.getDate() + " | "
                         + "< " + countRelations(user.getNumber()) + " > | "
-                        + "< "+ user.getNumberOfInterests() + " > \n");
+                        + "< " + user.getNumberOfInterests() + " > \n");
             }
         }
     }
 
-    public void logAddRelationship(Relationship rel){
-        if(loggerProperties.getRelationAdded()){
-            if(loggerProperties.getUserIncluded() == true){
-                if(rel.getUser2().getType().equals(User.UserType.INCLUDED)){
+    public void logAddRelationship(Relationship rel) {
+        if (loggerProperties.getRelationAdded()) {
+            if (loggerProperties.getUserIncluded() == true) {
+                if (rel.getUser2().getType().equals(User.UserType.INCLUDED)) {
                     log.writeToFile("| < " + rel.getUser1().getNumber() + " > | < "
                             + rel.getUser2().getNumber() + " > | "
                             + "< " + rel.showInterestInCommonLog() + " >  \n");
                 }
-            } else{
-                log.writeToFile("| < " + rel.getUser1().getNumber()  + " > | <  > | "
+            } else {
+                log.writeToFile("| < " + rel.getUser1().getNumber() + " > | <  > | "
                         + "< " + rel.showInterestInCommonLog() + " >  \n");
             }
         }
     }
 
-    public void logUndo(){
-        if(loggerProperties.getUndo()) {
+    public void logUndo() {
+        if (loggerProperties.getUndo()) {
             log.writeToFile("undo");
         }
     }
 
-    public void logRedo(){
-        if(loggerProperties.getRedo()) {
+    public void logRedo() {
+        if (loggerProperties.getRedo()) {
             log.writeToFile("redo");
         }
     }
@@ -672,12 +672,12 @@ public class SocialNetwork extends Subject {
     /**
      * Returns a list with the five users that have the most relationships
      *
-     * @return  top6 - five users with the most direct relationships
+     * @return top6 - five users with the most direct relationships
      */
-    public List<User> getTop6(){
+    public List<User> getTop6() {
         List<User> all = new ArrayList<>(getUsers());
         List<User> top6 = new ArrayList<>();
-        for(int i=0;i<6;i++){
+        for (int i = 0; i < 6; i++) {
             User u = getUsersMostInterests(all);
             top6.add(u);
             all.remove(u);
@@ -688,14 +688,14 @@ public class SocialNetwork extends Subject {
     /**
      * Returns a list with the five users that have the most relationships
      *
-     * @return  top10 - five users with the most direct relationships
+     * @return top10 - five users with the most direct relationships
      */
-    public List<User> getTop10With(){
+    public List<User> getTop10With() {
         List<User> all = new ArrayList<>(getUsers());
         List<User> top10 = new ArrayList<>();
-        for(int i=0;i< users().size();i++){
+        for (int i = 0; i < users().size(); i++) {
             User u = getUserMaxRelsWithSharedInterests(all);
-            if(u!= null){
+            if (u != null) {
                 top10.add(u);
             }
             all.remove(u);
@@ -707,14 +707,14 @@ public class SocialNetwork extends Subject {
     /**
      * Returns a list with the five users that have the most relationships
      *
-     * @return  top10 - five users with the most direct relationships
+     * @return top10 - five users with the most direct relationships
      */
-    public List<User> getTop10Without(){
+    public List<User> getTop10Without() {
         List<User> all = new ArrayList<>(getUsers());
         List<User> top10 = new ArrayList<>();
-        for(int i=0;i< users().size();i++){
+        for (int i = 0; i < users().size(); i++) {
             User u = getUserMaxRelsWithoutSharedInterests(all);
-            if(u!= null){
+            if (u != null) {
                 top10.add(u);
             }
             all.remove(u);
@@ -723,26 +723,24 @@ public class SocialNetwork extends Subject {
     }
 
 
-
-
     /**
      * Returns the user with the most direct relationships
      *
      * @param users - list of users
      * @return finalUser - user with the most direct relationships
      */
-    public User getUserMaxRelsWithSharedInterests(List<User> users){
+    public User getUserMaxRelsWithSharedInterests(List<User> users) {
         int max = 0;
         User finalUser = null;
-        for(User u : users){
+        for (User u : users) {
             int cur = 0;
-            for (Relationship r :  incidentRelationships(u)) {
-                if(r.getType().equals(Relationship.NameOfRelationship.SHARED_INTEREST)){
+            for (Relationship r : incidentRelationships(u)) {
+                if (r.getType().equals(Relationship.NameOfRelationship.SHARED_INTEREST)) {
                     cur++;
 
                 }
             }
-            if(cur>max){
+            if (cur > max) {
                 finalUser = u;
                 max = cur;
             }
@@ -757,18 +755,18 @@ public class SocialNetwork extends Subject {
      * @param users - list of users
      * @return finalUser - user with the most direct relationships
      */
-    public User getUserMaxRelsWithoutSharedInterests(List<User> users){
+    public User getUserMaxRelsWithoutSharedInterests(List<User> users) {
         int max = 0;
         User finalUser = null;
-        for(User u : users){
+        for (User u : users) {
             int cur = 0;
-            for (Relationship r :  incidentRelationships(u)) {
-                if(r.getType().equals(Relationship.NameOfRelationship.SIMPLE)){
+            for (Relationship r : incidentRelationships(u)) {
+                if (r.getType().equals(Relationship.NameOfRelationship.SIMPLE)) {
                     cur++;
 
                 }
             }
-            if(cur>max){
+            if (cur > max) {
                 finalUser = u;
                 max = cur;
             }
@@ -776,20 +774,19 @@ public class SocialNetwork extends Subject {
         return finalUser;
     }
 
-    public User getUsersMostInterests(List<User> users){
+    public User getUsersMostInterests(List<User> users) {
         int max = 0;
         User finalUser = null;
-        for(User u : users){
-                int cur = u.getNumberOfInterests();
-                if(cur>max){
-                    finalUser = u;
-                    max = cur;
-                }
+        for (User u : users) {
+            int cur = u.getNumberOfInterests();
+            if (cur > max) {
+                finalUser = u;
+                max = cur;
             }
+        }
 
         return finalUser;
     }
-
 
 
     public boolean areAdjacentUserType(User u, User v) throws InvalidVertexException {
@@ -797,11 +794,11 @@ public class SocialNetwork extends Subject {
         checkUser(u);
         for (User vertex : users()) {
             for (Relationship incidentRelationship : incidentRelationships(vertex)) {
-                Relationship r =  checkRelationship(incidentRelationship).element();
+                Relationship r = checkRelationship(incidentRelationship).element();
                 if (r.getUser1().equals(v) && r.getUser2().equals(u)) {
                     return true;
                 }
-                if(r.getUser1().equals(u) && r.getUser2().equals(v)){
+                if (r.getUser1().equals(u) && r.getUser2().equals(v)) {
                     return true;
                 }
             }
@@ -819,117 +816,81 @@ public class SocialNetwork extends Subject {
     }
 
 
-    /*public int minimumCostPath(int origId,
-                               int dstId, List<User> users) throws SocialNetworkException {
 
-        Vertex<User> userOrigin = findUserVertex(origId);
-        Vertex<User> userDestin= findUserVertex(dstId);
 
-        if(userOrigin==null) throw new SocialNetworkException("userOrigin does not exist");
-        if(userDestin==null) throw new SocialNetworkException("userDestin does not exist");
-        if(users == null ) throw new SocialNetworkException("users list reference is null");
 
-        //Create auxiliary structures and run the dijkstra algorithm
-        Map<Vertex<User>, Integer> costs = new HashMap<>();
-        Map<Vertex<User>, Vertex<User>> predecessors = new HashMap<>();
+    public List<User> Dijkstra(Graph<User, Relationship> graph, User source,
+                                User query) {
 
-        dijkstra(userOrigin, costs, predecessors);
 
-        //extract the path, making sure it starts out empty
-        users.clear();
 
-        //flag to indicate if path was complete
-        boolean complete = true;
-        Vertex<User> actual = userDestin;
-        while( actual != userOrigin) {
-            users.add(0, actual.element());
-            actual = predecessors.get(actual);
-            if( actual == null) {
-                complete = false;
-                break;
-            }
+        List<User> unvisited = new ArrayList<>();
+        //distances : Vertex<String> -> int/double (cost)
+        //previous:   Vertex<String> -> Vertex<String>
+        Map<User, Double> distances = new HashMap<>();
+        Map<User, User> predecessors = new HashMap<>();
+
+        /* inicialização */
+        for(Vertex<User> v : graph.vertices()) {
+            distances.put(v.element(), Double.MAX_VALUE);
+            predecessors.put(v.element(), null);
+            unvisited.add(v.element());
         }
-        users.add(0, userOrigin.element());
+        distances.put(source, 0.0);
 
-        if(!complete) {
-            users.clear();
-            return -1;
-        }
-
-        return costs.get(userDestin);
-    }
-
-
-    private void dijkstra(Vertex<User> orig,
-                          Map<Vertex<User>, Integer> costs,
-                          Map<Vertex<User>, Vertex<User>> predecessors) {
-
-        costs.clear();
-        predecessors.clear();
-        List<Vertex<User>> unvisited = new ArrayList<>();
-
-        for (Vertex<User> u : sn.vertices()) {
-            unvisited.add(u);
-
-            costs.put(u, Integer.MAX_VALUE);
-            predecessors.put(u, null);
-
-        }
-        costs.put(orig, 0);
         while(!unvisited.isEmpty()) {
-            Vertex<User> lowerCostVertex = findLowerCostVertex(unvisited, costs);
-            unvisited.remove(lowerCostVertex);
-            List<Edge<Relationship, User>> outboundEdges = new ArrayList<>();
-            for (Edge<Relationship, User> outboundEdge : sn.outboundEdges(lowerCostVertex)) {
-                if(outboundEdge.element().existsInterestsInCommon()){
-                    continue;
-                }
-                outboundEdges.add(outboundEdge);
+            User current = findLowerCostVertex(distances, unvisited); //u
 
-            }
-            for(Edge<Relationship, User> edge : outboundEdges){
-                Vertex<User> opposite = sn.opposite(lowerCostVertex, edge);
-                if( unvisited.contains(opposite) ) {
-                    int cost = edge.element().getInterestsInCommon().size();
-                    int pathCost = costs.get(lowerCostVertex) + cost;
-                    if( pathCost < costs.get(opposite) ) {
-                        costs.put(opposite, pathCost);
-                        predecessors.put(opposite, lowerCostVertex);
+            unvisited.remove(current);
 
+            Collection<Relationship> edges = incidentRelationships(current);
+            for(Relationship e : edges) {
+               User v = graph.opposite(checkUser(current), checkRelationship(e)).element();
+                if(/* is unvisited? */ unvisited.contains(v)) {
+                    double alt = distances.get(current) + e.getCost();
+                    if( alt < distances.get(v)) {
+                        distances.put(v, alt);
+                        predecessors.put(v, current);
                     }
                 }
             }
         }
 
-    }
+        System.out.println(distances);
+        System.out.println(predecessors);
 
-    public Vertex<User> findUserVertex(int number) throws SocialNetworkException{
-        if(number <= 0 || number > 50) throw new SocialNetworkException("User doesn't exist");
-        Vertex<User> temp = null;
-        for (Vertex<User> u: sn.vertices()) {
-            if(u.element().getNumber() == number){
-                return u;
-            }
+        System.out.print("Custo de " + source + " -> " + query + "? ");
+        System.out.println(distances.get(query));
+
+        System.out.println("Caminho de " + source + " -> " + query + "? ");
+
+        List<User> path = new ArrayList<>();
+
+        User current = query;
+        while(current != source) {
+            path.add(current);
+            current = predecessors.get(current);
         }
-        return temp;
+        path.add(source);
+        Collections.reverse(path);
+        System.out.println(path);
+        return path;
     }
 
-    private Vertex<User> findLowerCostVertex(List<Vertex<User>> unvisited,
-                                             Map<Vertex<User>, Integer> costs) {
 
-        int minValue = Integer.MAX_VALUE;
-        Vertex<User> lowerCostVertex = null;
+    private  User findLowerCostVertex(Map<User, Double> distances,
+                                                      List<User> unvisited) {
+        User lowerCostVertex = null;
+        double minCost = Double.MAX_VALUE;
 
-        for (Vertex<User> u : unvisited) {
-            int costValue = costs.get(u);
-            if( costValue <= minValue ) {
-                lowerCostVertex = u;
-                minValue = costValue;
+        for(User v : unvisited) {
+            double vCost = distances.get(v);
+            if(vCost <= minCost) {
+                minCost = vCost;
+                lowerCostVertex = v;
             }
         }
 
         return lowerCostVertex;
-
-    }*/
-
+    }
 }

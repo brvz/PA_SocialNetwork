@@ -1,5 +1,6 @@
 package model;
 
+import javax.management.relation.Relation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ public class Relationship {
     private User user1, user2;
     private String date;
     private Relationship.NameOfRelationship type;
+    private double cost;
 
     public enum NameOfRelationship {
         SHARED_INTEREST,
@@ -22,7 +24,9 @@ public class Relationship {
             }
             return "Desconhecido";
         }
-    };
+    }
+
+
 
     private List<Interest> interestsInCommon;
 
@@ -33,26 +37,32 @@ public class Relationship {
         setDate(date);
         this.interestsInCommon = new ArrayList<>();
         this.setInterestsInCommon();
+        this.cost = 1.0;
     }
 
-    public Relationship(User u1, User u2, String date){
+    public Relationship(User u1, User u2, String date) {
         this.type = null;
         setUser1(u1);
         setUser2(u2);
         setDate(date);
         this.interestsInCommon = new ArrayList<>();
         this.setInterestsInCommon();
+        this.cost = 1.0;
+    }
+
+    public double getCost() {
+        return cost;
     }
 
     public void setType(Relationship.NameOfRelationship type) {
         this.type = type;
     }
 
-    public User getUser1(){
+    public User getUser1() {
         return user1;
     }
 
-    public User getUser2(){
+    public User getUser2() {
         return user2;
     }
 
@@ -64,7 +74,7 @@ public class Relationship {
         this.user2 = user2;
     }
 
-    public NameOfRelationship getType(){
+    public NameOfRelationship getType() {
         return this.type;
     }
 
@@ -76,9 +86,9 @@ public class Relationship {
         this.date = date;
     }
 
-        public void setInterestsInCommon(){
-        List<Interest> interestA =  user1.getInterestList();
-        List<Interest> interestB =  user2.getInterestList();
+    public void setInterestsInCommon() {
+        List<Interest> interestA = user1.getInterestList();
+        List<Interest> interestB = user2.getInterestList();
 
         for (int i = 0; i < interestA.size(); i++) {
             for (int j = 0; j < interestB.size(); j++) {
@@ -89,44 +99,51 @@ public class Relationship {
         }
     }
 
-    public List<Interest> getInterestsInCommon(){
+    public List<Interest> getInterestsInCommon() {
         return interestsInCommon;
     }
 
-    public boolean existsInterestsInCommon(){
+    public boolean existsInterestsInCommon() {
         return getInterestsInCommon() != null && getInterestsInCommon().size() > 0;
     }
 
-    public void setRelationshipType(){
-        if(existsInterestsInCommon()){
-            this.type= NameOfRelationship.SHARED_INTEREST;
-        }
-        else{
-            this.type= NameOfRelationship.SIMPLE;
+    public void setRelationshipType() {
+        if (existsInterestsInCommon()) {
+            this.type = NameOfRelationship.SHARED_INTEREST;
+        } else {
+            this.type = NameOfRelationship.SIMPLE;
         }
 
     }
 
     @Override
     public String toString() {
-        return "" + getInterestsInCommon().size() ;
+        return "" + getInterestsInCommon().size();
     }
 
-    public String showInterestInCommon(){
+    public String showInterestInCommon() {
         String res = "";
-        for(Interest in : interestsInCommon){
+        for (Interest in : interestsInCommon) {
             res += in.getHashtag() + "\n";
         }
         return res;
     }
 
-    public String showInterestInCommonLog(){
+    public String showInterestInCommonLog() {
         String res = "";
-        for(Interest in : interestsInCommon){
+        for (Interest in : interestsInCommon) {
             res += in.getHashtag() + " ";
         }
         return res;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Relationship) {
+            Relationship other =  (Relationship)obj;
+            return other.user1.equals(user1) && other.user2.equals(user2);
+        }
+        return super.equals(obj);
 
+    }
 }
