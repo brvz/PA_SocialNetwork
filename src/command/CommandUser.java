@@ -18,7 +18,7 @@ public class CommandUser extends CommandSocialNetwork  {
     @Override
     public void execute() {
         sn.readCSVRelationshipsByUser(userNumber);
-     if(!sn.getLastUsers().isEmpty()){
+        if(!sn.getLastUsers().isEmpty()){
             sn.clearLastUsers();
         }
     }

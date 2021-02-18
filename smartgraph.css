@@ -52,7 +52,7 @@ STYLESHEET FOR JAVAFXGRAPH VISUALIZATION
 
 .edgeBFS{
     -fx-stroke-width: 5;
-    -fx-stroke: green;
+    -fx-stroke: purple;
     -fx-fill: transparent; /*important for curved edges */
     -fx-stroke-line-cap: round;
     -fx-opacity:1;

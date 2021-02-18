@@ -1,5 +1,6 @@
 package view;
 
+import com.pa.proj2020.adts.graph.Edge;
 import com.pa.proj2020.adts.graph.GraphAdjacencyList;
 import command.*;
 import javafx.collections.FXCollections;
@@ -233,13 +234,65 @@ public class SocialNetworkUI extends BorderPane implements Observer {
             updateGraph();
         });
         lowestPath.setOnAction(a -> {
-                    setColors();
-                    updateGraph();
-                    SmartGraphVertex v = getSelected().get(0);
-                    User u = (User) v.getUnderlyingVertex().element();
-                    List<SmartGraphVertex> bfs = BFS(getSelected().get(0));
-                    List<User> listUsers = new ArrayList<>();
-                    for (Interest in : sn.getInterestList()) {
+            setColors();
+            updateGraph();
+            SmartGraphVertex v = getSelected().get(0);
+            User u = (User) v.getUnderlyingVertex().element();
+            Interest in = null;
+
+            for (Interest i : sn.getInterestList()) {
+                if (i.getHashtag().equals(interestBFS.getSelectionModel().getSelectedItem())) {
+                    in = i;
+                    break;
+                }
+            }
+            List<SmartGraphVertex> bfs = BFS(getSelected().get(0), in);
+            List<User> listUsers = new ArrayList<>();
+            for (SmartGraphVertex listBFS : bfs) {
+                listBFS.setStyleClass("VertexBFS");
+                User u1 = (User) listBFS.getUnderlyingVertex().element();
+                if (u1.getNumber() != u.getNumber()) {
+                    listUsers.add(u1);
+                }
+
+            }
+            for (User u1 : listUsers) {
+                List<User> path = sn.Dijkstra(sn.getSn(), u, u1);
+                User current = u;
+                for (User user : path) {
+                    if (user != current) {
+                        Relationship relationshipBetween = sn.getRelationshipBetween(current, user).get(0);
+                        //Edge<Relationship, User> relationshipUserEdge = sn.checkRelationship(relationshipBetween);
+                        SmartStylableNode stylableEdge = this.graphView.getStylableEdge(relationshipBetween);
+                        stylableEdge.setStyleClass("edgeBFS");
+                        current = user;
+                    }
+                }
+
+                /*
+                for (Node node : graphView.getChildren()) {
+                    if (node instanceof SmartGraphEdge) {
+                        List<User> path = sn.Dijkstra(sn.getSn(), u, u1);
+                        for (int i = 0; i <= path.size(); i++) {
+                            for (int j = i + 1; j < path.size(); j++) {
+                                for (Relationship relationship : sn.relationships()) {
+                                    if (path.get(j).equals(sn.getSn().opposite(sn.checkUser(path.get(i)), sn.checkRelationship(relationship)).element())) {
+                                        if (relationship.equals(node)) {
+                                            ((SmartGraphEdge<?, ?>) node).setStyleClass("edgeBFS");
+                                            break;
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+                */
+
+            }
+
+                    /*for (Interest in : sn.getInterestList()) {
                         if (in.getHashtag().equals(interestBFS.getSelectionModel().getSelectedItem())) {
                             for (SmartGraphVertex s : bfs) {
                                 if (u.getInterestList().size() > 0) {
@@ -263,7 +316,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
                                                 List<User> path = sn.Dijkstra(sn.getSn(), u, u1);
                                                 for (int i = 0; i <= path.size(); i++) {
                                                     for (int j = i + 1; j < path.size(); j++) {
-                                                        for (Relationship relationship : sn.getRelationshipBetween(path.get(i), path.get(j))) {
+                                                        for (Relationship relationship : sn.relationships()) {
                                                             if(path.get(j).equals(sn.getSn().opposite(sn.checkUser(path.get(i)),sn.checkRelationship(relationship)).element())) {
                                                                 if(relationship.equals(node)){
                                                                     ((SmartGraphEdge<?, ?>) node).setStyleClass("edgeBFS");
@@ -282,44 +335,37 @@ public class SocialNetworkUI extends BorderPane implements Observer {
 
                             }
                         }
-                    }
-                    v.setStyleClass("VertexSelected");
-
-                    for (User u2 : listUsers) {
-
-                    }
-                updateGraph();
-    });
-
-
-
+                    }*/
+            v.setStyleClass("VertexSelected");
+            updateGraph();
+        });
 
 
         graphView.setEdgeDoubleClickAction(graphEdge ->
 
-    {
-        Relationship r = graphEdge.getUnderlyingEdge().element();
-        PaneTemplate pT = new PaneTemplate();
-        pT.initialize("" + r.showInterestInCommon(), "Interests in Common between " + r.getUser1().getNumber() + " & " + r.getUser2().getNumber());
-        updateGraph();
-    });
+        {
+            Relationship r = graphEdge.getUnderlyingEdge().element();
+            PaneTemplate pT = new PaneTemplate();
+            pT.initialize("" + r.showInterestInCommon(), "Interests in Common between " + r.getUser1().getNumber() + " & " + r.getUser2().getNumber());
+            updateGraph();
+        });
         graphView.setVertexDoubleClickAction(graphVertex ->
 
-    {
-        User r = graphVertex.getUnderlyingVertex().element();
-        PaneTemplate pT = new PaneTemplate();
-        pT.initialize(" " + r.showUserToString(), " Info user selected: ");
-        updateGraph();
-        //select vertex
-        setSelected(graphVertex);
-    });
+        {
+            User r = graphVertex.getUnderlyingVertex().element();
+            PaneTemplate pT = new PaneTemplate();
+            pT.initialize(" " + r.showUserToString(), " Info user selected: ");
+            updateGraph();
+            //select vertex
+            setSelected(graphVertex);
+        });
         clear.setOnAction(a ->
 
-    {
-        clearSelected();
-        updateGraph();
-    });
-}
+        {
+            clearSelected();
+            updateGraph();
+        });
+    }
 
     public void showScene() {
         Scene scene = new Scene(this, 1700, 800);
@@ -415,7 +461,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
     }
 
 
-    public List<SmartGraphVertex> BFS(SmartGraphVertex user_root) {
+    public List<SmartGraphVertex> BFS(SmartGraphVertex user_root, Interest interest) {
         Queue<SmartGraphVertex> queue = new LinkedList<>();
         List<SmartGraphVertex> visited = new ArrayList<>();
 
@@ -432,17 +478,17 @@ public class SocialNetworkUI extends BorderPane implements Observer {
                     User u = (User) n.getUnderlyingVertex().element();
                     if (sn.areAdjacentUserType((User) v.getUnderlyingVertex().element(), u)) {
                         if (!visited.contains(w)) {
-                           /* Boolean check = false;
+                            Boolean check = false;
                             for (Interest in : u.getInterestList()) {
-                                if(in.getIdentify() == interest.getIdentify()){
+                                if (in.getIdentify() == interest.getIdentify()) {
                                     check = true;
                                     break;
                                 }
                             }
-                            if(check){*/
-                            visited.add((SmartGraphVertex) w);
-                            queue.offer((SmartGraphVertex) w);
-                            // }
+                            if (check) {
+                                visited.add((SmartGraphVertex) w);
+                                queue.offer((SmartGraphVertex) w);
+                            }
                         }
                     }
                 }

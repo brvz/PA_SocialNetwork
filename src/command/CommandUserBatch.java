@@ -24,7 +24,7 @@ public class  CommandUserBatch extends CommandSocialNetwork {
 
         //for (Integer integer : userNumber) {
             sn.readCSVBatch(userNumber);
-         if(sn.getLastUserAdded() != null){
+            if(sn.getLastUserAdded() != null){
                 sn.clearLastUser();
             }
 

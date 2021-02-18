@@ -843,7 +843,14 @@ public class SocialNetwork extends Subject {
 
             unvisited.remove(current);
 
-            Collection<Relationship> edges = incidentRelationships(current);
+            Collection<Relationship> edges = new ArrayList<>();
+
+            for(Relationship r : relationships()){
+                if(r.getUser1().getNumber() == current.getNumber() || r.getUser2().getNumber() == current.getNumber()){
+                    edges.add(r);
+                }
+            }
+
             for(Relationship e : edges) {
                User v = graph.opposite(checkUser(current), checkRelationship(e)).element();
                 if(/* is unvisited? */ unvisited.contains(v)) {
@@ -867,7 +874,7 @@ public class SocialNetwork extends Subject {
         List<User> path = new ArrayList<>();
 
         User current = query;
-        while(current != source) {
+        while(current != source && current != null) {
             path.add(current);
             current = predecessors.get(current);
         }

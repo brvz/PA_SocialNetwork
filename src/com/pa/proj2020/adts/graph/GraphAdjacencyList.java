@@ -58,6 +58,16 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
 
         List<Edge<E, V>> incidentEdges = new ArrayList<>();
         incidentEdges.addAll(myVertex.edges);
+        /*for (Vertex<V> vertex : vertices()) {
+            if(!vertex.equals(v)){
+                for (Edge<E, V> edge : checkVertex(vertex).edges) {
+                    if(edge.vertices()[0].equals(v)){
+                        incidentEdges.add(edge);
+                    }
+                }
+            }
+
+        }*/
         //incidentEdges.addAll(getEdgesOfVertex(myVertex));
         return incidentEdges;
     }
@@ -179,7 +189,7 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
 
         MyEdge newEdge = new MyEdge(edgeElement, v, u);
 
-       // uVertex.edges.add(newEdge);
+        //uVertex.edges.add(newEdge);
         vVertex.edges.add(newEdge);
 
         return newEdge;
