@@ -18,14 +18,20 @@ public class CommandRedo extends CommandSocialNetwork{
     @Override
     public void execute() {
         if(sn.getLastUserAdded() != null){
-            sn.readCSVRelationshipsByUser(sn.getLastUserAdded().getNumber());
-            sn.clearLastUser();
+            if(sn.isUndo()){
+                sn.readCSVRelationshipsByUser(sn.getLastUserAdded().peek().getNumber());
+                sn.setUndo(false);
+
+            }else{
+                sn.readCSVRelationshipsByUser(sn.getLastUserAdded().pop().getNumber());
+            }
+            sn.setRedo(true);
         }else if(sn.getLastUsers().size() > 0){
             List<Integer> user = new ArrayList<>();
-            for (User i : sn.getLastUsers()) {
+            for (User i : sn.getLastUsers().peek()) {
                 user.add(i.getNumber());
             }
-            sn.clearLastUsers();
+            sn.getLastUsers().pop();
             sn.readCSVBatch(user);
 
 

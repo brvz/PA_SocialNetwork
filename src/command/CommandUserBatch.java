@@ -38,6 +38,7 @@ public class  CommandUserBatch extends CommandSocialNetwork {
         for (Integer integer : userNumber) {
             sn.removeUserById(integer);
         }
+        sn.getLastUsers().pop();
 
     }
 

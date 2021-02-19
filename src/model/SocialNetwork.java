@@ -20,10 +20,11 @@ public class SocialNetwork extends Subject {
     private GraphAdjacencyList<User, Relationship> sn;
     private String name;
     private List<Interest> interestList;
-    private User lastUserAdded;
-    private List<User> lastUsers;
+    private Stack<User> lastUserAdded;
+    private Stack<List<User>> lastUsers;
     private final static Logger log = new Logger();
     public boolean redo = false;
+    public boolean undo = false;
 
     /*
     CONFIGURATION PROPERTIES
@@ -34,8 +35,8 @@ public class SocialNetwork extends Subject {
     public SocialNetwork(String name) {
         sn = new GraphAdjacencyList<>();
         setName(name);
-        lastUserAdded = null;
-        lastUsers = new ArrayList<>();
+        lastUserAdded = new Stack<>();
+        lastUsers = new Stack<>();
         CSVReadInterest("input_Files/interests.csv");
         this.loggerProperties = new LoggerProperties();
     }
@@ -432,12 +433,17 @@ public class SocialNetwork extends Subject {
                     if (checkType(userId) == null) {
                         User user = new User(userId, User.UserType.ADDED, values[1]);
                         this.addUser(user);
-                        lastUserAdded = user;
+                        if(!isRedo()){
+                            lastUserAdded.push(user);
+                        }
+
                         addIncludedUsers(values, user);
                         logAddUser(user);
                     } else {
                         User user = checkType(userId);
-                        lastUserAdded = user;
+                        if(!isRedo()){
+                            lastUserAdded.push(user);
+                        }
                         addIncludedUsers(values, user);
 
                         for (Edge<Relationship, User> e : sn.incidentEdges(getUserVertex(user))) {
@@ -457,9 +463,10 @@ public class SocialNetwork extends Subject {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        redo = false;
     }
 
-    public User getLastUserAdded() {
+    public Stack<User> getLastUserAdded() {
         return lastUserAdded;
     }
 
@@ -474,7 +481,7 @@ public class SocialNetwork extends Subject {
 
 
     public void readCSVBatch(List<Integer> userId) {
-
+        List<User> list = new ArrayList<>();
         for (int batchUser : userId) {
             User check = getIdOfUser(batchUser);
             if (check != null && check.getType() == User.UserType.ADDED) {
@@ -493,13 +500,15 @@ public class SocialNetwork extends Subject {
                             User user = new User(batchUser, User.UserType.ADDED, values[1]);
                             this.addUser(user);
                             //lastUserAdded = null;
-                            getLastUsers().add(user);
+                            //getLastUsers().peek().add(user);
+                            list.add(user);
                             addIncludedUsers(values, user);
                             logAddUser(user);
                         } else {
                             User user = checkType(batchUser);
                             //lastUserAdded = null;
-                            getLastUsers().add(user);
+                            //getLastUsers().peek().add(user);
+                            list.add(user);
                             addIncludedUsers(values, user);
                             for (Edge<Relationship, User> e : sn.incidentEdges(getUserVertex(user))) {
                                 Vertex<User> userTemp = sn.opposite(getUserVertex(user), getRelationshipEdge(e.element()));
@@ -519,11 +528,11 @@ public class SocialNetwork extends Subject {
             }
         }
 
-
+        getLastUsers().push(list);
         lastUserAdded = null;
     }
 
-    public List<User> getLastUsers() {
+    public Stack<List<User>> getLastUsers() {
         return lastUsers;
     }
 
@@ -813,6 +822,14 @@ public class SocialNetwork extends Subject {
 
     public void setRedo(boolean redo) {
         this.redo = redo;
+    }
+
+    public boolean isUndo(){
+        return undo;
+    }
+
+    public void setUndo(boolean undo){
+        this.undo = undo;
     }
 
 
