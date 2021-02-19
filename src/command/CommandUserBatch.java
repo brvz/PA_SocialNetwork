@@ -1,6 +1,7 @@
 package command;
 
 import model.SocialNetwork;
+import model.User;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -35,11 +36,22 @@ public class  CommandUserBatch extends CommandSocialNetwork {
 
     @Override
     public void unExecute() {
+        List<User> userList = new ArrayList<>();
+        for (Integer integer : userNumber) {
+            User user = sn.getIdOfUser(integer);
+            //sn.removeUserById(integer);
+            userList.add(user);
+        }
+        if(sn.isRedo()){
+            if(!sn.getLastUsers().contains(userList)){
+                sn.getLastUsers().push(userList);
+                sn.setUndo(true);
+            }
+        }
         for (Integer integer : userNumber) {
             sn.removeUserById(integer);
         }
-        sn.getLastUsers().pop();
-
+        sn.setRedo(false);
     }
 
 }
