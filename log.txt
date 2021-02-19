@@ -1,118 +1,110 @@
-Fri Feb 19 21:18:35 GMT 2021 | < 1 > | < 10 > | < #marketing  >  
+Fri Feb 19 23:33:06 GMT 2021 | < 1 > | < 10 > | < #marketing  >  
 
-Fri Feb 19 21:18:35 GMT 2021 | < 1 > | < 21 > | < #RoR #ruby  >  
+Fri Feb 19 23:33:06 GMT 2021 | < 1 > | < 21 > | < #RoR #ruby  >  
 
-Fri Feb 19 21:18:35 GMT 2021 | < 1 > | < 24 > | < #marketing #gnu #theory  >  
+Fri Feb 19 23:33:06 GMT 2021 | < 1 > | < 24 > | < #marketing #gnu #theory  >  
 
-Fri Feb 19 21:18:35 GMT 2021 | < 1 > | < 26 > | < #RoR  >  
+Fri Feb 19 23:33:06 GMT 2021 | < 1 > | < 26 > | < #RoR  >  
 
-Fri Feb 19 21:18:35 GMT 2021 | < 1 > | 2020-06-07 | < 0 > | < 6 > 
+Fri Feb 19 23:33:06 GMT 2021 | < 1 > | 2020-06-07 | < 0 > | < 6 > 
 
-Fri Feb 19 21:18:43 GMT 2021 | < 2 > | < 25 > | < #building #smartphone  >  
+Fri Feb 19 23:33:11 GMT 2021 | < 2 > | < 25 > | < #building #smartphone  >  
 
-Fri Feb 19 21:18:43 GMT 2021 | < 2 > | < 35 > | <  >  
+Fri Feb 19 23:33:12 GMT 2021 | < 2 > | < 35 > | <  >  
 
-Fri Feb 19 21:18:43 GMT 2021 | < 2 > | < 39 > | <  >  
+Fri Feb 19 23:33:12 GMT 2021 | < 2 > | < 39 > | <  >  
 
-Fri Feb 19 21:18:43 GMT 2021 | < 2 > | < 49 > | < #innovation #smartphone  >  
+Fri Feb 19 23:33:12 GMT 2021 | < 2 > | < 49 > | < #innovation #smartphone  >  
 
-Fri Feb 19 21:18:43 GMT 2021 | < 2 > | 2020-09-13 | < 0 > | < 3 > 
+Fri Feb 19 23:33:12 GMT 2021 | < 2 > | 2020-09-13 | < 0 > | < 3 > 
 
-Fri Feb 19 21:18:43 GMT 2021 | < 3 > | < 7 > | <  >  
+Fri Feb 19 23:33:13 GMT 2021 | < 3 > | < 7 > | <  >  
 
-Fri Feb 19 21:18:43 GMT 2021 | < 3 > | < 13 > | <  >  
+Fri Feb 19 23:33:13 GMT 2021 | < 3 > | < 13 > | <  >  
 
-Fri Feb 19 21:18:43 GMT 2021 | < 3 > | < 22 > | < #computer  >  
+Fri Feb 19 23:33:13 GMT 2021 | < 3 > | < 22 > | < #computer  >  
 
-Fri Feb 19 21:18:43 GMT 2021 | < 3 > | < 37 > | < #computer  >  
+Fri Feb 19 23:33:13 GMT 2021 | < 3 > | < 37 > | < #computer  >  
 
-Fri Feb 19 21:18:43 GMT 2021 | < 3 > | < 38 > | < #RoR #frontend  >  
+Fri Feb 19 23:33:13 GMT 2021 | < 3 > | < 38 > | < #RoR #frontend  >  
 
-Fri Feb 19 21:18:43 GMT 2021 | < 3 > | < 40 > | <  >  
+Fri Feb 19 23:33:13 GMT 2021 | < 3 > | < 40 > | <  >  
 
-Fri Feb 19 21:18:43 GMT 2021 | < 3 > | 2020-05-23 | < 0 > | < 4 > 
+Fri Feb 19 23:33:13 GMT 2021 | < 3 > | 2020-05-23 | < 0 > | < 4 > 
 
-Fri Feb 19 21:18:45 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
+Fri Feb 19 23:33:13 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
 
-Fri Feb 19 21:18:45 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
+Fri Feb 19 23:33:13 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
 
-Fri Feb 19 21:18:45 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
+Fri Feb 19 23:33:13 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
 
-Fri Feb 19 21:18:45 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
+Fri Feb 19 23:33:13 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
 
-Fri Feb 19 21:18:46 GMT 2021 undo
-Fri Feb 19 21:18:47 GMT 2021 undo
-Fri Feb 19 21:18:48 GMT 2021 | < 2 > | < 25 > | < #building #smartphone  >  
+Fri Feb 19 23:33:15 GMT 2021 undo
+Fri Feb 19 23:33:15 GMT 2021 undo
+Fri Feb 19 23:33:16 GMT 2021 | < 3 > | < 7 > | <  >  
 
-Fri Feb 19 21:18:48 GMT 2021 | < 2 > | < 35 > | <  >  
+Fri Feb 19 23:33:16 GMT 2021 | < 3 > | < 13 > | <  >  
 
-Fri Feb 19 21:18:48 GMT 2021 | < 2 > | < 39 > | <  >  
+Fri Feb 19 23:33:16 GMT 2021 | < 3 > | < 22 > | < #computer  >  
 
-Fri Feb 19 21:18:48 GMT 2021 | < 2 > | < 49 > | < #innovation #smartphone  >  
+Fri Feb 19 23:33:16 GMT 2021 | < 3 > | < 37 > | < #computer  >  
 
-Fri Feb 19 21:18:48 GMT 2021 | < 2 > | 2020-09-13 | < 0 > | < 3 > 
+Fri Feb 19 23:33:16 GMT 2021 | < 3 > | < 38 > | < #RoR #frontend  >  
 
-Fri Feb 19 21:18:48 GMT 2021 | < 3 > | < 7 > | <  >  
+Fri Feb 19 23:33:16 GMT 2021 | < 3 > | < 40 > | <  >  
 
-Fri Feb 19 21:18:48 GMT 2021 | < 3 > | < 13 > | <  >  
+Fri Feb 19 23:33:16 GMT 2021 | < 3 > | 2020-05-23 | < 0 > | < 4 > 
 
-Fri Feb 19 21:18:48 GMT 2021 | < 3 > | < 22 > | < #computer  >  
+Fri Feb 19 23:33:16 GMT 2021 redo
+Fri Feb 19 23:33:16 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
 
-Fri Feb 19 21:18:48 GMT 2021 | < 3 > | < 37 > | < #computer  >  
+Fri Feb 19 23:33:16 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
 
-Fri Feb 19 21:18:48 GMT 2021 | < 3 > | < 38 > | < #RoR #frontend  >  
+Fri Feb 19 23:33:16 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
 
-Fri Feb 19 21:18:48 GMT 2021 | < 3 > | < 40 > | <  >  
+Fri Feb 19 23:33:16 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
 
-Fri Feb 19 21:18:48 GMT 2021 | < 3 > | 2020-05-23 | < 0 > | < 4 > 
+Fri Feb 19 23:33:16 GMT 2021 redo
+Fri Feb 19 23:33:17 GMT 2021 redo
+Fri Feb 19 23:33:18 GMT 2021 undo
+Fri Feb 19 23:33:19 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
 
-Fri Feb 19 21:18:48 GMT 2021 redo
-Fri Feb 19 21:18:49 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
+Fri Feb 19 23:33:19 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
 
-Fri Feb 19 21:18:49 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
+Fri Feb 19 23:33:19 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
 
-Fri Feb 19 21:18:49 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
+Fri Feb 19 23:33:19 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
 
-Fri Feb 19 21:18:49 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
+Fri Feb 19 23:33:19 GMT 2021 redo
+Fri Feb 19 23:33:20 GMT 2021 undo
+Fri Feb 19 23:33:20 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
 
-Fri Feb 19 21:18:49 GMT 2021 redo
-Fri Feb 19 21:18:50 GMT 2021 undo
-Fri Feb 19 21:18:52 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
+Fri Feb 19 23:33:20 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
 
-Fri Feb 19 21:18:52 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
+Fri Feb 19 23:33:20 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
 
-Fri Feb 19 21:18:52 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
+Fri Feb 19 23:33:20 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
 
-Fri Feb 19 21:18:52 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
+Fri Feb 19 23:33:20 GMT 2021 redo
+Fri Feb 19 23:33:20 GMT 2021 undo
+Fri Feb 19 23:33:20 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
 
-Fri Feb 19 21:18:52 GMT 2021 redo
-Fri Feb 19 21:18:52 GMT 2021 undo
-Fri Feb 19 21:18:53 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
+Fri Feb 19 23:33:20 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
 
-Fri Feb 19 21:18:53 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
+Fri Feb 19 23:33:20 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
 
-Fri Feb 19 21:18:53 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
+Fri Feb 19 23:33:20 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
 
-Fri Feb 19 21:18:53 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
+Fri Feb 19 23:33:20 GMT 2021 redo
+Fri Feb 19 23:33:20 GMT 2021 undo
+Fri Feb 19 23:33:21 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
 
-Fri Feb 19 21:18:53 GMT 2021 redo
-Fri Feb 19 21:18:53 GMT 2021 undo
-Fri Feb 19 21:18:54 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
+Fri Feb 19 23:33:21 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
 
-Fri Feb 19 21:18:54 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
+Fri Feb 19 23:33:21 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
 
-Fri Feb 19 21:18:54 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
+Fri Feb 19 23:33:21 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
 
-Fri Feb 19 21:18:54 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
-
-Fri Feb 19 21:18:54 GMT 2021 redo
-Fri Feb 19 21:18:54 GMT 2021 undo
-Fri Feb 19 21:18:56 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
-
-Fri Feb 19 21:18:56 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
-
-Fri Feb 19 21:18:56 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
-
-Fri Feb 19 21:18:56 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
-
-Fri Feb 19 21:18:56 GMT 2021 redo
+Fri Feb 19 23:33:21 GMT 2021 redo
+Fri Feb 19 23:33:21 GMT 2021 undo

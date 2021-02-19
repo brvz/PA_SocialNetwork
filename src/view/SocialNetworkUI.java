@@ -1,17 +1,16 @@
 package view;
 
-import com.pa.proj2020.adts.graph.Edge;
-import com.pa.proj2020.adts.graph.GraphAdjacencyList;
 import command.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.Interest;
@@ -23,27 +22,41 @@ import smartgraph.view.containers.ContentZoomPane;
 import smartgraph.view.graphview.*;
 import view.template.*;
 
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class SocialNetworkUI extends BorderPane implements Observer {
 
-    Button addUser;
-    Button undo;
-    Button clear;
-    Button redo;
-    Button statistics;
-    Button chartBtn;
-    Button lowestPath;
+    public Button addUserBtn;
+    public Button undoBtn;
+    public Button clearBtn;
+    public Button redoBtn;
+    public Button statistics;
+    public Button chartBtn;
+    public Button shortestPathBtn;
     public ObservableList<String> listInterestToFilter;
     public ComboBox interestFilter;
     public ComboBox interestBFS;
-    public DatePicker d = new DatePicker();
+    public DatePicker dateFilter;
     public SmartGraphPanel<User, Relationship> graphView;
-    HBox bottom;
-    TextField tf;
-    SocialNetwork sn;
-    CommandManager manager;
+    public HBox addUserHBox;
+    public HBox commandHBox;
+    public VBox left;
+    /*-------------------------------*/
+    // TODO: right side of panel
+    public VBox right;
+    public VBox userInfo;
+    public VBox addedUsersStats;
+    public VBox userWithMostRelStats;
+    /*-------------------------------*/
+    public TextField addUserTextField;
+    public Label shortestPathLabel;
+    public Label interestFilterLabel;
+    public Label dateFilterLabel;
+    public Separator separator1;
+    public Separator separator2;
+    public Separator separator3;
+    public SocialNetwork sn;
+    public CommandManager manager;
     private List<SmartGraphVertex> selected;
 
 
@@ -63,26 +76,78 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         setCenter(new ContentZoomPane(graphView));
         graphView.setAutomaticLayout(true);
         //create bottom pane with controls
-        bottom = new HBox(10);
+        left = new VBox(10);
+        left.setTranslateY(20);
+        left.setPrefWidth(300);
+        left.setPrefHeight(this.getHeight());
+        separator1 = new Separator();
+        separator2 = new Separator();
+        separator3 = new Separator();
 
         //CheckBox automatic = new CheckBox("Automatic layout");
-        addUser = new Button("ADD USER");
-        undo = new Button("UNDO");
-        redo = new Button("REDO");
-        clear = new Button("CLEAR");
+
+        // add user
+        addUserHBox = new HBox(10);
+        addUserHBox.setPadding(new Insets(5, 5, 5, 20));
+        addUserTextField = new TextField();
+        addUserTextField.setPrefWidth(180);
+        addUserBtn = new Button("Add User");
+        addUserBtn.setPadding(new Insets(5, 5, 5, 5));
+        addUserHBox.getChildren().addAll(addUserTextField, addUserBtn);
+
+        // filters
+        listInterestToFilter = FXCollections.observableList(sn.getNameOfAllInterests());
+        interestFilterLabel = new Label("Filter by interest");
+        interestFilterLabel.setPadding(new Insets(5, 5, 5, 20));
+        interestFilter = new ComboBox(listInterestToFilter);
+        interestFilter.setPrefWidth(180);
+        interestFilter.setTranslateX(20);
+        dateFilterLabel = new Label("Filter by date");
+        dateFilterLabel.setPadding(new Insets(5, 5, 5, 20));
+        dateFilter = new DatePicker();
+        dateFilter.setPrefWidth(180);
+        dateFilter.setTranslateX(20);
+
+        // shortest path
+        shortestPathLabel = new Label("Select interest");
+        shortestPathLabel.setPadding(new Insets(5, 5, 5, 20));
+        interestBFS = new ComboBox(listInterestToFilter);
+        interestBFS.setPrefWidth(180);
+        interestBFS.setTranslateX(20);
+        shortestPathBtn = new Button("Shortest PATH");
+        shortestPathBtn.setPadding(new Insets(5, 5, 5, 5));
+        shortestPathBtn.setTranslateX(20);
+
+        // other btn
+        commandHBox = new HBox(10);
+        commandHBox.setPadding(new Insets(5, 5, 5, 20));
+        clearBtn = new Button("CLEAR SELECTED");
+        clearBtn.setPadding(new Insets(5, 5, 5, 5));
+        undoBtn = new Button("UNDO");
+        undoBtn.setPadding(new Insets(5, 5, 5, 5));
+        redoBtn = new Button("REDO");
+        redoBtn.setPadding(new Insets(5, 5, 5, 5));
+        commandHBox.getChildren().addAll(clearBtn, undoBtn, redoBtn);
+
+        // set vbox children
+        left.getChildren().addAll(addUserHBox,
+                separator1,
+                interestFilterLabel, interestFilter,dateFilterLabel, dateFilter,
+                separator2,
+                shortestPathLabel, interestBFS, shortestPathBtn,
+                separator3,
+                commandHBox);
+
+        // statistics
         statistics = new Button("STATISTICS");
         chartBtn = new Button("CHARTS");
-        lowestPath = new Button("LOWEST PATH");
-        listInterestToFilter = FXCollections.observableList(sn.getNameOfAllInterests());
-        interestBFS = new ComboBox(listInterestToFilter);
-        interestFilter = new ComboBox(listInterestToFilter);
-        tf = new TextField();
 
         //automatic.selectedProperty().bindBidirectional(graphView.automaticLayoutProperty());
 
-        bottom.getChildren().addAll(tf, addUser, undo, clear, redo, interestFilter, d, statistics, chartBtn, lowestPath, interestBFS);
+        //bottom.getChildren().addAll(statistics, chartBtn);
 
-        setBottom(bottom);
+        //setBottom(bottom);
+        setLeft(left);
 
         setTriggers();
         showScene();
@@ -90,8 +155,8 @@ public class SocialNetworkUI extends BorderPane implements Observer {
     }
 
     public void setTriggers() {
-        addUser.setOnAction(a -> {
-            String id = tf.getText();
+        addUserBtn.setOnAction(a -> {
+            String id = addUserTextField.getText();
             int temp = 0;
             List<Integer> arr = new ArrayList<>();
             if (id.length() == 1) {
@@ -129,7 +194,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
                 //sn.readCSVRelationshipsByUser(id);
                 graphView.setStyle(null);
                 setColors();
-                tf.clear();
+                addUserTextField.clear();
                 updateGraph();
 
 
@@ -141,20 +206,20 @@ public class SocialNetworkUI extends BorderPane implements Observer {
                     //sn.readCSVRelationshipsByUser(id);
                     graphView.setStyle(null);
                     setColors();
-                    tf.clear();
+                    addUserTextField.clear();
                     updateGraph();
                 }
             }
         });
 
-        undo.setOnAction(a -> {
+        undoBtn.setOnAction(a -> {
             manager.executeUndo(new CommandUndo(sn));
             sn.logUndo();
             //sn.setRedo(true);
             updateGraph();
 
         });
-        redo.setOnAction(a -> {
+        redoBtn.setOnAction(a -> {
             manager.executeRedo(new CommandRedo(sn));
             sn.logRedo();
             updateGraph();
@@ -185,7 +250,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
             updateGraph();*/
         });
 
-        d.setOnAction(a -> {
+        dateFilter.setOnAction(a -> {
             manager.executeFilterDate(new CommandFilterDate(this));
             updateGraph();
             /*for(Node node: graphView.getChildren()) {
@@ -233,7 +298,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
             top10Without.setStage("Número de relações", "Utilizadores");
             updateGraph();
         });
-        lowestPath.setOnAction(a -> {
+        shortestPathBtn.setOnAction(a -> {
             setColors();
             updateGraph();
             SmartGraphVertex v = getSelected().get(0);
@@ -359,7 +424,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
             //select vertex
             setSelected(graphVertex);
         });
-        clear.setOnAction(a ->
+        clearBtn.setOnAction(a ->
 
         {
             clearSelected();

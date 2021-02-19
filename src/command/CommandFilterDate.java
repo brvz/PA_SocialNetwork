@@ -1,9 +1,7 @@
 package command;
 
 import javafx.scene.Node;
-import model.Relationship;
 import model.User;
-import smartgraph.view.graphview.SmartGraphEdge;
 import smartgraph.view.graphview.SmartGraphVertex;
 import smartgraph.view.graphview.SmartGraphVertexNode;
 import view.SocialNetworkUI;
@@ -30,7 +28,7 @@ public class CommandFilterDate extends CommandSocialNetwork{
 
                 SmartGraphVertex n = (SmartGraphVertex) node;
                 User u = (User) n.getUnderlyingVertex().element();
-                String date = ui.d.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                String date = ui.dateFilter.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 try {
                     Date dateFilter = new SimpleDateFormat("yyyy-MM-dd").parse(date);
                     Date dateUser = new SimpleDateFormat("yyyy-MM-dd").parse(u.getDate());
