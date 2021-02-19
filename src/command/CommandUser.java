@@ -18,15 +18,22 @@ public class CommandUser extends CommandSocialNetwork  {
 
     @Override
     public void execute() {
-        sn.readCSVRelationshipsByUser(userNumber);
-        if(!sn.getLastUsers().isEmpty()){
-            sn.clearLastUsers();
+        if(sn.isRedo() || sn.isUndo()){
+            if(!sn.getLastUsers().isEmpty()){
+                sn.clearLastUsers();
+            }
+            if(!sn.getLastUsersHistory().isEmpty()){
+                sn.clearLastUsersHistory();
+            }
+            sn.setUndo(false);
+            sn.setRedo(false);
         }
+        sn.readCSVRelationshipsByUser(userNumber);
     }
 
     @Override
     public void unExecute() {
-        User user = sn.getIdOfUser(userNumber);
+        /*User user = sn.getIdOfUser(userNumber);
         if(sn.isRedo()){
             if(!sn.getLastUserAdded().contains(user)){
                 sn.getLastUserAdded().push(user);
@@ -34,7 +41,7 @@ public class CommandUser extends CommandSocialNetwork  {
             }
         }
         sn.removeUserById(userNumber);
-        sn.setRedo(false);
+        sn.setRedo(false);*/
 
     }
 }

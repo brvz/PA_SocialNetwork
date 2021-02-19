@@ -43,6 +43,14 @@ public class CommandManager {
         }
     }
 
+    public void executeUndo(Command cmd){
+        if(!commandsDone.isEmpty()) {
+            cmd.execute();
+            history.push(commandsDone.peek());
+            commandsDone.pop();
+        }
+    }
+
     public void executeFilterInterest(Command cmd){
         if(!commandsDone.isEmpty()){
             cmd.execute();

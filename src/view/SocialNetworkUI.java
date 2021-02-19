@@ -148,9 +148,9 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         });
 
         undo.setOnAction(a -> {
-            manager.undo();
+            manager.executeUndo(new CommandUndo(sn));
             sn.logUndo();
-            sn.setRedo(true);
+            //sn.setRedo(true);
             updateGraph();
 
         });

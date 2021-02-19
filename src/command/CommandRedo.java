@@ -17,7 +17,7 @@ public class CommandRedo extends CommandSocialNetwork{
 
     @Override
     public void execute() {
-        if(sn.getLastUserAdded() != null){
+        /*if(sn.getLastUserAdded() != null){
             if(sn.isUndo()){
                 sn.readCSVRelationshipsByUser(sn.getLastUserAdded().peek().getNumber());
                 sn.setUndo(false);
@@ -25,27 +25,32 @@ public class CommandRedo extends CommandSocialNetwork{
                 sn.readCSVRelationshipsByUser(sn.getLastUserAdded().pop().getNumber());
             }
             sn.setRedo(true);
-        }else if(sn.getLastUsers().size() > 0){
+        }else*/
+        if(sn.getLastUsers().size() > 0){
             List<Integer> user = new ArrayList<>();
-            if(sn.isUndo()){
-                for (User i : sn.getLastUsers().peek()) {
+            List<User> list = sn.getLastUsersHistory().peek();
+            //if(sn.isUndo()){
+            if(list.size() > 1) {
+                for (User i : sn.getLastUsersHistory().peek()) {
                     user.add(i.getNumber());
                 }
+                sn.getLastUsersHistory().pop();
+                sn.getLastUsers().push(list);
                 sn.readCSVBatch(user);
+                sn.setRedo(true);
                 sn.setUndo(false);
-            }else{
-                for (User i : sn.getLastUsers().pop()) {
+            }else if(list.size() == 1){
+                for (User i : sn.getLastUsersHistory().peek()) {
                     user.add(i.getNumber());
+                    sn.readCSVRelationshipsByUser(i.getNumber());
                 }
-                //sn.getLastUsers().pop();
-                sn.readCSVBatch(user);
+                sn.getLastUsersHistory().pop();
+                sn.getLastUsers().push(list);
+                sn.setRedo(true);
+                sn.setUndo(false);
             }
-
-
-
-
-
         }
+
 
     }
 

@@ -20,8 +20,9 @@ public class SocialNetwork extends Subject {
     private GraphAdjacencyList<User, Relationship> sn;
     private String name;
     private List<Interest> interestList;
-    private Stack<User> lastUserAdded;
+    //private Stack<User> lastUserAdded;
     private Stack<List<User>> lastUsers;
+    private Stack<List<User>> lastUsersHistory;
     private final static Logger log = new Logger();
     public boolean redo = false;
     public boolean undo = false;
@@ -35,8 +36,9 @@ public class SocialNetwork extends Subject {
     public SocialNetwork(String name) {
         sn = new GraphAdjacencyList<>();
         setName(name);
-        lastUserAdded = new Stack<>();
+        //lastUserAdded = new Stack<>();
         lastUsers = new Stack<>();
+        lastUsersHistory = new Stack<>();
         CSVReadInterest("input_Files/interests.csv");
         this.loggerProperties = new LoggerProperties();
     }
@@ -416,6 +418,7 @@ public class SocialNetwork extends Subject {
 
 
     public void readCSVRelationshipsByUser(int userId) {
+        List<User> list = new ArrayList<>();
         User check = getIdOfUser(userId);
         if (check != null && check.getType() == User.UserType.ADDED) {
             throw new SocialNetworkException("User already added");
@@ -433,17 +436,18 @@ public class SocialNetwork extends Subject {
                     if (checkType(userId) == null) {
                         User user = new User(userId, User.UserType.ADDED, values[1]);
                         this.addUser(user);
-                        if(!isRedo()){
-                            lastUserAdded.push(user);
-                        }
+                        //if(!isRedo()){
+                        list.add(user);
+                        //}
 
                         addIncludedUsers(values, user);
                         logAddUser(user);
                     } else {
                         User user = checkType(userId);
-                        if(!isRedo()){
+                        /*if(!isRedo()){
                             lastUserAdded.push(user);
-                        }
+                        }*/
+                        list.add(user);
                         addIncludedUsers(values, user);
 
                         for (Edge<Relationship, User> e : sn.incidentEdges(getUserVertex(user))) {
@@ -463,17 +467,18 @@ public class SocialNetwork extends Subject {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        redo = false;
+        getLastUsers().push(list);
+        //redo = false;
     }
 
-    public Stack<User> getLastUserAdded() {
+    /*public Stack<User> getLastUserAdded() {
         return lastUserAdded;
-    }
+    }*/
 
 
-    public void clearLastUser() {
+    /*public void clearLastUser() {
         lastUserAdded = null;
-    }
+    }*/
 
     public void clearLastUsers() {
         lastUsers.clear();
@@ -529,12 +534,14 @@ public class SocialNetwork extends Subject {
         }
 
         getLastUsers().push(list);
-        lastUserAdded = null;
+        //lastUserAdded = null;
     }
 
     public Stack<List<User>> getLastUsers() {
         return lastUsers;
     }
+    public Stack<List<User>> getLastUsersHistory(){ return lastUsersHistory; }
+    public void clearLastUsersHistory(){ lastUsersHistory.clear(); }
 
     /**
      * Adds users included by added user and log info
@@ -581,7 +588,7 @@ public class SocialNetwork extends Subject {
             }
             redoRelationships.add(relationship);
         }
-        setRedo(false);
+        //setRedo(false);
     }
 
 
