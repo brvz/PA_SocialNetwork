@@ -1,110 +1,82 @@
-Fri Feb 19 23:33:06 GMT 2021 | < 1 > | < 10 > | < #marketing  >  
+Sat Feb 20 16:07:55 GMT 2021 | < 1 > | < 10 > | < #marketing  >  
 
-Fri Feb 19 23:33:06 GMT 2021 | < 1 > | < 21 > | < #RoR #ruby  >  
+Sat Feb 20 16:07:55 GMT 2021 | < 1 > | < 21 > | < #RoR #ruby  >  
 
-Fri Feb 19 23:33:06 GMT 2021 | < 1 > | < 24 > | < #marketing #gnu #theory  >  
+Sat Feb 20 16:07:55 GMT 2021 | < 1 > | < 24 > | < #marketing #gnu #theory  >  
 
-Fri Feb 19 23:33:06 GMT 2021 | < 1 > | < 26 > | < #RoR  >  
+Sat Feb 20 16:07:55 GMT 2021 | < 1 > | < 26 > | < #RoR  >  
 
-Fri Feb 19 23:33:06 GMT 2021 | < 1 > | 2020-06-07 | < 0 > | < 6 > 
+Sat Feb 20 16:07:55 GMT 2021 | < 1 > | 2020-06-07 | < 0 > | < 6 > 
 
-Fri Feb 19 23:33:11 GMT 2021 | < 2 > | < 25 > | < #building #smartphone  >  
+Sat Feb 20 16:07:57 GMT 2021 | < 2 > | < 25 > | < #building #smartphone  >  
 
-Fri Feb 19 23:33:12 GMT 2021 | < 2 > | < 35 > | <  >  
+Sat Feb 20 16:07:57 GMT 2021 | < 2 > | < 35 > | <  >  
 
-Fri Feb 19 23:33:12 GMT 2021 | < 2 > | < 39 > | <  >  
+Sat Feb 20 16:07:57 GMT 2021 | < 2 > | < 39 > | <  >  
 
-Fri Feb 19 23:33:12 GMT 2021 | < 2 > | < 49 > | < #innovation #smartphone  >  
+Sat Feb 20 16:07:57 GMT 2021 | < 2 > | < 49 > | < #innovation #smartphone  >  
 
-Fri Feb 19 23:33:12 GMT 2021 | < 2 > | 2020-09-13 | < 0 > | < 3 > 
+Sat Feb 20 16:07:57 GMT 2021 | < 2 > | 2020-09-13 | < 0 > | < 3 > 
 
-Fri Feb 19 23:33:13 GMT 2021 | < 3 > | < 7 > | <  >  
+Sat Feb 20 16:07:58 GMT 2021 | < 3 > | < 7 > | <  >  
 
-Fri Feb 19 23:33:13 GMT 2021 | < 3 > | < 13 > | <  >  
+Sat Feb 20 16:07:58 GMT 2021 | < 3 > | < 13 > | <  >  
 
-Fri Feb 19 23:33:13 GMT 2021 | < 3 > | < 22 > | < #computer  >  
+Sat Feb 20 16:07:58 GMT 2021 | < 3 > | < 22 > | < #computer  >  
 
-Fri Feb 19 23:33:13 GMT 2021 | < 3 > | < 37 > | < #computer  >  
+Sat Feb 20 16:07:58 GMT 2021 | < 3 > | < 37 > | < #computer  >  
 
-Fri Feb 19 23:33:13 GMT 2021 | < 3 > | < 38 > | < #RoR #frontend  >  
+Sat Feb 20 16:07:58 GMT 2021 | < 3 > | < 38 > | < #RoR #frontend  >  
 
-Fri Feb 19 23:33:13 GMT 2021 | < 3 > | < 40 > | <  >  
+Sat Feb 20 16:07:58 GMT 2021 | < 3 > | < 40 > | <  >  
 
-Fri Feb 19 23:33:13 GMT 2021 | < 3 > | 2020-05-23 | < 0 > | < 4 > 
+Sat Feb 20 16:07:58 GMT 2021 | < 3 > | 2020-05-23 | < 0 > | < 4 > 
 
-Fri Feb 19 23:33:13 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
+Sat Feb 20 16:07:59 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
 
-Fri Feb 19 23:33:13 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
+Sat Feb 20 16:07:59 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
 
-Fri Feb 19 23:33:13 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
+Sat Feb 20 16:07:59 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
 
-Fri Feb 19 23:33:13 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
+Sat Feb 20 16:07:59 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
 
-Fri Feb 19 23:33:15 GMT 2021 undo
-Fri Feb 19 23:33:15 GMT 2021 undo
-Fri Feb 19 23:33:16 GMT 2021 | < 3 > | < 7 > | <  >  
+Sat Feb 20 16:08:00 GMT 2021 | < 5 > | < 6 > | < #innovation  >  
 
-Fri Feb 19 23:33:16 GMT 2021 | < 3 > | < 13 > | <  >  
+Sat Feb 20 16:08:00 GMT 2021 | < 5 > | < 9 > | <  >  
 
-Fri Feb 19 23:33:16 GMT 2021 | < 3 > | < 22 > | < #computer  >  
+Sat Feb 20 16:08:00 GMT 2021 | < 5 > | < 23 > | < #innovation #jetbrains  >  
 
-Fri Feb 19 23:33:16 GMT 2021 | < 3 > | < 37 > | < #computer  >  
+Sat Feb 20 16:08:00 GMT 2021 | < 5 > | < 27 > | < #innovation #computer  >  
 
-Fri Feb 19 23:33:16 GMT 2021 | < 3 > | < 38 > | < #RoR #frontend  >  
+Sat Feb 20 16:08:00 GMT 2021 | < 5 > | < 33 > | <  >  
 
-Fri Feb 19 23:33:16 GMT 2021 | < 3 > | < 40 > | <  >  
+Sat Feb 20 16:08:00 GMT 2021 | < 5 > | < 41 > | < #marketing #jetbrains #android #demo  >  
 
-Fri Feb 19 23:33:16 GMT 2021 | < 3 > | 2020-05-23 | < 0 > | < 4 > 
+Sat Feb 20 16:08:00 GMT 2021 | < 5 > | < 42 > | < #marketing #android  >  
 
-Fri Feb 19 23:33:16 GMT 2021 redo
-Fri Feb 19 23:33:16 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
+Sat Feb 20 16:08:00 GMT 2021 | < 5 > | < 43 > | < #innovation #marketing #jetbrains #android  >  
 
-Fri Feb 19 23:33:16 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
+Sat Feb 20 16:08:00 GMT 2021 | < 5 > | 2020-02-28 | < 0 > | < 8 > 
 
-Fri Feb 19 23:33:16 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
+Sat Feb 20 16:08:00 GMT 2021 | < 6 > | < 11 > | < #building  >  
 
-Fri Feb 19 23:33:16 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
+Sat Feb 20 16:08:00 GMT 2021 | < 6 > | < 47 > | < #innovation  >  
 
-Fri Feb 19 23:33:16 GMT 2021 redo
-Fri Feb 19 23:33:17 GMT 2021 redo
-Fri Feb 19 23:33:18 GMT 2021 undo
-Fri Feb 19 23:33:19 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
+Sat Feb 20 16:08:00 GMT 2021 | < 6 > | 2020-04-12 | < 0 > | < 2 > 
 
-Fri Feb 19 23:33:19 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
+Sat Feb 20 16:08:01 GMT 2021 | < 7 > | < 36 > | <  >  
 
-Fri Feb 19 23:33:19 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
+Sat Feb 20 16:08:01 GMT 2021 | < 7 > | 2020-03-13 | < 0 > | < 3 > 
 
-Fri Feb 19 23:33:19 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
+Sat Feb 20 16:08:02 GMT 2021 | < 8 > | < 17 > | < #computer  >  
 
-Fri Feb 19 23:33:19 GMT 2021 redo
-Fri Feb 19 23:33:20 GMT 2021 undo
-Fri Feb 19 23:33:20 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
+Sat Feb 20 16:08:02 GMT 2021 | < 8 > | < 20 > | <  >  
 
-Fri Feb 19 23:33:20 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
+Sat Feb 20 16:08:02 GMT 2021 | < 8 > | < 30 > | < #computer  >  
 
-Fri Feb 19 23:33:20 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
+Sat Feb 20 16:08:02 GMT 2021 | < 8 > | < 31 > | <  >  
 
-Fri Feb 19 23:33:20 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
+Sat Feb 20 16:08:02 GMT 2021 | < 8 > | < 44 > | < #computer  >  
 
-Fri Feb 19 23:33:20 GMT 2021 redo
-Fri Feb 19 23:33:20 GMT 2021 undo
-Fri Feb 19 23:33:20 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
+Sat Feb 20 16:08:02 GMT 2021 | < 8 > | 2020-08-14 | < 0 > | < 1 > 
 
-Fri Feb 19 23:33:20 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
-
-Fri Feb 19 23:33:20 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
-
-Fri Feb 19 23:33:20 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
-
-Fri Feb 19 23:33:20 GMT 2021 redo
-Fri Feb 19 23:33:20 GMT 2021 undo
-Fri Feb 19 23:33:21 GMT 2021 | < 4 > | < 16 > | < #conference #computer  >  
-
-Fri Feb 19 23:33:21 GMT 2021 | < 4 > | < 32 > | < #demo #computer  >  
-
-Fri Feb 19 23:33:21 GMT 2021 | < 4 > | < 45 > | < #conference #computer  >  
-
-Fri Feb 19 23:33:21 GMT 2021 | < 4 > | 2020-01-30 | < 0 > | < 5 > 
-
-Fri Feb 19 23:33:21 GMT 2021 redo
-Fri Feb 19 23:33:21 GMT 2021 undo

@@ -4,13 +4,13 @@ import command.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.Interest;
@@ -18,7 +18,6 @@ import model.Relationship;
 import model.SocialNetwork;
 import model.User;
 import observer.Observer;
-import smartgraph.view.containers.ContentZoomPane;
 import smartgraph.view.graphview.*;
 import view.template.*;
 
@@ -30,7 +29,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
     public Button undoBtn;
     public Button clearBtn;
     public Button redoBtn;
-    public Button statistics;
+    public Button statsBtn;
     public Button chartBtn;
     public Button shortestPathBtn;
     public ObservableList<String> listInterestToFilter;
@@ -44,9 +43,16 @@ public class SocialNetworkUI extends BorderPane implements Observer {
     /*-------------------------------*/
     // TODO: right side of panel
     public VBox right;
+    public Label userInfoTitleLabel;
+    public Label infoLabel;
     public VBox userInfo;
+    public VBox textStats;
     public VBox addedUsersStats;
+    Label addedUsersStatsTitleLabel;
+    Label addedUsersStatsLabel;
     public VBox userWithMostRelStats;
+    Label userWithMostRelStatsTitleLabel;
+    Label userWithMostRelStatsLabel;
     /*-------------------------------*/
     public TextField addUserTextField;
     public Label shortestPathLabel;
@@ -55,15 +61,23 @@ public class SocialNetworkUI extends BorderPane implements Observer {
     public Separator separator1;
     public Separator separator2;
     public Separator separator3;
+    public Separator separator4;
+    public Separator separator5;
+    public Separator separator6;
+    public Separator separator7;
+    public Separator separator8;
+    public Separator separator9;
     public SocialNetwork sn;
     public CommandManager manager;
     private List<SmartGraphVertex> selected;
+    private List<SmartGraphEdge> selectedEdge;
 
 
     public SocialNetworkUI(SocialNetwork sn) {
         this.sn = sn;
         manager = new CommandManager();
         selected = new ArrayList<>();
+        selectedEdge = new ArrayList<>();
         initialize();
         sn.addObservers(this);
     }
@@ -73,7 +87,8 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
         graphView = new SmartGraphPanel<>(sn.getSn(), strategy);
 
-        setCenter(new ContentZoomPane(graphView));
+        //setCenter(new ContentZoomPane(graphView));
+        setCenter(graphView);
         graphView.setAutomaticLayout(true);
         //create bottom pane with controls
         left = new VBox(10);
@@ -83,6 +98,12 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         separator1 = new Separator();
         separator2 = new Separator();
         separator3 = new Separator();
+        separator4 = new Separator();
+        separator5 = new Separator();
+        separator6 = new Separator();
+        separator7 = new Separator();
+        separator8 = new Separator();
+        separator9 = new Separator();
 
         //CheckBox automatic = new CheckBox("Automatic layout");
 
@@ -98,11 +119,15 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         // filters
         listInterestToFilter = FXCollections.observableList(sn.getNameOfAllInterests());
         interestFilterLabel = new Label("Filter by interest");
+        interestFilterLabel.setStyle("-fx-font-weight: bold");
+        interestFilterLabel.setFont(new Font("Arial", 12));
         interestFilterLabel.setPadding(new Insets(5, 5, 5, 20));
         interestFilter = new ComboBox(listInterestToFilter);
         interestFilter.setPrefWidth(180);
         interestFilter.setTranslateX(20);
         dateFilterLabel = new Label("Filter by date");
+        dateFilterLabel.setStyle("-fx-font-weight: bold");
+        dateFilterLabel.setFont(new Font("Arial", 12));
         dateFilterLabel.setPadding(new Insets(5, 5, 5, 20));
         dateFilter = new DatePicker();
         dateFilter.setPrefWidth(180);
@@ -110,6 +135,8 @@ public class SocialNetworkUI extends BorderPane implements Observer {
 
         // shortest path
         shortestPathLabel = new Label("Select interest");
+        shortestPathLabel.setStyle("-fx-font-weight: bold");
+        shortestPathLabel.setFont(new Font("Arial", 12));
         shortestPathLabel.setPadding(new Insets(5, 5, 5, 20));
         interestBFS = new ComboBox(listInterestToFilter);
         interestBFS.setPrefWidth(180);
@@ -138,16 +165,76 @@ public class SocialNetworkUI extends BorderPane implements Observer {
                 separator3,
                 commandHBox);
 
-        // statistics
-        statistics = new Button("STATISTICS");
-        chartBtn = new Button("CHARTS");
+        // Right
+        right = new VBox(10);
+        right.setPrefWidth(250);
+        right.setPrefHeight(this.getHeight());
 
+        // User Info
+        userInfo = new VBox(10);
+        userInfo.setMinSize(200,0);
+        userInfo.autosize();
+        userInfoTitleLabel = new Label("Info");
+        userInfoTitleLabel.setStyle("-fx-font-weight: bold");
+        userInfoTitleLabel.setFont(new Font("Arial", 12));
+        userInfoTitleLabel.setPadding(new Insets(5, 5, 5, 20));
+        infoLabel = new Label("");
+        infoLabel.setPadding(new Insets(5, 5, 5, 20));
+        userInfo.getChildren().addAll(userInfoTitleLabel, infoLabel, separator4);
+
+        // Stats Btn
+        HBox statsHBox = new HBox(10);
+        statsHBox.setPadding(new Insets(5, 5, 5, 20));
+        //statsBtn = new Button("STATS");
+        //statsBtn.setPadding(new Insets(5, 5, 5, 5));
+        chartBtn = new Button("CHARTS");
+        chartBtn.setPadding(new Insets(5, 5, 5, 5));
+        statsHBox.getChildren().addAll(chartBtn);
+
+        // Stats text
+        textStats = new VBox(10);
+        textStats.setMinSize(200,0);
+        textStats.autosize();
+        //----------------------------------
+        addedUsersStats = new VBox(10);
+        addedUsersStats.setMinSize(200,0);
+        addedUsersStats.autosize();
+        addedUsersStatsTitleLabel = new Label("Added Users");
+        addedUsersStatsTitleLabel.setStyle("-fx-font-weight: bold");
+        addedUsersStatsTitleLabel.setFont(new Font("Arial", 12));
+        addedUsersStatsTitleLabel.setPadding(new Insets(5, 5, 5, 20));
+        addedUsersStatsLabel = new Label("");
+        ScrollPane sp = new ScrollPane();
+        sp.setContent(addedUsersStatsLabel);
+        sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        sp.setMaxSize(300, 300);
+        addedUsersStatsLabel.setPadding(new Insets(5, 5, 5, 20));
+        addedUsersStats.getChildren().addAll(separator5, addedUsersStatsTitleLabel, separator6, sp, separator7);
+        //----------------------------------
+        userWithMostRelStats = new VBox(10);
+        userWithMostRelStats.setMinSize(200,0);
+        userWithMostRelStats.autosize();
+        userWithMostRelStatsTitleLabel = new Label("User with most relationships");
+        userWithMostRelStatsTitleLabel.setStyle("-fx-font-weight: bold");
+        userWithMostRelStatsTitleLabel.setFont(new Font("Arial", 12));
+        userWithMostRelStatsTitleLabel.setPadding(new Insets(5, 5, 5, 20));
+        userWithMostRelStatsLabel = new Label("");
+        userWithMostRelStatsLabel.setPadding(new Insets(5, 5, 5, 20));
+        userWithMostRelStats.getChildren().addAll(userWithMostRelStatsTitleLabel, separator8, userWithMostRelStatsLabel, separator9);
+        //----------------------------------
+        textStats.getChildren().addAll(addedUsersStats, userWithMostRelStats);
+
+
+        // Right adds
+        right.getChildren().addAll(userInfo, statsHBox, textStats);
         //automatic.selectedProperty().bindBidirectional(graphView.automaticLayoutProperty());
 
         //bottom.getChildren().addAll(statistics, chartBtn);
 
         //setBottom(bottom);
         setLeft(left);
+        setRight(right);
 
         setTriggers();
         showScene();
@@ -281,14 +368,12 @@ public class SocialNetworkUI extends BorderPane implements Observer {
             }
             updateGraph();*/
         });
-        statistics.setOnAction(a -> {
-            TextTemplate textAddedUsers = new TextAddedUsers(sn);
-            TextTemplate textMostRelationships = new TextMostRelationships(sn);
-            textAddedUsers.setPage();
-            textMostRelationships.setPage();
+       /* statsBtn.setOnAction(a -> {
+            addedUsersStatsLabel.setText(addedUsersStats());
+            userWithMostRelStatsLabel.setText(userWithMostRelationships());
 
             updateGraph();
-        });
+        });*/
         chartBtn.setOnAction(a -> {
             ChartsTemplate top6 = new Top6Chart(sn);
             ChartsTemplate top10With = new Top10ChartWithSharedInterests(sn);
@@ -410,25 +495,42 @@ public class SocialNetworkUI extends BorderPane implements Observer {
 
         {
             Relationship r = graphEdge.getUnderlyingEdge().element();
-            PaneTemplate pT = new PaneTemplate();
-            pT.initialize("" + r.showInterestInCommon(), "Interests in Common between " + r.getUser1().getNumber() + " & " + r.getUser2().getNumber());
+            userInfoTitleLabel.setText("Relationship Info");
+            infoLabel.setText("Interests in Common between " + r.getUser1().getNumber() + " & " + r.getUser2().getNumber() + "\n" + r.showInterestInCommon());
             updateGraph();
+            setSelectedEdge(graphEdge);
         });
         graphView.setVertexDoubleClickAction(graphVertex ->
 
         {
             User r = graphVertex.getUnderlyingVertex().element();
-            PaneTemplate pT = new PaneTemplate();
-            pT.initialize(" " + r.showUserToString(), " Info user selected: ");
+            userInfoTitleLabel.setText("User Info");
+            infoLabel.setText("" + r.showUserToString());
             updateGraph();
             //select vertex
             setSelected(graphVertex);
         });
-        clearBtn.setOnAction(a ->
+        clearBtn.setOnAction(a -> {
+            if(selected.size() > 0 && selectedEdge.size() > 0){
+                clearSelected();
+                clearSelectedEdge();
+                userInfoTitleLabel.setText("Info");
+                infoLabel.setText("");
+                updateGraph();
+            }else if(selected.size() > 0 && selectedEdge.size() == 0){
+                clearSelected();
+                userInfoTitleLabel.setText("Info");
+                infoLabel.setText("");
+                updateGraph();
+            }else if(selectedEdge.size() > 0 && selected.size() == 0){
+                clearSelectedEdge();
+                userInfoTitleLabel.setText("Info");
+                infoLabel.setText("");
+                updateGraph();
+            }
 
-        {
-            clearSelected();
-            updateGraph();
+            setColors();
+
         });
     }
 
@@ -445,6 +547,40 @@ public class SocialNetworkUI extends BorderPane implements Observer {
 
     }
 
+    public String addedUsersStats() {
+        String txt = "";
+        for(User u : sn.getUsers()){
+            if(u.getType().equals(User.UserType.ADDED)){
+                txt += "Utilizador: " + u.getNumber() + "\n -> { ";
+                for(Relationship r : sn.incidentRelationships(u)){
+                    if(r.getUser2().getNumber() == u.getNumber()){
+                        txt += r.getUser1().getNumber() + ";";
+                    }
+                    if(r.getUser1().getNumber() == u.getNumber()){
+                        txt += r.getUser2().getNumber() + ";";
+                    }
+                }
+                txt += " } \n ------------------------------------------------------------------ \n";
+            }
+        }
+        return txt;
+    }
+    public String userWithMostRelationships() {
+
+        int count = 0;
+        int idUser = 0;
+        for(User u1 : sn.getUsers()){
+            if(count < sn.incidentRelationships(u1).size() ){
+                idUser = 0;
+                idUser = u1.getNumber();
+                count = 0;
+                count = sn.incidentRelationships(u1).size();
+            }
+        }
+        return "Utilizador " + idUser + " com " + count + " relacionamentos.";
+    }
+
+
     public void setSelected(SmartGraphVertex graphVertex) {
         if (selected.size() < 1) {
             selected.add(graphVertex);
@@ -455,16 +591,20 @@ public class SocialNetworkUI extends BorderPane implements Observer {
             selected.add(graphVertex);
             graphVertex.setStyleClass("VertexSelected");
         }
-        /*else{
-            User u = (User) selected.get(0).getUnderlyingVertex().element();
-            if(u.getType()== User.UserType.INCLUDED)
-                selected.get(0).setStyleClass("VertexIncluded");
-            else if(u.getType()== User.UserType.ADDED)
-                selected.get(0).setStyleClass("VertexAdded");
-            selected.set(0, selected.get(1));
-            selected.set(1, graphVertex);
-            graphVertex.setStyle("-fx-stroke: black; -fx-fill: grey;");
-        }*/
+
+        graphView.update();
+    }
+
+    public void setSelectedEdge(SmartGraphEdge graphEdge) {
+        if (selectedEdge.size() < 1) {
+            selectedEdge.add(graphEdge);
+            graphEdge.setStyleClass("edgeSelected");
+        }
+        if (selectedEdge.size() < 2 && selectedEdge.size() > 0) {
+            clearSelectedEdge();
+            selectedEdge.add(graphEdge);
+            graphEdge.setStyleClass("edgeSelected");
+        }
 
         graphView.update();
     }
@@ -473,8 +613,14 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         return selected;
     }
 
+    public List<SmartGraphEdge> getSelectedEdge() {
+        return selectedEdge;
+    }
+
     public void updateGraph() {
         graphView.update();
+        addedUsersStatsLabel.setText(addedUsersStats());
+        userWithMostRelStatsLabel.setText(userWithMostRelationships());
     }
 
     public void clearSelected() {
@@ -486,10 +632,14 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         selected.clear();
     }
 
-    /*public void setNodeBlack(Node node){
-        node.setStyle("-fx-stroke: black; -fx-fill: grey;");
-        graphView.update();
-    }*/
+    public void clearSelectedEdge() {
+        Relationship r = (Relationship) selectedEdge.get(0).getUnderlyingEdge().element();
+        if (r.getType() == Relationship.NameOfRelationship.SHARED_INTEREST)
+            selectedEdge.get(0).setStyleClass("edgeShared");
+        else if (r.getType() == Relationship.NameOfRelationship.SIMPLE)
+            selectedEdge.get(0).setStyleClass("edgeSimple");
+        selectedEdge.clear();
+    }
 
     public List<Node> getGraphNodes() {
         return graphView.getChildren();

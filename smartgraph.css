@@ -58,6 +58,14 @@ STYLESHEET FOR JAVAFXGRAPH VISUALIZATION
     -fx-opacity:1;
 }
 
+.edgeSelected{
+    -fx-stroke-width: 8;
+    -fx-stroke: grey;
+    -fx-fill: transparent; /*important for curved edges */
+    -fx-stroke-line-cap: round;
+    -fx-opacity:1;
+}
+
 .edge-label {
     -fx-font: normal 20pt "sans-serif";
 }
