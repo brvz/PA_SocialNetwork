@@ -8,6 +8,10 @@ import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
+/**
+ * This class has the purpose to test all the methods of GraphAdjacencyList.java.
+ */
 class GraphAdjacencyListTest {
     GraphAdjacencyList<String, String> graph;
     GraphAdjacencyList<String, String> graphTest;
@@ -238,6 +242,9 @@ class GraphAdjacencyListTest {
         assertEquals(false, graph.vertices().contains(temp));
     }
 
+    /**
+     * Test outbound edges
+     */
     @Test
     public void test_outboundEdges(){
         Collection<Edge<String, String>> outboundEdges = graph.outboundEdges(v1);

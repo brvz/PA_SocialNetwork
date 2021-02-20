@@ -10,6 +10,11 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Date;
 
+/**
+ * Logger class is made to create a log.txt.
+ * log.txt is a file that will have some insertions and datestamps about users added by the client and their relationships.
+ */
+
 public class Logger  {
     private static final String LogFile = "log.txt";
     private PrintStream printStream;
@@ -46,7 +51,7 @@ public class Logger  {
      *
      * @param str - useful info about the users and relationships in
      *the social network
-     * @throws LoggerException
+     * @throws LoggerException when failed to write on file.
      */
     public void writeToFile(String str) throws LoggerException{
         if(printStream == null){

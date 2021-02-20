@@ -11,8 +11,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * User class represents the parameters that an User has. {Type, number and creation date}.
+ */
 public class User {
 
+    /***
+     * Define 2 types of an User: Added and Included.
+     *  ADDED - User that is added by the client in User Interface and has some users included.
+     *  INCLUDED - User that is returned from an added user by correspondecy.
+     */
     public enum UserType {
         ADDED,
         INCLUDED;
@@ -53,26 +61,51 @@ public class User {
     }
 
     // Getters and Setters
+
+    /**
+     * Return the number of an User.
+     * @return number - int
+     */
     public int getNumber() {
         return number;
     }
 
+    /**
+     * Set the number of an User.
+     * @param  number - int
+     */
     public void setNumber(int number) {
         this.number = number;
     }
 
+    /**
+     * Get the type of an User.
+     * @return type - UserType
+     */
     public UserType getType() {
         return type;
     }
 
+    /**
+     * Set the type of an User.
+     * @param  type - UserType
+     */
     public void setType(UserType type) {
         this.type = type;
     }
 
+    /**
+     * Return the creation date of an User.
+     * @return creationDate - User.
+     */
     public String getDate(){
         return creationDate;
     }
 
+    /**
+     * Set the creation date of an User.
+     * @param  date - User.
+     */
     public void setDate(String date){
       this.creationDate = date;
     }
@@ -109,6 +142,11 @@ public class User {
         return res;
     }
 
+    /**
+     * Return a string composed by Id, creation date, and the interests from User.
+     * The interests is viewed as well accordingly.
+     * @return res - String
+     */
     public String showUserToString(){
         String res = "Id: " + number +
                 "\nDate: " + creationDate +
@@ -119,10 +157,19 @@ public class User {
         return res;
     }
 
+    /**
+     * Return the list of interests.
+     * @return interestList - List
+     */
     public List<Interest> getInterestList() {
         return interestList;
     }
 
+    /**
+     * Add interests in a list of interests.
+     * @param interest - Interest
+     * @throws InterestException if the interests that we want to add doesn't exists.
+     */
     public void addInterest(Interest interest) throws InterestException {
         if (interest==null) throw new InterestException("Este interesse não existe");
         for (Interest i:this.interestList) {
@@ -134,13 +181,17 @@ public class User {
         if (this.interestList.isEmpty()) this.interestList.add(interest);
     }
 
+    /**
+     * Return the size of interests.
+     * @return size of interestList - int
+     */
     public int getNumberOfInterests(){
-        return interestList.size();
+        return getInterestList().size();
     }
 
     /**
-     * Reads file and returns interest id's for this user
-     * @return
+     * Adds interests from a file and returns interest id's for this user.
+     * @param listInterest - List
      */
     public void CSVaddUsersInterest(List<Interest> listInterest) {
 
@@ -174,7 +225,10 @@ public class User {
         }
     }
 
-
+    /**
+     * Reads interests from a file and returns interest id's for this user.
+     * @return listTemp - List
+     */
     public List<Interest> CSVReadInterest() {
         CSVReader reader = null;
         List<Interest> listTemp = new LinkedList<>();

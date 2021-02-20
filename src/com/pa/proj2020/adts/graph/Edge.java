@@ -48,7 +48,7 @@ public interface Edge<E, V> {
      * Returns and array of size 2, with references for both vertices at the ends
      * of an edge.
      * 
-     * In a {@link Digraph} the reference at {@code vertices()[0]} must be that
+     * In a {@link Graph} the reference at {@code vertices()[0]} must be that
      * of the <i>outbound vertex</i> and at {@code vertices()[1]} that of the <i>inbound</i>
      * vertex.
      * 

@@ -5,6 +5,7 @@
 /build/
 /dist/
 /log.txt/
+/doc/
 *.iml
 
 # Hanging html files

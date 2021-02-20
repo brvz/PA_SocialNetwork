@@ -11,6 +11,9 @@ import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+/**
+ * This classes makes the action when a client wants to filter the Social Network by a date.
+ */
 public class CommandFilterDate extends CommandSocialNetwork{
 
     private SocialNetworkUI ui;

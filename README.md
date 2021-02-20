@@ -1,4 +1,4 @@
-#Enunciado do Projeto de Recurso Programação Avançada
+# Enunciado do Projeto de Recurso Programação Avançada
 O enunciado está disponibilizado na página do moodle da uc.
 
 #Template para o projeto

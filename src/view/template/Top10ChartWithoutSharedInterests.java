@@ -9,6 +9,10 @@ import model.User;
 
 import java.util.List;
 
+/**
+ * Top10ChartWithoutSharedInterests represents the number of relationships with 10 users with most relationships with
+ * most shared interests.
+ */
 public class Top10ChartWithoutSharedInterests extends ChartsTemplate {
 
 
@@ -51,7 +55,7 @@ public class Top10ChartWithoutSharedInterests extends ChartsTemplate {
                     count++;
                 }
             }
-            for(User users : sn.users()){
+            for(User users : sn.getUsers()){
                 for(Relationship rel : sn.incidentRelationships(users)) {
                     if(u.getNumber() != users.getNumber()){
                         if(u.getNumber() == rel.getUser1().getNumber()) {
@@ -66,7 +70,7 @@ public class Top10ChartWithoutSharedInterests extends ChartsTemplate {
         }
 
         if(u.getType().equals(User.UserType.INCLUDED)){
-            for(User user : sn.users()){
+            for(User user : sn.getUsers()){
                 for (Relationship r : sn.incidentRelationships(user)) {
                     Vertex<User> userVertex = sn.checkUser(user);
                     Edge<Relationship, User> relationshipUserEdge = sn.checkRelationship(r);

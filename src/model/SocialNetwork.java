@@ -5,7 +5,6 @@ import com.opencsv.CSVReader;
 import com.pa.proj2020.adts.graph.*;
 import observer.Subject;
 import Logger.LoggerProperties;
-import smartgraph.view.graphview.SmartGraphVertex;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -14,6 +13,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.Integer.*;
+
+/**
+ * SocialNetwork class is a class that will have crucial methods that will make the possibility to construct the graph
+ * implemented in a specific Social Network and translate that to an User Interface more realistic.
+ */
 
 public class SocialNetwork extends Subject {
 
@@ -43,25 +47,36 @@ public class SocialNetwork extends Subject {
         this.loggerProperties = new LoggerProperties();
     }
 
+    /**
+     * Set the name of the Social Network.
+     * @param name - String
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Get the name of the Social Network.
+     * @return  name - String
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Return the AdjacencyList grapth methods.
+     * @return sn - GraphAdjacecyList
+     */
     public GraphAdjacencyList<User, Relationship> getSn() {
         return sn;
     }
 
     /**
-     * Returns the Vertex if page exist
+     * Returns the Vertex if page exist.
      *
-     * @param user User
+     * @param user - User
      * @return the existing vertex with user
-     * @throws SocialNetworkException if <code>user</code> or
-     *                                <code>find</code> doesn't exist in digraph.
+     * @throws SocialNetworkException if user or find doesn't exist in graph.
      */
     public Vertex<User> checkUser(User user) throws SocialNetworkException {
         if (user == null) {
@@ -83,12 +98,11 @@ public class SocialNetwork extends Subject {
     }
 
     /**
-     * Returns the Edge if link exist
+     * Returns the Edge if relationship exist.
      *
-     * @param relationship Relationship
+     * @param relationship - Relationship
      * @return the existing edge with relationship
-     * @throws SocialNetworkException if <code>relationship</code> or
-     *                                <code>find</code> doesn't exist in digraph.
+     * @throws SocialNetworkException if relationship or find doesn't exist in graph.
      */
     public Edge<Relationship, User> checkRelationship(Relationship relationship) throws SocialNetworkException {
         if (relationship == null) {
@@ -107,12 +121,12 @@ public class SocialNetwork extends Subject {
     }
 
     /**
-     * Gets the relationship(edges) between 2 users
+     * Gets the relationship(edges) between 2 users.
      *
-     * @param user1 User
-     * @param user2 User
-     * @return list of edges between <code>user1</code> and <code>user2</code>
-     * @throws SocialNetworkException
+     * @param user1 - User
+     * @param user2 - User
+     * @return list of edges between user1 and user2.
+     * @throws SocialNetworkException when the user doesn't exist.
      */
     public List<Relationship> getRelationshipBetween(User user1, User user2) throws SocialNetworkException {
 
@@ -131,11 +145,11 @@ public class SocialNetwork extends Subject {
     }
 
     /**
-     * Add a new user to model
+     * Add a new user to model.
      *
-     * @param u User
-     * @throws SocialNetworkException if <code>user</code> equals null.
-     * @throws InvalidVertexException if <code>user</code> already exists.
+     * @param u - User
+     * @throws SocialNetworkException if user equals null.
+     * @throws InvalidVertexException if user already exists.
      */
     public void addUser(User u) throws SocialNetworkException, InvalidVertexException {
         if (u == null) throw new SocialNetworkException("User does not exists");
@@ -150,11 +164,11 @@ public class SocialNetwork extends Subject {
 
 
     /**
-     * Add a new user to model
+     * Removes an user from model.
      *
-     * @param u User
-     * @throws SocialNetworkException if <code>user</code> equals null.
-     * @throws SocialNetworkException if <code>user</code> already exists.
+     * @param u - User
+     * @throws SocialNetworkException if user equals null.
+     * @throws SocialNetworkException if user already exists.
      */
     public void removeUser(User u) throws SocialNetworkException, InvalidVertexException {
         if (u == null) {
@@ -177,11 +191,10 @@ public class SocialNetwork extends Subject {
     /**
      * Add a new relationship to model
      *
-     * @param u1 User
-     * @param u2 User
-     * @param r  Relationship
-     * @throws SocialNetworkException if <code>relationship</code> equals null.
-     * @throws SocialNetworkException if <code>relationship</code> already exists.
+     * @param u1 - User
+     * @param u2 - User
+     * @param r - Relationship
+     * @throws SocialNetworkException if relationship equals null.
      */
     public void addRelationship(User u1, User u2, Relationship r) throws SocialNetworkException {
         if (r == null) {
@@ -196,15 +209,10 @@ public class SocialNetwork extends Subject {
     }
 
     /**
-     * Returns a inbound's <i>incident</i> edges as a List.
-     * <p>
-     * Incident edges are all edges that have vertex <code>inbound</code> as the
-     * <i>inbound vertex</i>, i.e., the relationship "entering" User
-     * <code>inbound</code>. If there are no incident relationships, e.g., an isolated
-     * user, returns an empty collection.
+     * Returns incidents relationships as a List.
      *
-     * @param u User for which to obtain the incident relationship
-     * @return collection of relationship
+     * @param u - User
+     * @return incidentEdges - List
      */
     public List<Relationship> incidentRelationships(User u) throws SocialNetworkException {
         checkUser(u);
@@ -221,11 +229,11 @@ public class SocialNetwork extends Subject {
     }
 
     /**
-     * Returns the list of users
+     * Returns the list of users.
      *
-     * @return list of users
+     * @return list - List
      */
-    public List<User> users() {
+    public List<User> getUsers() {
         List<User> list = new ArrayList<>();
         for (Vertex<User> vertices : sn.vertices()) {
             list.add(vertices.element());
@@ -236,72 +244,35 @@ public class SocialNetwork extends Subject {
     /**
      * Returns the list of relationships
      *
-     * @return list of relationships
+     * @return list - List
      */
     public List<Relationship> relationships() {
         List<Relationship> list = sn.edges().stream().map(Edge::element).collect(Collectors.toList());
         return list;
     }
 
+
     /**
-     * Returns a page's <i>outbound</i> relationship as a List.
-     * <p>
-     * Incident relationship are all edges that have user <code>outbound</code> as the
-     * <i>outbound page</i>, i.e., the relationships "leaving" users
-     * <code>outbound</code>. If there are no outbound relationships, e.g., an isolated
-     * user, returns an empty collection.
-     *
-     * @param inbound user for which to obtain the outbound relationships
-     * @return collection of edges
+     * Return user with self id.
+     * @param userId - int
+     * @return v.element() - User
+     * @return null if doesn't exists.
      */
-    public List<Edge<Relationship, User>> outboundEdges(User inbound) throws SocialNetworkException {
-        checkUser(inbound);
-
-        List<Edge<Relationship, User>> outboundEdges = new ArrayList<>();
-        sn.vertices().stream().filter((p) -> (p.element().equals(inbound))).forEachOrdered((p) -> {
-            sn.outboundEdges(p).forEach((h) -> {
-                outboundEdges.add(h);
-            });
-        });
-        return outboundEdges;
-    }
-
-    public int getNumberOfUsers() {
-        return sn.numVertices();
-    }
-
-
-    public List<User> getUsers() {
-
-        List<User> list = new ArrayList<>();
-
-        for (Vertex<User> u : sn.vertices()) {
-            list.add(getIdOfUser(u.element().getNumber()));
-        }
-
-        return list;
-    }
-
-
-    public User getIdOfUser(int i) {
+    public User getIdOfUser(int userId) {
         for (Vertex<User> v : getSn().vertices()) {
-            if (v.element().getNumber() == i) {
+            if (v.element().getNumber() == userId) {
                 return v.element();
             }
         }
         return null;
     }
 
-
-    public User getUser(User user) {
-        for (Vertex<User> v : getSn().vertices()) {
-            if (v.element() == user) {
-                return v.element();
-            }
-        }
-        return null;
-    }
-
+    /**
+     * Return a vertex from an User.
+     * @param user - User
+     * @return v - Vertex
+     * @return null if doesn't exists.
+     */
     public Vertex<User> getUserVertex(User user) {
         for (Vertex<User> v : getSn().vertices()) {
             if (v.element() == user) {
@@ -311,6 +282,12 @@ public class SocialNetwork extends Subject {
         return null;
     }
 
+    /**
+     * Returns an edge of the graph.
+     * @param rel - Relationship
+     * @return e if exist,
+     * @return null if doesn't exist.
+     */
     public Edge<Relationship, User> getRelationshipEdge(Relationship rel) {
         for (Edge<Relationship, User> e : getSn().edges()) {
             if (e.element() == rel) {
@@ -320,6 +297,10 @@ public class SocialNetwork extends Subject {
         return null;
     }
 
+    /**
+     * Removes an user.
+     * @param number - int
+     */
     public void removeUserById(int number) {
         User toRemove = getIdOfUser(number);
         Collection<Vertex<User>> toRemoveUser = new ArrayList<>();
@@ -355,6 +336,11 @@ public class SocialNetwork extends Subject {
         notifyObservers(this);
     }
 
+    /**
+     * Count the relationship number of an user.
+     * @param id - int
+     * @return count - int
+     */
     public int countRelations(int id) {
         int count = 0;
         User toCount = getIdOfUser(id);
@@ -370,16 +356,17 @@ public class SocialNetwork extends Subject {
         return count;
     }
 
-    public boolean isEmpty() {
-        return (this.sn == null);
-    }
 
     @Override
     public String toString() {
         return "SocialNetwork{ name=" + name + " }";
     }
 
-
+    /**
+     * Check the type if an User
+     * @param id - int
+     * @return the element of an user - User.
+     */
     public User checkType(int id) {
 
         if (checkId(id) && this.getIdOfUser(id).getType() == User.UserType.INCLUDED) {
@@ -411,12 +398,20 @@ public class SocialNetwork extends Subject {
         return user;*/
     }
 
-
+    /**
+     * Verify the id of an user.
+     * @param id - int
+     * @return true if exist
+     * @return false if doesn't exist
+     */
     public boolean checkId(int id) {
         return this.getIdOfUser(id) != null;
     }
 
-
+    /**
+     * Reads an csv file to get the relationship data.
+     * @param userId - int
+     */
     public void readCSVRelationshipsByUser(int userId) {
         List<User> list = new ArrayList<>();
         User check = getIdOfUser(userId);
@@ -471,20 +466,14 @@ public class SocialNetwork extends Subject {
         //redo = false;
     }
 
-    /*public Stack<User> getLastUserAdded() {
-        return lastUserAdded;
-    }*/
-
-
-    /*public void clearLastUser() {
-        lastUserAdded = null;
-    }*/
-
     public void clearLastUsers() {
         lastUsers.clear();
     }
 
-
+    /**
+     * Reads csv file with relationship data that will generate the batch method.
+     * @param userId - List
+     */
     public void readCSVBatch(List<Integer> userId) {
         List<User> list = new ArrayList<>();
         for (int batchUser : userId) {
@@ -537,6 +526,10 @@ public class SocialNetwork extends Subject {
         //lastUserAdded = null;
     }
 
+    /**
+     * Return lastUsers stack
+     * @return lastUsers - Stack
+     */
     public Stack<List<User>> getLastUsers() {
         return lastUsers;
     }
@@ -591,7 +584,10 @@ public class SocialNetwork extends Subject {
         //setRedo(false);
     }
 
-
+    /**
+     * Reads the csv files that contain interest data.
+     * @param csv - String
+     */
     public void CSVReadInterest(String csv) {
         CSVReader reader = null;
         interestList = new LinkedList<>();
@@ -627,25 +623,28 @@ public class SocialNetwork extends Subject {
         }
     }
 
+    /**
+     * Returns a list of interests.
+     * @return interestList - List
+     */
     public List<Interest> getInterestList() {
         return interestList;
     }
 
+    /**
+     * Return the name of all interests.
+     * @return interestList - List
+     */
     public List<String> getNameOfAllInterests() {
         return interestList.stream().map(Interest::getHashtag).collect(Collectors.toList());
 
     }
 
-    public void addInterestList(String name) {
-        for (Interest in : getInterestList()) {
-            if (!in.getHashtag().equals(name)) {
-                interestList.add(interestList.size(), new Interest(interestList.size() + 1, name));
-                break;
-            }
-        }
-    }
-
-
+    /**
+     * Write strings to a file that will contain the data of added users: number of user, date, number of relationships and the
+     * number of interests.
+     * @param user - User
+     */
     public void logAddUser(User user) {
         if (loggerProperties.getUserAdded()) {
             if (user.getType().equals(User.UserType.ADDED)) {
@@ -657,6 +656,11 @@ public class SocialNetwork extends Subject {
         }
     }
 
+    /**
+     * Write strings to a file that will contain the data of added relationships: included users, number of user1,
+     * number of user2 and the interests in common of the users.
+     * @param rel - Relationship
+     */
     public void logAddRelationship(Relationship rel) {
         if (loggerProperties.getRelationAdded()) {
             if (loggerProperties.getUserIncluded() == true) {
@@ -672,12 +676,18 @@ public class SocialNetwork extends Subject {
         }
     }
 
+    /**
+     * Write a string for undo log.
+     */
     public void logUndo() {
         if (loggerProperties.getUndo()) {
             log.writeToFile("undo");
         }
     }
 
+    /**
+     * Write a string for redo log.
+     */
     public void logRedo() {
         if (loggerProperties.getRedo()) {
             log.writeToFile("redo");
@@ -686,9 +696,9 @@ public class SocialNetwork extends Subject {
 
 
     /**
-     * Returns a list with the five users that have the most relationships
+     * Returns a list with the six users that have the most relationships
      *
-     * @return top6 - five users with the most direct relationships
+     * @return top6 - List
      */
     public List<User> getTop6() {
         List<User> all = new ArrayList<>(getUsers());
@@ -702,14 +712,14 @@ public class SocialNetwork extends Subject {
     }
 
     /**
-     * Returns a list with the five users that have the most relationships
+     * Returns a list with the six users that have the most relationships
      *
-     * @return top10 - five users with the most direct relationships
+     * @return top10 - List
      */
     public List<User> getTop10With() {
         List<User> all = new ArrayList<>(getUsers());
         List<User> top10 = new ArrayList<>();
-        for (int i = 0; i < users().size(); i++) {
+        for (int i = 0; i < getUsers().size(); i++) {
             User u = getUserMaxRelsWithSharedInterests(all);
             if (u != null) {
                 top10.add(u);
@@ -721,14 +731,14 @@ public class SocialNetwork extends Subject {
 
 
     /**
-     * Returns a list with the five users that have the most relationships
+     * Returns a list with the six users without relationships
      *
-     * @return top10 - five users with the most direct relationships
+     * @return top10 - List.
      */
     public List<User> getTop10Without() {
         List<User> all = new ArrayList<>(getUsers());
         List<User> top10 = new ArrayList<>();
-        for (int i = 0; i < users().size(); i++) {
+        for (int i = 0; i < getUsers().size(); i++) {
             User u = getUserMaxRelsWithoutSharedInterests(all);
             if (u != null) {
                 top10.add(u);
@@ -740,10 +750,10 @@ public class SocialNetwork extends Subject {
 
 
     /**
-     * Returns the user with the most direct relationships
+     * Returns the user with the most shared interests.
      *
-     * @param users - list of users
-     * @return finalUser - user with the most direct relationships
+     * @param users - List
+     * @return finalUser - User
      */
     public User getUserMaxRelsWithSharedInterests(List<User> users) {
         int max = 0;
@@ -766,10 +776,10 @@ public class SocialNetwork extends Subject {
 
 
     /**
-     * Returns the user with the most direct relationships
+     * Returns the user without shared interests.
      *
-     * @param users - list of users
-     * @return finalUser - user with the most direct relationships
+     * @param users - List
+     * @return finalUser - User
      */
     public User getUserMaxRelsWithoutSharedInterests(List<User> users) {
         int max = 0;
@@ -790,6 +800,11 @@ public class SocialNetwork extends Subject {
         return finalUser;
     }
 
+    /**
+     * Return an user with most interests.
+     * @param users - List
+     * @return finalUser - User
+     */
     public User getUsersMostInterests(List<User> users) {
         int max = 0;
         User finalUser = null;
@@ -804,11 +819,17 @@ public class SocialNetwork extends Subject {
         return finalUser;
     }
 
-
-    public boolean areAdjacentUserType(User u, User v) throws InvalidVertexException {
+    /**
+     * Check if two users are adjacent, or, if they have an relationship.
+     * @param u - User
+     * @param v - User
+     * @return true if they have a relationship
+     * @return false if they doesn't have a relationship
+     */
+    public boolean areAdjacentUserType(User u, User v) {
         checkUser(v);
         checkUser(u);
-        for (User vertex : users()) {
+        for (User vertex : getUsers()) {
             for (Relationship incidentRelationship : incidentRelationships(vertex)) {
                 Relationship r = checkRelationship(incidentRelationship).element();
                 if (r.getUser1().equals(v) && r.getUser2().equals(u)) {
@@ -823,26 +844,46 @@ public class SocialNetwork extends Subject {
         return false;
     }
 
+    /**
+     * return redo is true
+     * @return redo - boolean
+     */
     public boolean isRedo() {
         return redo;
     }
 
+    /**
+     * Set redo
+     * @param redo - boolean
+     */
     public void setRedo(boolean redo) {
         this.redo = redo;
     }
 
+    /**
+     * return undo is true
+     * @return undo - boolean
+     */
     public boolean isUndo(){
         return undo;
     }
 
+    /**
+     * Set undo
+     * @param undo - boolean
+     */
     public void setUndo(boolean undo){
         this.undo = undo;
     }
 
 
-
-
-
+    /**
+     * Dijsktra determines the shortest path and distance from the source to all destinations in the graph.
+     * @param graph - Graph
+     * @param source - User
+     * @param query - User
+     * @return path - List
+     */
     public List<User> Dijkstra(Graph<User, Relationship> graph, User source,
                                 User query) {
 
@@ -909,6 +950,12 @@ public class SocialNetwork extends Subject {
     }
 
 
+    /**
+     * Find the vertex with lower cost.
+     * @param distances - Map
+     * @param unvisited - List
+     * @return lowerCostVertex - User
+     */
     private  User findLowerCostVertex(Map<User, Double> distances,
                                                       List<User> unvisited) {
         User lowerCostVertex = null;

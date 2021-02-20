@@ -4,6 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+/**
+ * Command Manager is a class that will have a stack and will give the possibility to make undo and redo of some client
+ * actions.
+ *
+ */
+
 public class CommandManager {
 
     private final Stack<Command> commandsDone;
@@ -19,13 +25,10 @@ public class CommandManager {
         this.history = new Stack<>();
     }
 
-    public void undo(){
-        if(!commandsDone.isEmpty()) {
-            history.push(commandsDone.peek());
-            commandsDone.pop().unExecute();
-        }
-    }
-
+    /**
+     * Executes the commands.
+     * @param cmd - Command
+     */
     public void executeCommand(Command cmd){
         if (isRecordingMacro) {
             commandMacro.add(cmd);
@@ -35,6 +38,10 @@ public class CommandManager {
         }
     }
 
+    /**
+     * Associated with redo actions.
+     * @param cmd - Command
+     */
     public void executeRedo(Command cmd){
         if(!history.isEmpty()) {
             cmd.execute();
@@ -43,6 +50,10 @@ public class CommandManager {
         }
     }
 
+    /**
+     * Associated with undo actions.
+     * @param cmd - Command
+     */
     public void executeUndo(Command cmd){
         if(!commandsDone.isEmpty()) {
             cmd.execute();
@@ -51,6 +62,10 @@ public class CommandManager {
         }
     }
 
+    /**
+     * Is the command that will make the possibility to filter by interests.
+     * @param cmd - Command.
+     */
     public void executeFilterInterest(Command cmd){
         if(!commandsDone.isEmpty()){
             cmd.execute();
@@ -58,6 +73,10 @@ public class CommandManager {
         }
     }
 
+    /**
+     * Is the command that will make the possibility to filter by date.
+     * @param cmd - Command.
+     */
     public void executeFilterDate(Command cmd){
         if(!commandsDone.isEmpty()){
             cmd.execute();

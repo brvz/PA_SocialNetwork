@@ -7,6 +7,9 @@ import view.SocialNetworkUI;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class will execute a possibility to many action of the client can be re-written.
+ */
 public class CommandRedo extends CommandSocialNetwork{
 
 

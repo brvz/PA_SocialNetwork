@@ -3,14 +3,15 @@ package view.template;
 import com.pa.proj2020.adts.graph.Edge;
 import com.pa.proj2020.adts.graph.Vertex;
 import javafx.scene.chart.XYChart;
-import model.Interest;
 import model.Relationship;
 import model.SocialNetwork;
 import model.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Top6Chart represents the number of relationships with 6 users with most interests.
+ */
 public class Top6Chart extends ChartsTemplate {
     SocialNetwork sn;
     private List<User> top6;
@@ -44,7 +45,7 @@ public class Top6Chart extends ChartsTemplate {
                     count++;
                 }
             }
-            for(User users : sn.users()){
+            for(User users : sn.getUsers()){
                 for(Relationship rel : sn.incidentRelationships(users)) {
                     if(u.getNumber() != users.getNumber()){
                         if(u.getNumber() == rel.getUser1().getNumber()) {
@@ -59,7 +60,7 @@ public class Top6Chart extends ChartsTemplate {
         }
 
         if(u.getType().equals(User.UserType.INCLUDED)){
-            for(User user : sn.users()){
+            for(User user : sn.getUsers()){
                 for (Relationship r : sn.incidentRelationships(user)) {
                     Vertex<User> userVertex = sn.checkUser(user);
                     Edge<Relationship, User> relationshipUserEdge = sn.checkRelationship(r);

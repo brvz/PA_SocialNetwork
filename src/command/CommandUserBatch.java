@@ -8,6 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
+/**
+ * Command User is a class that will make the action of users batch insertion after a undo or a redo.
+ */
 public class  CommandUserBatch extends CommandSocialNetwork {
 
     private final List<Integer> userNumber;

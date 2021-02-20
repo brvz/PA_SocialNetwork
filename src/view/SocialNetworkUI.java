@@ -23,60 +23,64 @@ import view.template.*;
 
 import java.util.*;
 
+/**
+ * SocialNetworkUI is a class that has the methods to transform the SocialNetwork in a User Interface that will help the
+ * the client to use it and the goal is to make the entire project more realistic and fucntional.
+ */
+
 public class SocialNetworkUI extends BorderPane implements Observer {
 
-    public Button addUserBtn;
-    public Button undoBtn;
-    public Button clearBtn;
-    public Button redoBtn;
-    public Button statsBtn;
-    public Button chartBtn;
-    public Button shortestPathBtn;
-    public ObservableList<String> listInterestToFilter;
+    private Button addUserBtn;
+    private Button undoBtn;
+    private Button clearBtn;
+    private Button redoBtn;
+    private Button chartBtn;
+    private Button shortestPathBtn;
+    private ObservableList<String> listInterestToFilter;
     public ComboBox interestFilter;
-    public ComboBox interestBFS;
+    private ComboBox interestBFS;
     public DatePicker dateFilter;
     public SmartGraphPanel<User, Relationship> graphView;
-    public HBox addUserHBox;
-    public HBox commandHBox;
-    public VBox left;
+    private HBox addUserHBox;
+    private HBox commandHBox;
+    private VBox left;
     /*-------------------------------*/
     // TODO: right side of panel
-    public VBox right;
-    public Label userInfoTitleLabel;
-    public Label infoLabel;
-    public VBox userInfo;
-    public VBox textStats;
-    public VBox addedUsersStats;
-    Label addedUsersStatsTitleLabel;
-    Label addedUsersStatsLabel;
-    public VBox userWithMostRelStats;
-    Label userWithMostRelStatsTitleLabel;
-    Label userWithMostRelStatsLabel;
+    private VBox right;
+    private Label userInfoTitleLabel;
+    private Label infoLabel;
+    private VBox userInfo;
+    private VBox textStats;
+    private VBox addedUsersStats;
+    private Label addedUsersStatsTitleLabel;
+    private Label addedUsersStatsLabel;
+    private VBox userWithMostRelStats;
+    private Label userWithMostRelStatsTitleLabel;
+    private Label userWithMostRelStatsLabel;
     /*-------------------------------*/
-    public TextField addUserTextField;
-    public Label shortestPathLabel;
-    public Label interestFilterLabel;
-    public Label dateFilterLabel;
-    public Separator separator1;
-    public Separator separator2;
-    public Separator separator3;
-    public Separator separator4;
-    public Separator separator5;
-    public Separator separator6;
-    public Separator separator7;
-    public Separator separator8;
-    public Separator separator9;
-    public SocialNetwork sn;
-    public CommandManager manager;
-    private List<SmartGraphVertex> selected;
+    private TextField addUserTextField;
+    private Label shortestPathLabel;
+    private Label interestFilterLabel;
+    private Label dateFilterLabel;
+    private Separator separator1;
+    private Separator separator2;
+    private Separator separator3;
+    private Separator separator4;
+    private Separator separator5;
+    private Separator separator6;
+    private Separator separator7;
+    private Separator separator8;
+    private Separator separator9;
+    private SocialNetwork sn;
+    private CommandManager manager;
+    private List<SmartGraphVertex> selectedVertex;
     private List<SmartGraphEdge> selectedEdge;
 
 
     public SocialNetworkUI(SocialNetwork sn) {
         this.sn = sn;
         manager = new CommandManager();
-        selected = new ArrayList<>();
+        selectedVertex = new ArrayList<>();
         selectedEdge = new ArrayList<>();
         initialize();
         sn.addObservers(this);
@@ -167,7 +171,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
 
         // Right
         right = new VBox(10);
-        right.setPrefWidth(250);
+        right.setPrefWidth(280);
         right.setPrefHeight(this.getHeight());
 
         // User Info
@@ -241,6 +245,9 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         updateGraph();
     }
 
+    /**
+     * This method defines all the buttons and set on actions that will be implemented in user interface.
+     */
     public void setTriggers() {
         addUserBtn.setOnAction(a -> {
             String id = addUserTextField.getText();
@@ -386,7 +393,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         shortestPathBtn.setOnAction(a -> {
             setColors();
             updateGraph();
-            SmartGraphVertex v = getSelected().get(0);
+            SmartGraphVertex v = getSelectedVertex().get(0);
             User u = (User) v.getUnderlyingVertex().element();
             Interest in = null;
 
@@ -396,7 +403,7 @@ public class SocialNetworkUI extends BorderPane implements Observer {
                     break;
                 }
             }
-            List<SmartGraphVertex> bfs = BFS(getSelected().get(0), in);
+            List<SmartGraphVertex> bfs = BFS(getSelectedVertex().get(0), in);
             List<User> listUsers = new ArrayList<>();
             for (SmartGraphVertex listBFS : bfs) {
                 listBFS.setStyleClass("VertexBFS");
@@ -508,21 +515,21 @@ public class SocialNetworkUI extends BorderPane implements Observer {
             infoLabel.setText("" + r.showUserToString());
             updateGraph();
             //select vertex
-            setSelected(graphVertex);
+            setSelectedVertex(graphVertex);
         });
         clearBtn.setOnAction(a -> {
-            if(selected.size() > 0 && selectedEdge.size() > 0){
-                clearSelected();
+            if(selectedVertex.size() > 0 && getSelectedEdge().size() > 0){
+                clearSelectedVertex();
                 clearSelectedEdge();
                 userInfoTitleLabel.setText("Info");
                 infoLabel.setText("");
                 updateGraph();
-            }else if(selected.size() > 0 && selectedEdge.size() == 0){
-                clearSelected();
+            }else if(selectedVertex.size() > 0 && getSelectedEdge().size() == 0){
+                clearSelectedVertex();
                 userInfoTitleLabel.setText("Info");
                 infoLabel.setText("");
                 updateGraph();
-            }else if(selectedEdge.size() > 0 && selected.size() == 0){
+            }else if(getSelectedEdge().size() > 0 && selectedVertex.size() == 0){
                 clearSelectedEdge();
                 userInfoTitleLabel.setText("Info");
                 infoLabel.setText("");
@@ -534,6 +541,9 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         });
     }
 
+    /**
+     * Has the function of show the scene to the client.
+     */
     public void showScene() {
         Scene scene = new Scene(this, 1700, 800);
 
@@ -547,6 +557,10 @@ public class SocialNetworkUI extends BorderPane implements Observer {
 
     }
 
+    /**
+     * Return  a string with added users statistics.
+     * @return txt -  String
+     */
     public String addedUsersStats() {
         String txt = "";
         for(User u : sn.getUsers()){
@@ -565,6 +579,12 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         }
         return txt;
     }
+
+    /**
+     * /**
+     * Return a string of an user with most relationships.
+     * @return txt -  String
+     */
     public String userWithMostRelationships() {
 
         int count = 0;
@@ -581,70 +601,97 @@ public class SocialNetworkUI extends BorderPane implements Observer {
     }
 
 
-    public void setSelected(SmartGraphVertex graphVertex) {
-        if (selected.size() < 1) {
-            selected.add(graphVertex);
+    /**
+     * Has the function of a client can click in an user and it makes them stay selected with a different
+     * and specific color.
+     * @param graphVertex - SmarthGraphVertex.
+     */
+    public void setSelectedVertex(SmartGraphVertex graphVertex) {
+        if (selectedVertex.size() < 1) {
+            selectedVertex.add(graphVertex);
             graphVertex.setStyleClass("VertexSelected");
         }
-        if (selected.size() < 2 && selected.size() > 0) {
-            clearSelected();
-            selected.add(graphVertex);
+        if (selectedVertex.size() < 2 && selectedVertex.size() > 0) {
+            clearSelectedVertex();
+            selectedVertex.add(graphVertex);
             graphVertex.setStyleClass("VertexSelected");
         }
 
         graphView.update();
     }
 
+    /**
+     * Has the function of a client can click in a relationship and it makes them stay selected with a different
+     * and specific color.
+     * @param graphEdge - SmarthGraphEdge.
+     */
     public void setSelectedEdge(SmartGraphEdge graphEdge) {
-        if (selectedEdge.size() < 1) {
-            selectedEdge.add(graphEdge);
+        if (getSelectedEdge().size() < 1) {
+            getSelectedEdge().add(graphEdge);
             graphEdge.setStyleClass("edgeSelected");
         }
-        if (selectedEdge.size() < 2 && selectedEdge.size() > 0) {
+        if (getSelectedEdge().size() < 2 && getSelectedEdge().size() > 0) {
             clearSelectedEdge();
-            selectedEdge.add(graphEdge);
+            getSelectedEdge().add(graphEdge);
             graphEdge.setStyleClass("edgeSelected");
         }
 
         graphView.update();
     }
 
-    public List<SmartGraphVertex> getSelected() {
-        return selected;
+    /**
+     * Return a selected list of vertex.
+     * @return selected - List
+     */
+    public List<SmartGraphVertex> getSelectedVertex() {
+        return selectedVertex;
     }
 
+    /**
+     * Return a selected list of edges.
+     * @return selected - List
+     */
     public List<SmartGraphEdge> getSelectedEdge() {
         return selectedEdge;
     }
 
+    /**
+     * Updates the graph.
+     */
     public void updateGraph() {
         graphView.update();
         addedUsersStatsLabel.setText(addedUsersStats());
         userWithMostRelStatsLabel.setText(userWithMostRelationships());
     }
 
-    public void clearSelected() {
-        User u = (User) selected.get(0).getUnderlyingVertex().element();
+    /**
+     * Clear the selected vertex.
+     */
+    public void clearSelectedVertex() {
+        User u = (User) getSelectedVertex().get(0).getUnderlyingVertex().element();
         if (u.getType() == User.UserType.INCLUDED)
-            selected.get(0).setStyleClass("VertexIncluded");
+            getSelectedVertex().get(0).setStyleClass("VertexIncluded");
         else if (u.getType() == User.UserType.ADDED)
-            selected.get(0).setStyleClass("VertexAdded");
-        selected.clear();
+            getSelectedVertex().get(0).setStyleClass("VertexAdded");
+        getSelectedVertex().clear();
     }
 
+    /**
+     * Clear the selected edges.
+     */
     public void clearSelectedEdge() {
-        Relationship r = (Relationship) selectedEdge.get(0).getUnderlyingEdge().element();
+        Relationship r = (Relationship) getSelectedEdge().get(0).getUnderlyingEdge().element();
         if (r.getType() == Relationship.NameOfRelationship.SHARED_INTEREST)
-            selectedEdge.get(0).setStyleClass("edgeShared");
+            getSelectedEdge().get(0).setStyleClass("edgeShared");
         else if (r.getType() == Relationship.NameOfRelationship.SIMPLE)
-            selectedEdge.get(0).setStyleClass("edgeSimple");
-        selectedEdge.clear();
+            getSelectedEdge().get(0).setStyleClass("edgeSimple");
+        getSelectedEdge().clear();
     }
 
-    public List<Node> getGraphNodes() {
-        return graphView.getChildren();
-    }
 
+    /**
+     * Set graph colors in users and relationships.
+     */
     public void setColors() {
         for (Node node : graphView.getChildren()) {
             if (node instanceof SmartGraphVertexNode) {
@@ -675,7 +722,12 @@ public class SocialNetworkUI extends BorderPane implements Observer {
         }
     }
 
-
+    /**
+     * Uses Queue data structure for finding the shortest path.
+     * @param user_root - SmartGraphVertex
+     * @param interest - Interests
+     * @return visited - List
+     */
     public List<SmartGraphVertex> BFS(SmartGraphVertex user_root, Interest interest) {
         Queue<SmartGraphVertex> queue = new LinkedList<>();
         List<SmartGraphVertex> visited = new ArrayList<>();

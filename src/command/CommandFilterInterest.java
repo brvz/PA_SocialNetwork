@@ -8,6 +8,9 @@ import smartgraph.view.graphview.SmartGraphVertex;
 import smartgraph.view.graphview.SmartGraphVertexNode;
 import view.SocialNetworkUI;
 
+/**
+ * This classes makes the action when a client wants to filter the Social Network by an interest.
+ */
 public class CommandFilterInterest  extends CommandSocialNetwork{
     private SocialNetworkUI ui;
 

@@ -5,6 +5,9 @@ import model.User;
 
 import java.util.Stack;
 
+/**
+ * Command User is a class that will make the action of users automatic insertion after a undo or a redo.
+ */
 public class CommandUser extends CommandSocialNetwork  {
 
     private final int userNumber;

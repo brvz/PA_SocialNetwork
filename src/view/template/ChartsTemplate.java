@@ -15,8 +15,18 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * This ChartTemplate has the functionality to set a stage that will be used to make the 3 differentes types of Charts,
+ * only the variables will be not the same.
+ * Design Pattern - Template Method.
+ */
 public abstract class ChartsTemplate {
 
+    /**
+     * Set the stage to make the charts.
+     * @param yName - String
+     * @param xName - String
+     */
     public void setStage(String yName, String xName){
         Stage stage1 = new Stage();
 
@@ -47,8 +57,16 @@ public abstract class ChartsTemplate {
 
     }
 
+    /**
+     * Return the String that will be the title of the Chart.
+     * @return String
+     */
     public abstract String getTitle();
 
+    /**
+     * Add data to the chart.
+     * @param series1 - XYChart.Series
+     */
     public abstract void addData(XYChart.Series series1);
 
 }

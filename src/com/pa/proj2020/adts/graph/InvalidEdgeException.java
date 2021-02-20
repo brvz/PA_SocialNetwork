@@ -25,10 +25,9 @@ package com.pa.proj2020.adts.graph;
 
 /**
  * Error when using an invalid edge in calls of methods in {@link Graph}
- * and {@link Digraph} implementations.
+ * and {@link Graph} implementations.
  * 
  * @see Graph
- * @see Digraph
  */
 public class InvalidEdgeException extends RuntimeException {
 

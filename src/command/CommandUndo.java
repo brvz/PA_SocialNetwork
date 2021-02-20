@@ -5,7 +5,9 @@ import model.User;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * This class will execute a possibility to many action of the client can be restaured.
+ */
 public class CommandUndo extends CommandSocialNetwork{
 
     public CommandUndo(SocialNetwork sn) {

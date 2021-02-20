@@ -9,6 +9,10 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Class that generate some properties that are boolean, wich mean that can be false or true and them are implemented
+ * to can be show if true or not if false in the log.txt file.
+ */
 public class LoggerProperties {
 
     private static final boolean DEFAULT_USER_INCLUDED = true;
