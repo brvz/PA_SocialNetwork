@@ -2,15 +2,22 @@ package com.pa.proj2020.adts.graph;
 
 import java.util.*;
 
+/**
+ * This class implements the methods of the interface graph. It serves to make the social network happens.
+ * In this case, it was used an adjacency list.
+ * @param <V>
+ * @param <E>
+ */
 public class GraphAdjacencyList<V, E> implements Graph<V,E> {
 
     private final Map<V, Vertex<V>> graph;
+
    // private final List<Edge<E,V>> edges;
 
 
     public GraphAdjacencyList() {
         graph = new HashMap<>();
-     //   edges = new ArrayList<>();
+     //   edges = new ArrayList<>();t
     }
 
     @Override
@@ -399,6 +406,8 @@ public class GraphAdjacencyList<V, E> implements Graph<V,E> {
 
         V element;
         List<Edge<E, V>> edges;
+
+
         //List<V> adjencies;
 
         public MyVertex(V element) {

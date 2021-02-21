@@ -13,7 +13,7 @@ import java.util.List;
  * Top6Chart represents the number of relationships with 6 users with most interests.
  */
 public class Top6Chart extends ChartsTemplate {
-    SocialNetwork sn;
+    public SocialNetwork sn;
     private List<User> top6;
 
     public Top6Chart(SocialNetwork sn) {
