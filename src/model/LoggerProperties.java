@@ -1,4 +1,4 @@
-package Logger;
+package model;
 
 import smartgraph.view.graphview.SmartGraphProperties;
 

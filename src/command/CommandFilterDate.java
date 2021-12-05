@@ -12,33 +12,31 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
- * This classes makes the action when a client wants to filter the Social Network by a date.
+ * Class responsible for the logic of a filter by interest name, requested by a user.
  */
-public class CommandFilterDate extends CommandSocialNetwork{
+public class CommandFilterDate extends CommandNetwork{
 
-    private SocialNetworkUI ui;
+    private SocialNetworkUI view;
 
-    public CommandFilterDate(SocialNetworkUI ui) {
-        super(ui.getSocialNetwork());
-        this.ui = ui;
+    public CommandFilterDate(SocialNetworkUI view) {
+        super(view.getSocialNetwork());
+        this.view = view;
     }
 
     @Override
     public void execute() {
-        for(Node node: ui.graphView.getChildren()) {
+        for(Node node: view.graphContainer.getChildren()) {
 
             if (node instanceof SmartGraphVertexNode) {
 
                 SmartGraphVertex n = (SmartGraphVertex) node;
                 User u = (User) n.getUnderlyingVertex().element();
-                String date = ui.dateFilter.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                String date = view.dateFilter.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 try {
                     Date dateFilter = new SimpleDateFormat("yyyy-MM-dd").parse(date);
-                    Date dateUser = new SimpleDateFormat("yyyy-MM-dd").parse(u.getDate());
+                    Date dateUser = new SimpleDateFormat("yyyy-MM-dd").parse(u.getJoinDate());
                     if (dateUser.after(dateFilter)) {
-                        //((SmartGraphVertexNode<?>) node).setStyleClass("VertexFiltered");
-                        sn.removeUser(u);
-                        //((SmartGraphVertexNode<?>) node).setStyleClass("VertexFilteredHide");
+                        network.removeUser(u);
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();

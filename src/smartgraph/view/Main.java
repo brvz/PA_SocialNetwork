@@ -18,8 +18,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        SocialNetwork sn = new SocialNetwork("Social Network");
-        new SocialNetworkUI(sn);
+        SocialNetwork network = new SocialNetwork("Social Network");
+        new SocialNetworkUI(network);
 
     }
 }

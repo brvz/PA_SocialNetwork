@@ -6,61 +6,39 @@ import model.User;
 import java.util.ArrayList;
 import java.util.List;
 /**
- * This class will execute a possibility to many action of the client can be restaured.
+ * Class responsible for the logic to undo the previous user action.
  */
-public class CommandUndo extends CommandSocialNetwork{
+public class CommandUndo extends CommandNetwork{
 
-    public CommandUndo(SocialNetwork sn) {
-        super(sn);
+    public CommandUndo(SocialNetwork network) {
+        super(network);
     }
 
     @Override
     public void execute() {
-        /*if(sn.getLastUserAdded() != null){
-            if(sn.isUndo()){
-                sn.readCSVRelationshipsByUser(sn.getLastUserAdded().peek().getNumber());
-                sn.setUndo(false);
-            }else{
-                sn.readCSVRelationshipsByUser(sn.getLastUserAdded().pop().getNumber());
-            }
-            //sn.setRedo(true);
-        }else*/
-        if(sn.getLastUsers().size() > 0){
+        if (network.getLastUsers().size() > 0) {
             List<Integer> user = new ArrayList<>();
-            List<User> list = sn.getLastUsers().peek();
-            //if(sn.isRedo()){
-            if(list.size() > 1){
+            List<User> list = network.getLastUsers().peek();
+            if (list.size() > 1) {
                 for (User i : list) {
-                    user.add(i.getNumber());
-                    sn.removeUserById(i.getNumber());
+                    user.add(i.getId());
+                    network.removeUserById(i.getId());
                 }
-                sn.getLastUsers().pop();
-                sn.getLastUsersHistory().push(list);
-                sn.setUndo(true);
-                sn.setRedo(false);
-            }else if(list.size() == 1){
+                network.getLastUsers().pop();
+                network.getLastUsersHistory().push(list);
+                network.setUndo(true);
+
+            } else if(list.size() == 1) {
                 for (User i : list) {
-                    user.add(i.getNumber());
-                    sn.removeUserById(i.getNumber());
+                    user.add(i.getId());
+                    network.removeUserById(i.getId());
                 }
-                sn.getLastUsers().pop();
-                sn.getLastUsersHistory().push(list);
-                sn.setUndo(true);
-                sn.setRedo(false);
+                network.getLastUsers().pop();
+                network.getLastUsersHistory().push(list);
+                network.setUndo(true);
+                network.setRedo(false);
             }
-
-
-            //sn.readCSVBatch(user);
-            //sn.setUndo(false);
-           /* }else{
-                for (User i : sn.getLastUsers().pop()) {
-                    user.add(i.getNumber());
-                }
-                //sn.getLastUsers().pop();
-                sn.readCSVBatch(user);
-            }*/
         }
-
     }
 
     @Override

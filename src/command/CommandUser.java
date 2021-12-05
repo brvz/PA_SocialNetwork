@@ -8,43 +8,31 @@ import java.util.Stack;
 /**
  * Command User is a class that will make the action of users automatic insertion after a undo or a redo.
  */
-public class CommandUser extends CommandSocialNetwork  {
+public class CommandUser extends CommandNetwork  {
+    private final int userId;
 
-    private final int userNumber;
-
-
-    public CommandUser(SocialNetwork sn, int userNumber) {
-        super(sn);
-        this.userNumber = userNumber;
+    public CommandUser(SocialNetwork network, int userId) {
+        super(network);
+        this.userId = userId;
 
     }
 
     @Override
     public void execute() {
-        if(sn.isRedo() || sn.isUndo()){
-            if(!sn.getLastUsers().isEmpty()){
-                sn.clearLastUsers();
+        if(network.isRedo() || network.isUndo()){
+            if(!network.getLastUsers().isEmpty()){
+                network.clearLastUsers();
             }
-            if(!sn.getLastUsersHistory().isEmpty()){
-                sn.clearLastUsersHistory();
+            if(!network.getLastUsersHistory().isEmpty()){
+                network.clearLastUsersHistory();
             }
-            sn.setUndo(false);
-            sn.setRedo(false);
+            network.setUndo(false);
+            network.setRedo(false);
         }
-        sn.readCSVRelationshipsByUser(userNumber);
+        network.readCSVRelationshipsByUser(userId);
     }
 
     @Override
     public void unExecute() {
-        /*User user = sn.getIdOfUser(userNumber);
-        if(sn.isRedo()){
-            if(!sn.getLastUserAdded().contains(user)){
-                sn.getLastUserAdded().push(user);
-                sn.setUndo(true);
-            }
-        }
-        sn.removeUserById(userNumber);
-        sn.setRedo(false);*/
-
     }
 }

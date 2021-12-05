@@ -54,30 +54,15 @@ public class MainExample extends Application {
     @Override
     public void start(Stage ignored) {
 
-        //Graph<String, String> g = build_sample_digraph();
-        //Graph<String, String> g = build_flower_graph();
-        SocialNetwork sn = new SocialNetwork("sn");
-        System.out.println(sn);
+        SocialNetwork network = new SocialNetwork("Social Network");
+        System.out.println(network);
 
 
         
         SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
-        //SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
-        //SmartGraphPanel<String, String> graphView = new SmartGraphPanel<>(g, strategy);
-        SmartGraphPanel<User, Relationship> graphView = new SmartGraphPanel<>(sn.getSn(), strategy);
-        /*
-        After creating, you can change the styling of some element.
-        This can be done at any time afterwards.
-        */
-        /*if (g.numVertices() > 0) {
-            graphView.getStylableVertex("A").setStyle("-fx-fill: gold; -fx-stroke: brown;");
-        }*/
 
-        /*
-        Basic usage:            
-        Use SmartGraphDemoContainer if you want zoom capabilities and automatic layout toggling
-        */
-        //Scene scene = new Scene(graphView, 1024, 768);
+        SmartGraphPanel<User, Relationship> graphView = new SmartGraphPanel<>(network.getSocialNetwork(), strategy);
+
         Scene scene = new Scene(new SmartGraphDemoContainer(graphView), 1024, 768);
 
         Stage stage = new Stage(StageStyle.DECORATED);
@@ -87,57 +72,20 @@ public class MainExample extends Application {
         stage.setScene(scene);
         stage.show();
 
-        /*
-        IMPORTANT: Must call init() after scene is displayed so we can have width and height values
-        to initially place the vertices according to the placement strategy
-        */
         graphView.init();
 
-        /*
-        Bellow you can see how to attach actions for when vertices and edges are double clicked
-         */
         graphView.setVertexDoubleClickAction(graphVertex -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
 
-            //toggle different styling
             if( !graphVertex.removeStyleClass("myVertex") ) {
-                /* for the golden vertex, this is necessary to clear the inline
-                   css class. Otherwise, it has priority. Test and uncomment. */
-                //graphVertex.setStyle(null); 
-                
                 graphVertex.addStyleClass("myVertex");
             }            
-            
-            //want fun? uncomment below with automatic layout
-            //g.removeVertex(graphVertex.getUnderlyingVertex());
-            //graphView.update();
         });
 
         graphView.setEdgeDoubleClickAction(graphEdge -> {
             System.out.println("Edge contains element: " + graphEdge.getUnderlyingEdge().element());
-            //dynamically change the style when clicked
             graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 2;");
-            
-            
-            //uncomment to see edges being removed after click
-            //Edge<String, String> underlyingEdge = graphEdge.getUnderlyingEdge();
-            //g.removeEdge(underlyingEdge);
-            //graphView.update();
         });
-
-        /*
-        Should proceed with automatic layout or keep original placement?
-        If using SmartGraphDemoContainer you can toggle this in the UI 
-         */
-        //graphView.setAutomaticLayout(true);
-
-        /* 
-        Uncomment lines to test adding of new elements
-         */
-        //continuously_test_adding_elements(g, graphView);
-        //stage.setOnCloseRequest(event -> {
-        //    running = false;
-        //});
     }
 
     /**

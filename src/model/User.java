@@ -5,219 +5,141 @@ import com.opencsv.CSVReader;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * User class represents the parameters that an User has. {Type, number and creation date}.
  */
 public class User {
+    private UserType type;
+    private int id;
+    private List<Interest> interests;
+    private String joinDate;
 
-    /***
-     * Define 2 types of an User: Added and Included.
-     *  ADDED - User that is added by the client in User Interface and has some users included.
-     *  INCLUDED - User that is returned from an added user by correspondecy.
-     */
     public enum UserType {
-        ADDED,
-        INCLUDED;
+        ADICIONADO,
+        INCLUIDO;
 
         public String getType() {
             switch (this) {
-                case ADDED:
+                case ADICIONADO:
                     return "Adicionado";
-                case INCLUDED:
+                case INCLUIDO:
                     return "Incluido";
             }
             return "Desconhecido";
         }
     };
 
-    // variables
-    private User.UserType type;
-    private int number;
-
-    private List<Interest> interestList;
-    private String creationDate;
-
-
-    // Constructor
-    public User(int number,  UserType type, String date) {
-        setNumber(number);
-        setType(type);
-        interestList = new LinkedList<>();
-        CSVaddUsersInterest(CSVReadInterest());
-        setDate(date);
+    public User(int id,  UserType type, String joinDate) {
+        this.id = id;
+        this.type = type;
+        this.joinDate = joinDate;
+        interests = new LinkedList<>();
+        CSVaddUsersInterest(readCSV());
     }
 
-    public User(int number, String date) {
-        setNumber(number);
-        interestList = new LinkedList<>();
-        CSVaddUsersInterest(CSVReadInterest());
-        setDate(date);
+    public User(int id, String joinDate) {
+        this.id = id;
+        interests = new LinkedList<>();
+        this.joinDate = joinDate;
+        CSVaddUsersInterest(readCSV());
     }
 
-    // Getters and Setters
-
-    /**
-     * Return the number of an User.
-     * @return number - int
-     */
-    public int getNumber() {
-        return number;
+    public int getId() {
+        return id;
     }
 
-    /**
-     * Set the number of an User.
-     * @param  number - int
-     */
-    public void setNumber(int number) {
-        this.number = number;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    /**
-     * Get the type of an User.
-     * @return type - UserType
-     */
     public UserType getType() {
         return type;
     }
 
-    /**
-     * Set the type of an User.
-     * @param  type - UserType
-     */
     public void setType(UserType type) {
         this.type = type;
     }
 
-    /**
-     * Return the creation date of an User.
-     * @return creationDate - User.
-     */
-    public String getDate(){
-        return creationDate;
+    public String getJoinDate(){
+        return joinDate;
     }
 
-    /**
-     * Set the creation date of an User.
-     * @param  date - User.
-     */
-    public void setDate(String date){
-      this.creationDate = date;
+    public void setJoinDate(String joinDate){
+      this.joinDate = joinDate;
     }
 
-
-    // Equals and HashCode
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
         User user = (User) o;
-        return getNumber() == user.getNumber();
+        return getId() == user.getId();
     }
-
-   /* @Override
-    public int hashCode() {
-        return Objects.hash(""+getNumber());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }*/
 
     @Override
     public int hashCode() {
         return super.hashCode();
     }
 
-    // ToString
     @Override
     public String toString() {
-        String res = "" + number ;
+        String res = "" + id ;
         return res;
     }
 
-    /**
-     * Return a string composed by Id, creation date, and the interests from User.
-     * The interests is viewed as well accordingly.
-     * @return res - String
-     */
     public String showUserToString(){
-        String res = "Id: " + number +
-                "\nDate: " + creationDate +
+        String res = "Id: " + id +
+                "\nDate: " + joinDate +
                 "\nInterests:";
-        for(Interest in : interestList){
-            res += "\n\t" + in.getHashtag() + ";" ;
+        for(Interest in : interests){
+            res += "\n\t" + in.getName() + ";" ;
         }
         return res;
     }
 
-    /**
-     * Return the list of interests.
-     * @return interestList - List
-     */
     public List<Interest> getInterestList() {
-        return interestList;
+        return interests;
     }
 
-    /**
-     * Add interests in a list of interests.
-     * @param interest - Interest
-     * @throws InterestException if the interests that we want to add doesn't exists.
-     */
-    public void addInterest(Interest interest) throws InterestException {
-        if (interest==null) throw new InterestException("Este interesse não existe");
-        for (Interest i:this.interestList) {
+    public void addInterest(Interest interest) throws DefaultException {
+        if (interest == null) throw new DefaultException("This interest does not exist.");
+        for (Interest i : interests) {
             if (!i.equals(interest)){
-                this.interestList.add(interest);
+                interests.add(interest);
                 break;
             }
         }
-        if (this.interestList.isEmpty()) this.interestList.add(interest);
+        if (interests.isEmpty())
+            interests.add(interest);
     }
 
-    /**
-     * Return the size of interests.
-     * @return size of interestList - int
-     */
     public int getNumberOfInterests(){
         return getInterestList().size();
     }
 
-    /**
-     * Adds interests from a file and returns interest id's for this user.
-     * @param listInterest - List
-     */
     public void CSVaddUsersInterest(List<Interest> listInterest) {
-
         try (BufferedReader br = new BufferedReader(new FileReader("input_Files/interests.csv"))) {
-            String line;
+            String readLine;
             int count = 0;
-            while ((line = br.readLine()) != null) {
+            while ((readLine = br.readLine()) != null) {
                 count++;
-                //if (count == this.getNumber()) {
-                    line = line.replace("\uFEFF", "");
-                    String[] values = line.split(";");
-                    int interestId = Integer.parseInt(values[0]);
-                    for (int i = 2; i < values.length; i++) {
-                        int x = Integer.parseInt(values[i]);
-                        if(x == this.number){
-                            for(Interest in : listInterest){
-                                if( interestId == in.getIdentify()){
-                                    addInterest(in);
-                                    break;
-                                }
+                readLine = readLine.replace("\uFEFF", "");
+                String[] values = readLine.split(";");
+                int interestId = Integer.parseInt(values[0]);
+                for (int i = 2; i < values.length; i++) {
+                    int x = Integer.parseInt(values[i]);
+                    if(x == this.id){
+                        for(Interest in : listInterest){
+                            if(interestId == in.getId()){
+                                addInterest(in);
+                                break;
                             }
                         }
-
                     }
-
-                //}
+                }
             }
 
         } catch (IOException e) {
@@ -225,20 +147,14 @@ public class User {
         }
     }
 
-    /**
-     * Reads interests from a file and returns interest id's for this user.
-     * @return listTemp - List
-     */
-    public List<Interest> CSVReadInterest() {
+    public List<Interest> readCSV() {
         CSVReader reader = null;
-        List<Interest> listTemp = new LinkedList<>();
+        List<Interest> interestList = new LinkedList<>();
         int id;
         String name;
         try {
-            //parsing a CSV file into CSVReader class constructor
             reader = new CSVReader(new FileReader("input_Files/interests.csv"));
             String[] nextLine;
-            //reads one line at a time
             while ((nextLine = reader.readNext()) != null) {
                 for (String token : nextLine) {
                     if (!token.isEmpty()) {
@@ -248,7 +164,7 @@ public class User {
                         String part2 = parts[1];
                         id = Integer.parseInt(part1);
                         name = part2;
-                        listTemp.add(new Interest(id, name));
+                        interestList.add(new Interest(id, name));
                         break;
                     }
                 }
@@ -262,7 +178,7 @@ public class User {
                 e.printStackTrace();
             }
         }
-        return listTemp;
+        return interestList;
     }
 
 

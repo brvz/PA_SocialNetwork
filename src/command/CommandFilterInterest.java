@@ -2,7 +2,6 @@ package command;
 
 import javafx.scene.Node;
 import model.Interest;
-import model.SocialNetwork;
 import model.User;
 import smartgraph.view.graphview.SmartGraphVertex;
 import smartgraph.view.graphview.SmartGraphVertexNode;
@@ -11,40 +10,35 @@ import view.SocialNetworkUI;
 /**
  * This classes makes the action when a client wants to filter the Social Network by an interest.
  */
-public class CommandFilterInterest  extends CommandSocialNetwork{
-    private SocialNetworkUI ui;
+public class CommandFilterInterest extends CommandNetwork{
+    private SocialNetworkUI view;
 
-    public CommandFilterInterest(SocialNetworkUI ui) {
-        super(ui.getSocialNetwork());
-        this.ui = ui;
+    public CommandFilterInterest(SocialNetworkUI view) {
+        super(view.getSocialNetwork());
+        this.view = view;
     }
 
     @Override
     public void execute() {
-        //ui.interestFilter.getSelectionModel().getSelectedItem();
-        for(Node node: ui.graphView.getChildren()) {
-
+        for(Node node: view.graphContainer.getChildren()) {
             if (node instanceof SmartGraphVertexNode) {
-
                 SmartGraphVertex n = (SmartGraphVertex) node;
                 User u = (User) n.getUnderlyingVertex().element();
                 if(u.getInterestList().size() > 0){
-                    boolean temp = false;
+                    boolean filterCheck = false;
                     for (Interest in : u.getInterestList()) {
-                        if (in.getHashtag().equals(ui.interestFilter.getSelectionModel().getSelectedItem())) {
-                            temp = false;
+                        if (in.getName().equals(view.interestFilter.getSelectionModel().getSelectedItem())) {
+                            filterCheck = false;
                             break;
-                        }else{
-                            temp = true;
+                        }else {
+                            filterCheck = true;
                         }
                     }
-                    if(temp == true){
-                        sn.removeUser(u);
+                    if(filterCheck) {
+                        network.removeUser(u);
                     }
-                }else{
-                    //ui.getSocialNetwork().removeUser(u);
-                    sn.removeUser(u);
-                    //((SmartGraphVertexNode<?>) node).setStyleClass("VertexFilteredHide");
+                }else {
+                    network.removeUser(u);
                 }
 
             }

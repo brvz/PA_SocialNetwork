@@ -1,48 +1,32 @@
 package model;
 
-/***
- * Interest class is a class that defines the interest of an user.
+/**
+ * Class responsible to manage and represent the Interest object.
  */
 public class Interest {
 
-    private int identify;
-    private String hashtag;
+    private int id;
+    private String name;
 
-    public Interest(int identify, String hashtag) {
-        setIdentify(identify);
-        setHashtag(hashtag);
+    public Interest(int id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
-    /**
-     * Return the identify of the interest.
-     * @return identify - int
-     */
-    public int getIdentify() {
-        return identify;
+    public int getId() {
+        return id;
     }
 
-    /***
-     * Set the identify of the interest.
-     * @param identify - int
-     */
-    public void setIdentify(int identify) {
-        this.identify = identify;
+    public void setId(int identify) {
+        this.id = id;
     }
 
-    /***
-     * Return hashtag/name of the interest.
-     * @return hashtag - String
-     */
-    public String getHashtag() {
-        return hashtag;
+    public String getName() {
+        return name;
     }
 
-    /***
-     * Set the hashtag/name of the interest.
-     * @param hashtag - String
-     */
-    public void setHashtag(String hashtag) {
-        this.hashtag = hashtag;
+    public void setName(String name) {
+        this.name = name;
     }
 
 
